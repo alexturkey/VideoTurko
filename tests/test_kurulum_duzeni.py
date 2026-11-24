@@ -53,10 +53,45 @@ class VenvTercihi(unittest.TestCase):
         self.assertNotIn(".venv", c.split("VT-W-PY")[1].split(",")[0] if "VT-W-PY" in c else "")
 
 
+@unittest.skipUnless(sys.platform == "win32", "Windows PowerShell 5.1 gerekir")
+class KapiVenvTercihi(unittest.TestCase):
+    """uretim_kapi.ps1, VT_PYTHON yokken kokteki .venv python'unu kullanir (PR #14: kapi VT-E-PY ile calismiyordu)."""
+
+    def kos(self, venv):
+        with tempfile.TemporaryDirectory() as t:
+            os.makedirs(os.path.join(t, "scripts"))
+            os.makedirs(os.path.join(t, "runs", "k"))
+            for f in ("uretim_kapi.ps1", "dikis_denetim.py"):
+                shutil.copy(os.path.join(KOK, "scripts", f), os.path.join(t, "scripts"))
+            with open(os.path.join(t, "runs", "k", "k.avi"), "wb") as f:
+                f.write(b"RIFF" + bytes(64))
+            if venv:
+                subprocess.run([sys.executable, "-I", "-m", "venv", os.path.join(t, ".venv")], check=True, timeout=120)
+            env = dict(os.environ, VT_ROOT=t)
+            env.pop("VT_PYTHON", None)
+            r = subprocess.run([PS, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", os.path.join(t, "scripts", "uretim_kapi.ps1"),
+                                "-Dizin", "k", "-Ad", "k", "-Kare", "5"],
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, timeout=150, stdin=subprocess.DEVNULL)
+            return r.returncode, r.stdout + r.stderr
+
+    def test_venv_varsa_kapi_onu_kullanir(self):
+        # bos venv: opencv yok, kapi cikis 6 verir ve mesajdaki python yolu kokteki .venv olur
+        kod, c = self.kos(venv=True)
+        self.assertEqual(kod, 6, c)
+        self.assertIn("KAPI CALISMADI", c)
+        self.assertIn(".venv", c.replace("\\", "/"))
+
+    def test_venv_yoksa_venv_kullanilmaz(self):
+        kod, c = self.kos(venv=False)
+        self.assertNotIn(".venv", c, c)
+
+
 class BetikKurallari(unittest.TestCase):
     def test_uc_yerde_venv_tercihi(self):
         self.assertEqual(metin("kur.ps1").count("Join-Path $Root '.venv/Scripts/python.exe'"), 2)
         self.assertEqual(metin("uret.ps1").count("Join-Path $Root '.venv/Scripts/python.exe'"), 4)
+        # uret.ps1 kapiyi ayri powershell surecinde calistirir ve python yolunu aktarmaz: kapi betigi de .venv'e bakmali (PR #14)
+        self.assertEqual(metin("uretim_kapi.ps1").count("Join-Path $Root '.venv/Scripts/python.exe'"), 2)
 
     def test_oneri_kok_icinde_onbellek(self):
         for ad in ("kur.ps1", "uret.ps1"):

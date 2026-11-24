@@ -7,7 +7,7 @@ function Yaz($m){ Write-Output $m; $s="{0} | {1}" -f (Get-Date -Format "HH:mm:ss
 $avi="$d\$Ad.avi"; if(-not (Test-Path $avi) -and (Test-Path "$d\${Ad}l.avi")){ $avi="$d\${Ad}l.avi" }
 if(-not (Test-Path $avi)){ Yaz "KAPI RED: avi yok ($d)"; exit 1 }
 foreach($lg in "ham_out_$Ad.txt","ham_err_$Ad.txt"){ $lp="$d\$lg"; if(Test-Path $lp){ if(Select-String -Path $lp -Pattern 'temporal tiling|retrying with|vae decode compute failed' -Quiet){ Yaz "KAPI RED: $lg icinde karolu VAE yedegi/VAE hatasi (K-17: karolu cikti gecersiz); video kullanilmaz"; exit 1 } } }
-$py=$(if($env:VT_PYTHON){$env:VT_PYTHON}else{'python'})
+$py=$(if($env:VT_PYTHON){$env:VT_PYTHON}elseif(Test-Path -LiteralPath (Join-Path $Root '.venv/Scripts/python.exe')){Join-Path $Root '.venv/Scripts/python.exe'}else{'python'})   # uret.ps1/kur.ps1 ile ayni sira: VT_PYTHON, kokteki .venv, PATH'teki python (PR #14)
 if(-not (Get-Command $py -ErrorAction SilentlyContinue)){ Yaz "KAPI CALISMADI: python bulunamadi ($py); python 3 + 'py -3 -m pip install opencv-python numpy' kurun, VT_PYTHON ile yolunu verin"; exit 6 }
 $o = & $py -I "$PSScriptRoot\dikis_denetim.py" $avi 2>&1 | Out-String; $pyKod=$LASTEXITCODE
 if($pyKod -eq 9009){ Yaz "KAPI CALISMADI: python kurulu degil ($py cikis 9009 = Windows Store kisayolu); python.org'dan Python 3 + 'py -3 -m pip install opencv-python numpy' kurun ya da VT_PYTHON ile python.exe yolunu verin"; exit 6 }
