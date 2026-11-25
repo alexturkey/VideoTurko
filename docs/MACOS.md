@@ -99,6 +99,7 @@ Ağırlıkları bellek eşlemeli (`--mmap`) olarak RAM'de tutar, metin kodlayıc
 1. **`--list-devices` cihaz adı (`MTL0`) `[kullanıcı bildirdi]`:** Metal cihazı `metal` değil `MTL0` adıyla listelenir; kontrol betikleri `MTL0|metal` aramalıdır.
 2. **İzole kabukta Metal'in gizlenmesi `[kullanıcı bildirdi]`:** Kısıtlı alt kabuklarda `sd-cli --list-devices` yalnız CPU/Accelerate görür; doğrudan macOS Terminal'inden çalıştırıldığında `MTL0` görünür.
 3. **`1344x768 × 209 kare` bellek kapısı (`Mod B`) `[kullanıcı bildirdi]`:** 30,0 GB ağırlığın tamamı `MTL0`'da yerleşikken (26,01 GB aktif), `1344x768 × 209` koşusu `blocks.0` aşamasında 18,76 GB hesap tamponu istedi ve 12,32 GB boş alan yetmedi (6,39 sn'de `failed during weight preparation`). Bu uç boyutta **Mod A** (`--offload-to-cpu` + küçük `chunk_budget`) gerekir `[tahmin; 1344x768 × 209 Mod A ile henüz denenmedi]`.
+4. **Uzun koşuda uyku `[kullanıcı bildirdi, PR #28]`:** Koşu sessizce kesilirse bkz. bölüm 6 madde 1; uzun koşularda `caffeinate -i` kullanın (EN: if a long run stops silently, see section 6 item 1 and wrap the command in `caffeinate -i`).
 
 ---
 
@@ -137,5 +138,5 @@ Ağırlıkları bellek eşlemeli (`--mmap`) olarak RAM'de tutar, metin kodlayıc
 ### Karşılaşılan sorunlar
 
 1. **Mac uykuya geçince koşu sessizce durdu `[kullanıcı bildirdi, PR #28]`:** İlk 124 kare denemesi 6 adımın 5.'sinde, günlüğe hata yazmadan kesildi (yaklaşık 10 dk sonra; neden olarak sistem uykusu tahmin ediliyor `[tahmin]`). Aynı komut `caffeinate -i` ile yeniden çalıştırıldığında sorunsuz bitti. Uzun koşularda: `caffeinate -i scripts/mac_uret.sh docs/ornek_istem_R0.txt 209`.
-2. **`engine_mac/` repo klasöründeyken `scripts/denetim.py --hizli` KIRMIZI `[kullanıcı bildirdi, PR #28]`:** `engine_mac/` `.gitignore`'da yok; denetim takip edilmeyen dosyaları da taradığı için `libstable-diffusion.dylib` içindeki baytları gizli Unicode sayıyor, `start-server.bat` için de CRLF kuralı istiyor. Yerel çözüm: `engine_mac/` satırını `.git/info/exclude` dosyasına eklemek; sonra denetim GECTI. Aynı yüzden `engine_mac/` dosyaları kolayca commit'e girebilir.
+2. **`engine_mac/` repo klasöründeyken `scripts/denetim.py --hizli` KIRMIZI `[kullanıcı bildirdi, PR #28]`:** `engine_mac/` o sırada `.gitignore`'da yoktu (bu düzeltmeden sonra `/engine_mac/` satırı var); denetim takip edilmeyen dosyaları da taradığı için `libstable-diffusion.dylib` içindeki baytları gizli Unicode sayıyor, `start-server.bat` için de CRLF kuralı istiyor. Yerel çözüm: `engine_mac/` satırını `.git/info/exclude` dosyasına eklemek; sonra denetim GECTI. Aynı yüzden `engine_mac/` dosyaları kolayca commit'e girebilir.
 3. **Kalite kapısı için OpenCV `[kullanıcı bildirdi, PR #28]`:** Sistem Python'una dokunmadan repo kökünde `.venv` kuruldu (`python3 -m venv .venv && .venv/bin/python -m pip install opencv-python-headless numpy`; OpenCV 5.1.0, numpy 2.0.2). `scripts/mac_uret.sh` bu `.venv`'i kendiliğinden buldu ve kapıyı çalıştırdı.

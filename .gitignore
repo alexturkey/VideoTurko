@@ -4,6 +4,7 @@ __pycache__/
 /model/
 /model_sm120/
 /engine/
+/engine_mac/
 /toolchain/
 /build_work/
 /indirme/
