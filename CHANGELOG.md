@@ -5,6 +5,7 @@
 Scope: `scripts/uret.sh`, documentation and tests. Quality settings unchanged (6 steps, cfg 1, tile-less VAE, 17k+5 frames); defaults unchanged (stage 1 margin 1, stage 2 margin 256).
 
 - Linux `uret.sh` stage-1 memory margin setting `VT_MARGIN_MB` (PR #31, @nklowns): on an RTX 3060 Laptop 6 GB on Linux, 209 frames stopped in stage 1 with `cudaMalloc failed: out of memory` at the default margin 1 and passed with 512 [user-reported, PR #31; 512 was tried for both stages; not repeated by us]. Linux `uret.sh` only (no `uret.ps1` counterpart), two-stage runs only, stage 1 only, 1..4096 (`0` is rejected, it would mean "unset"); the defaults stay 1 and 256, so `uret.sh` and `uret.ps1` still print the same environment. Details: `docs/KART_PROFILLERI.md` (community experiments), `docs/SIK_HATALAR.md` item 1, `docs/RTX5060_SM120_DERLEME.md` section 5.
+- Card table: RTX 2060 6 GB on Windows (issue #30, @MuhammedGUVEN108; release `sm_61` engine, 209 frames, gate passed, 1684 to 1815 s; the stock engine was not tried) and the full RTX 3060 Laptop 6 GB Linux report with a stock-engine comparison (issue #33, @nklowns; the same unit as PR #31), both [user-reported], not repeated by us.
 
 ## v0.1.3 (2026-11-25)
 

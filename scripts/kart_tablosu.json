@@ -55,7 +55,7 @@
       "motor": "stock_cuda12",
       "ek_ayar": {"env": {"GGML_CUDA_CUBLAS_COMPUTE_TYPE": "f32"}},
       "durum": "topluluk",
-      "kanit": "[kullanici bildirdi, PR #9] GTX 1650 4 GB (7.5): stock motor ve hazir sm_61 motor ek ayarsiz calisti (tek klip, tek tohum; docs/KART_PROFILLERI.md tablosu). [kullanici bildirdi, issue #20] GTX 1660 SUPER 6 GB (7.5): stock motor, 56 kare, kapi gecti, varsayilan ayarlarla; bakimcilar tekrar etmedi. RTX 20xx ve Volta icin kosu bildirilmedi [okudum: stock derleme sm_70 ve sm_75 listeler]. f32: uret.ps1'in eski kurali (cc >= 7.0) [okudum].",
+      "kanit": "[kullanici bildirdi, PR #9] GTX 1650 4 GB (7.5): stock motor ve hazir sm_61 motor ek ayarsiz calisti (tek klip, tek tohum; docs/KART_PROFILLERI.md tablosu). [kullanici bildirdi, issue #20] GTX 1660 SUPER 6 GB (7.5): stock motor, 56 kare, kapi gecti, varsayilan ayarlarla; bakimcilar tekrar etmedi. [kullanici bildirdi, issue #30] RTX 2060 6 GB (7.5): hazir sm_61 motor uret.ps1 ile 209 kare (iki asama), kapi gecti, 1684-1815 s; stock motor bu kartta denenmedi; bakimcilar tekrar etmedi. Volta icin kosu bildirilmedi [okudum: stock derleme sm_70 ve sm_75 listeler]. f32: uret.ps1'in eski kurali (cc >= 7.0) [okudum].",
       "belge": "docs/KART_PROFILLERI.md"
     },
     {
@@ -65,7 +65,7 @@
       "motor": "stock_cuda12",
       "ek_ayar": {"env": {"GGML_CUDA_CUBLAS_COMPUTE_TYPE": "f32"}},
       "durum": "topluluk",
-      "kanit": "[kullanici bildirdi, PR #6] RTX 3070 8 GB (8.6): stock motor, 243 kare tek gecis, uret.ps1 disinda; kalite kapisi kosulmadi. Sonra docs/KART_PROFILLERI.md tablosuna eklenen olcumler [kullanici bildirdi]: RTX 3060 12 GB (PR #11; ikinci rapor issue #23 ve issue #24: stock 209 kare 278 s, hazir sm_61 motor 717 s), RTX 3060 Laptop 6 GB iki ayri cihaz (PR #14, PR #15), RTX 3070 Ti 8 GB (PR #16), RTX 3050 8 GB (PR #19), RTX A4000 16 GB Linux (PR #18); bakimcilar tekrar etmedi.",
+      "kanit": "[kullanici bildirdi, PR #6] RTX 3070 8 GB (8.6): stock motor, 243 kare tek gecis, uret.ps1 disinda; kalite kapisi kosulmadi. Sonra docs/KART_PROFILLERI.md tablosuna eklenen olcumler [kullanici bildirdi]: RTX 3060 12 GB (PR #11; ikinci rapor issue #23 ve issue #24: stock 209 kare 278 s, hazir sm_61 motor 717 s), RTX 3060 Laptop 6 GB iki ayri cihaz (PR #14, PR #15), RTX 3070 Ti 8 GB (PR #16), RTX 3050 8 GB (PR #19), RTX A4000 16 GB Linux (PR #18), RTX 3060 Laptop 6 GB Linux (PR #31, issue #33: yamali motor uret.sh ile 209 kare ve stock sd.cpp 209 kare, kapi gecti); bakimcilar tekrar etmedi.",
       "belge": "docs/RTX3070_STOCK_SDCPP.md"
     },
     {
