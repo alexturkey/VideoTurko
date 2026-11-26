@@ -95,7 +95,7 @@
       "motor": "stock_cuda12",
       "ek_ayar": {"env": {"GGML_CUDA_CUBLAS_COMPUTE_TYPE": "f32"}},
       "durum": "denenmemis",
-      "kanit": "[okudum] stock derleme sm_120 listeler. [kullanici bildirdi, PR #32] stock motorla (uret.ps1, stock_cuda12) RTX 5070 12 GB masaustu: 209 kare kapi GECTI, 192 kare -InitImg GECTI, VT_MAX_KARE ile 226 GECTI, 243 RED; bakimcilar tekrar etmedi, sinif bakimcilarca olculmedi. [kullanici bildirdi, PR #3] hazir sm_61 motor bu kartta 56+ karede siyah video verdi (v0.1.0 betigi); yerel sm_120 derleme calisti (docs/RTX5060_SM120_DERLEME.md).",
+      "kanit": "[okudum] stock derleme sm_120 listeler. [kullanici bildirdi, PR #29] stock motorla RTX 5060 Laptop 8 GB: 56 kare kapi GECTI, 209 kare VT-E-VRAM ile durdu. [kullanici bildirdi, PR #32] stock motorla (uret.ps1, stock_cuda12) RTX 5070 12 GB masaustu: 209 kare kapi GECTI, 192 kare -InitImg GECTI, VT_MAX_KARE ile 226 GECTI, 243 RED; bakimcilar tekrar etmedi, sinif bakimcilarca olculmedi. [kullanici bildirdi, PR #3] hazir sm_61 motor bu kartta 56+ karede siyah video verdi (v0.1.0 betigi); yerel sm_120 derleme calisti (docs/RTX5060_SM120_DERLEME.md).",
       "belge": "docs/RTX5060_SM120_DERLEME.md"
     },
     {
