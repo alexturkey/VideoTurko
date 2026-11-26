@@ -105,7 +105,7 @@
       "motor": "stock_vulkan",
       "ek_ayar": {"model_args": {"minimax_h3_attn_chunk_budget": "0.03"}},
       "durum": "topluluk",
-      "kanit": "[kullanici bildirdi] RX 9070 XT 16 GB: Vulkan, 209 kare; 0.03 butce (0.05 varsayilani uzun istemde VRAM'e sigmadi), docs/AMD_ROCM.md ve docs/SIK_HATALAR.md madde 34. ROCm yolu ek DLL ister (hipblas.dll), otomatik kurulmaz.",
+      "kanit": "[kullanici bildirdi] RX 9070 XT 16 GB: Vulkan, 209 kare; 0.03 butce (0.05 varsayilani uzun istemde VRAM'e sigmadi), docs/AMD_ROCM.md ve docs/SIK_HATALAR.md madde 34. [kullanici bildirdi, PR #34] Radeon 890M iGPU (Linux, Linux Vulkan derlemesi, kur.ps1 ile degil): 56 ve 90 kare, kapi GECTI; bakimcilar tekrar etmedi. ROCm yolu ek DLL ister (hipblas.dll), otomatik kurulmaz.",
       "belge": "docs/AMD_ROCM.md"
     }
   ],
