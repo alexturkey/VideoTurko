@@ -7,7 +7,8 @@
 # Cikis kodlari: 0 tamam, 1 hata, 2 kullanim hatasi ya da DUR dosyasi, 5 kalite kapisi RED, 6 kapi calismadi (python/opencv yok).
 # Durdurma: <VT_ROOT>/DUR dosyasi olusturun; betik sd-cli'yi kapatir ve DURDU yazar.
 # Ortam: VT_ROOT, VT_ENGINE_BIN, VT_MODEL_DIR, VT_PYTHON, VT_GPU_CC / VT_GPU_VRAM (okumayi ezer, test icin), VT_MAX_KARE, VT_MAX_JETON,
-#   deneysel (varsayilan KAPALI, UYARI basar): VT_ATTN_BUDGET (0..1, varsayilan 0.05), VT_CHUNK_MB (1..4096, varsayilan 64).
+#   deneysel (varsayilan KAPALI, UYARI basar): VT_ATTN_BUDGET (0..1, varsayilan 0.05), VT_CHUNK_MB (1..4096, varsayilan 64),
+#   VT_MARGIN_MB (1..4096, varsayilan 1; YALNIZ Linux uret.sh, YALNIZ iki asamali kosuda 1. asamanin SD_VRAM_MARGIN_MB payi; uret.ps1'de karsiligi yok; 0 yazmayin) [kullanici bildirdi, PR #31].
 set -euo pipefail
 
 # TEK SABIT SAYILAR (uret.ps1 ile ayni):
@@ -154,6 +155,15 @@ vt_chunk="${VT_CHUNK_MB:-${VT_CHUNK:-}}"
 if [[ -n "$vt_chunk" ]]; then
   if [[ "$vt_chunk" =~ ^[0-9]+$ && "$vt_chunk" -ge 1 && "$vt_chunk" -le 4096 ]]; then CHUNK_MB="$vt_chunk"; VT_AKTIF="$VT_AKTIF VT_CHUNK_MB=$CHUNK_MB"; else echo "UYARI: VT_CHUNK_MB='$vt_chunk' 1..4096 tam sayi olarak okunamadi, yok sayildi"; fi
 fi
+# Bellek payi (1. asama): varsayilan olculmus 1; Linux CUDA'da RTX 3060 Laptop 6 GB'ta 209 karede 1. asama 1 ile dustu, 512 ile gecti [kullanici bildirdi, PR #31, 512 her iki asamada denendi; bizce olculmedi]
+MARGIN1="1"
+vt_marj="${VT_MARGIN_MB:-}"
+if [[ -n "$vt_marj" ]]; then
+  if [[ "$vt_marj" =~ ^[0-9]+$ && "$vt_marj" -ge 1 && "$vt_marj" -le 4096 ]]; then
+    MARGIN1="$vt_marj"; VT_AKTIF="$VT_AKTIF VT_MARGIN_MB=$MARGIN1"
+    echo "UYARI: VT_MARGIN_MB yalniz iki asamali kosuda (209 kare gibi) ve yalniz 1. asamada gecerli; tek asamali kosuda etkisizdir"
+  else echo "UYARI: VT_MARGIN_MB='$vt_marj' 1..4096 tam sayi olarak okunamadi (0 yazmayin: 0 'ayarsiz' sayilir ve 1024 MB tuzagina duser), yok sayildi"; fi
+fi
 [[ -z "$VT_AKTIF" ]] || echo "UYARI: [VT-W-DENEYSEL] deneysel VT_* aktif ($VT_AKTIF ); cikti kalite kurallari disina cikabilir, kalite kapisi bunu yakalamaz: olcum/paylasim icin kullanmayin"
 
 # --- iki asama karari (uret.ps1 ile ayni): jeton > 7680, ya da 8 GB alti kartta --end-img
@@ -191,13 +201,12 @@ ARGS=(-M vid_gen --diffusion-model "$DIT" --llm "$TE" --vae "$VAE" --audio-vae "
 [[ -z "$END_IMG" ]] || ARGS+=(--end-img "$END_IMG")
 ARGS+=(--log-level debug -o "$OUT_AVI")
 
-# ortam: dogrulanmis tarif (uret.ps1 ile ayni degerler; SD_VRAM_MARGIN_MB olculmus 1 ve 256, kart buyuklugune gore OYNATILMAZ)
+# ortam: dogrulanmis tarif (uret.ps1 ile ayni degerler; SD_VRAM_MARGIN_MB olculmus 1 (1. asama) ve 256 (2. asama), kart buyuklugune gore OYNATILMAZ;
+# tek bilincli ayar: VT_MARGIN_MB yalniz 1. asama, yalniz Linux, yukarida dogrulanir)
 if [[ "$IKI_ASAMA" -eq 1 ]]; then
-  MARGIN1="${SD_VRAM_MARGIN_MB:-512}"
-  MARGIN2="${SD_VRAM_MARGIN_MB:-512}"
   ENV1=("SD_VRAM_MARGIN_MB=$MARGIN1" SD_H3_EMBED_CUT=1 SD_H3_DROP_QUEUED=1 SD_H3_EVICT_PAST=1
     SD_ATTN_SET_OUT=1 "SD_QKV_CHUNK_MB=$CHUNK_MB" SD_QKV_SET_OUT=1 "SD_MLP_CHUNK_MB=$CHUNK_MB" "SD_VIDEO_LATENT_SAVE=$LATENT")
-  ENV2=("SD_VRAM_MARGIN_MB=$MARGIN2" SD_VAE_VRAM_MARGIN_MB=256 SD_CUT_CACHE_HOST_MB=100
+  ENV2=(SD_VRAM_MARGIN_MB=256 SD_VAE_VRAM_MARGIN_MB=256 SD_CUT_CACHE_HOST_MB=100
     SD_VAE_NO_TILING_FALLBACK=1 SD_VAE_EMBED_CUT=1 "SD_VIDEO_LATENT_LOAD=$LATENT")
 else
   ENV1=(SD_VAE_NO_TILING_FALLBACK=1)

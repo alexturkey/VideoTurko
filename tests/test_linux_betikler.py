@@ -35,7 +35,7 @@ def bul_bash():
 BASH = bul_bash()
 PS = shutil.which("powershell") or shutil.which("pwsh")
 ORTAM_TEMIZ = ("VT_ROOT", "VT_ENGINE_BIN", "VT_MODEL_DIR", "VT_PYTHON", "VT_GPU_CC", "VT_GPU_VRAM", "VT_MAX_KARE", "VT_MAX_JETON",
-               "VT_ATTN_BUDGET", "VT_CHUNK_MB", "VT_ATTN", "VT_CHUNK", "GGML_CUDA_CUBLAS_COMPUTE_TYPE", "VT_CUDA_ARCH", "VT_BUILD_JOBS")
+               "VT_ATTN_BUDGET", "VT_CHUNK_MB", "VT_MARGIN_MB", "VT_ATTN", "VT_CHUNK", "GGML_CUDA_CUBLAS_COMPUTE_TYPE", "VT_CUDA_ARCH", "VT_BUILD_JOBS")
 
 
 def posix(p):
@@ -175,6 +175,46 @@ class UretKuru(unittest.TestCase):
                         return m.group(0) if m else None
                     self.assertIsNotNone(ortak(s))
                     self.assertEqual(ortak(p.stdout), ortak(s))
+
+    def test_vt_margin_mb_yalniz_asama_1(self):
+        """PR #31: VT_MARGIN_MB yalniz 1. asamanin SD_VRAM_MARGIN_MB payini degistirir; varsayilan 1 / 256; 2. asama hep 256."""
+        def marj(c, et):
+            return re.search(re.escape(et) + r".*?SD_VRAM_MARGIN_MB=(\d+)", c).group(1)
+        for cc, vram in (("6.1", "4096"), ("8.6", "6144")):
+            with self.subTest(durum="varsayilan", cc=cc):
+                _, c = self.kos("--kare", "209", "--kuru", cc=cc, vram=vram)
+                self.assertEqual((marj(c, "ASAMA 1 ortam: "), marj(c, "ASAMA 2 ortam: ")), ("1", "256"))
+                self.assertNotIn("VT_MARGIN_MB", c)
+        for deger in ("512", "1", "4096"):
+            with self.subTest(durum="gecerli", deger=deger):
+                _, c = self.kos("--kare", "209", "--kuru", cc="8.6", vram="6144", ek={"VT_MARGIN_MB": deger})
+                self.assertEqual((marj(c, "ASAMA 1 ortam: "), marj(c, "ASAMA 2 ortam: ")), (deger, "256"))
+                self.assertIn("[VT-W-DENEYSEL]", c)
+                self.assertIn("VT_MARGIN_MB=" + deger, c)
+                self.assertIn("yalniz iki asamali kosuda", c)
+
+    def test_vt_margin_mb_gecersiz_degerler_yok_sayilir(self):
+        for deger in ("0", "5000", "abc", "-5", "1.5", "512MB"):
+            with self.subTest(deger=deger):
+                kod, c = self.kos("--kare", "209", "--kuru", cc="8.6", vram="6144", ek={"VT_MARGIN_MB": deger})
+                self.assertEqual(kod, 0, c)
+                self.assertIn("VT_MARGIN_MB='%s' 1..4096" % deger, c)
+                self.assertNotIn("[VT-W-DENEYSEL]", c)
+                self.assertEqual(re.search(r"ASAMA 1 ortam: .*?SD_VRAM_MARGIN_MB=(\d+)", c).group(1), "1")
+
+    def test_vt_margin_mb_tek_asamada_ortami_degistirmez(self):
+        _, bos = self.kos("--kare", "56", "--kuru", cc="8.6", vram="6144")
+        _, ayarli = self.kos("--kare", "56", "--kuru", cc="8.6", vram="6144", ek={"VT_MARGIN_MB": "512"})
+        self.assertIn("iki_asama=False", ayarli)
+        self.assertEqual(re.search(r"ASAMA 1 ortam: (.*)", bos).group(1), re.search(r"ASAMA 1 ortam: (.*)", ayarli).group(1))
+        self.assertNotIn("SD_VRAM_MARGIN_MB", ayarli)
+        self.assertIn("tek asamali kosuda etkisizdir", ayarli)   # kullanici yanilmasin
+
+    def test_ham_sd_vram_margin_mb_artik_okunmaz(self):
+        """PR #31'in ilk hali ham SD_VRAM_MARGIN_MB'yi okuyup varsayilani 512 yapiyordu; varsayilan 1/256'da kalir, ham anahtar etkisiz."""
+        _, c = self.kos("--kare", "209", "--kuru", cc="6.1", vram="4096", ek={"SD_VRAM_MARGIN_MB": "512"})
+        self.assertEqual(re.search(r"ASAMA 1 ortam: .*?SD_VRAM_MARGIN_MB=(\d+)", c).group(1), "1")
+        self.assertEqual(re.search(r"ASAMA 2 ortam: .*?SD_VRAM_MARGIN_MB=(\d+)", c).group(1), "256")
 
     def test_f32_kurali(self):
         for cc, f32 in (("6.1", "False"), ("7.5", "True"), ("8.9", "True"), ("-1", "False")):
