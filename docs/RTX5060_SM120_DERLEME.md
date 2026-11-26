@@ -128,6 +128,7 @@ Aşağıdaki ortam değişkenleri yalnızca teşhis ve deney amaçlıdır; **var
 | `VT_NO_FA` | kapalı / off | `1` ise `--flash-attn off` geçirir (varsayılan: `--flash-attn off,diffusion=on`) | When `1`, passes `--flash-attn off` instead of default `--flash-attn off,diffusion=on` |
 | `VT_MAX_VRAM` | boş / unset | `--max-vram <değer>` ekler (0 < sayı <= 1024) | Appends `--max-vram <value>` (0 < number <= 1024) |
 | `VT_CHUNK_MB` | `64` | İki aşamalı modda `SD_QKV_CHUNK_MB` ve `SD_MLP_CHUNK_MB` boyutunu (MB, 1..4096) ayarlar | Sets `SD_QKV_CHUNK_MB` and `SD_MLP_CHUNK_MB` (in MB) in two-stage mode |
+| `VT_MARGIN_MB` | `1` | **Yalnızca Linux `scripts/uret.sh`** (`uret.ps1`'de karşılığı yok): iki aşamalı koşuda 1. aşamanın `SD_VRAM_MARGIN_MB` payını (MB, 1..4096; `0` reddedilir) ayarlar; tek aşamalı koşuda etkisizdir; 2. aşama hep 256 [kullanıcı bildirdi, PR #31] | **Linux `scripts/uret.sh` only** (no counterpart in `uret.ps1`): sets stage 1's `SD_VRAM_MARGIN_MB` margin (MB, 1..4096; `0` is rejected) in a two-stage run; no effect in a single-stage run; stage 2 always stays 256 [user-reported, PR #31] |
 
 > **Uyarı / Warning (TR):** Bu anahtarlar çıktıyı `AGENTS.md` "Hard rules" dışına çıkarabilir ve kalite kapısı bunu yakalamaz. Aktifken `uret.ps1` UYARI yazar ve `runs\olaylar.txt`'ye kaydeder. Model/nicemleme değiştiren anahtar (alternatif DiT, `--tensor-type-rules`) bilerek yoktur; bunun için `sd-cli`'yi elle çalıştırın ve çıktıyı ölçüm olarak sunmayın.
 >

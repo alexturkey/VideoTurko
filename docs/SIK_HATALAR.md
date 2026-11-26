@@ -11,6 +11,7 @@ This list comes from real runs. Each item: symptom, cause, lasting fix.
 1. <a id="vt-e-vram"></a>**VRAM kapisi `blocks.0` agirlik hazirliginda dusuyor** (`segment 5/52 (blocks.0) failed during weight preparation`) [olctum]
    - Neden: yukleme kapisi `ihtiyac = bekleyen + eksik + marj`; kare sayisi buyudukce compute tamponu artar, tahliye yetmez.
    - Cozum: marj icin `SD_VRAM_MARGIN_MB=1` kullan. **`0` degeri "ayarsiz" sayilir ve 1024 MB'lik tuzaga duser** [okudum]. Kare tavani tablosu: `OLCUMLER.md`.
+   - Linux `uret.sh` icin 1. asama payini bilincli yukseltmek istersen `VT_MARGIN_MB=<MB>` (1..4096; `0` reddedilir): **yalniz Linux `uret.sh`, yalniz iki asamali kosuda (209 kare gibi) ve yalniz 1. asamada** gecerli; `uret.ps1`de karsiligi yok, tek asamali kosuda etkisiz. Varsayilan 1 kalir (2. asama hep 256). RTX 3060 Laptop 6 GB Linux'ta 209 karede 1. asama `cudaMalloc failed: out of memory` ile dustu, 512 ile gecti [kullanici bildirdi, PR #31; 512 her iki asamada denendi, 512'nin yalniz 1. asamada yettigi ve 4 GB Linux kartta ne oldugu OLCULMEDI].
 2. **`SD_CAPACITY_LOG` satirlari bir sonraki segmentin kapisini gosterir** (etiket kaymasi) [olctum]
    - `executing segment N` satirindan sonra yazilan CAPACITY satiri N+1'in kapisidir; olen kapiyi `segment K/52 (blocks.X) failed` satiri belirler.
 3. **`SD_MLP_SET_OUT=1` bellegi azaltmaz, artirir** [okudum + olctum]
