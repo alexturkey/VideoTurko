@@ -91,10 +91,10 @@ Aşağıdakilerin hiçbiri varsayılan çalıştırmayı değiştirmez (640x384,
 | `yuksek832` | 832x480, 141 kare (5,9 sn) | yaklaşık 55-56 dk | kullanılabilir, iki istem [ölçtüm] |
 | `yuksek832 -Kare 124` | 832x480, 124 kare (5,2 sn) | yaklaşık 45-46 dk, hız bayrağı gerekmez | kullanılabilir, iki istem [ölçtüm] |
 | `yuksek896` | 896x512, 124 kare (5,2 sn) | yaklaşık 56-57,5 dk | kullanılabilir, iki istem [ölçtüm] |
-| `uzun260` | 640x384, 260 kare (10,8 sn) | erken çıkışsız 78 dk ölçüldü; erken çıkışla yaklaşık 71-72 dk [tahmin: `uret.ps1` üzerinden uçtan uca ölçülmedi] | koşullu ve deneysel |
+| `uzun260` | 640x384, 260 kare (10,8 sn) | yaklaşık 71 dk [ölçtüm: erken çıkışla `uret.ps1` üzerinden uçtan uca 70,7 dk; erken çıkışsız 78 dk] | belleğe yakın çalışır; istem yaklaşık 2000 karaktere kadar ölçüldü |
 
 - **Dar pay:** 832x480 x 141'de bellek kapısında pay tek haneli MB'tir (iki tam koşuda 5,7 ve 6,8 MB). İki uzun istem (1520 ve 2041 karakter) yalnız kapı okumasıyla (adım 1 ve adım 2'nin bir kısmı) bakıldı, tam koşulmadı: pay 10,9 ve 4,0 MB. Kartın belleğini tutan başka süreç (tarayıcı, ikinci ekran) bunu düşürebilir; o zaman `-Kare 124` ya da varsayılan boyut [ölçtüm, GTX 1050 Ti 4 GB].
-- **`uzun260` koşulludur:** bellek sınırı çok dar (VRAM tepe 3903 / 4096 MiB), paylaşımlı bellek kullanımı 45 ve 61 MiB arttı (sınır 68 MiB) ve bayt eşitliği için bayraksız referans yok; bu yüzden düz bir özellik gibi sunulmaz. Yama 0023 yalnız bu hücre için kabul edildi.
+- **`uzun260` bellek sınırına yakın çalışır:** VRAM tepe 3861-3903 / 4096 MiB. Üç tam koşu (iki sahne); paylaşımlı bellek kullanımı 68 MiB sınırına karşı 28 ile 61 MiB arttı. İstemler tam koşuda 1403, kapı okumasıyla 2009 karaktere kadar ölçüldü; 2527 karakterde paylaşımlı bellek sınırı aşıldı. Bu uzunlukta bayt eşitliği için bayraksız referans yok. GPU kullanan başka programları kapatın; koşu düşerse varsayılan 209 kareyi kullanın. Yama 0023 yalnız bu hücre için kabul edildi.
 - **Sunulmayanlar:** 832x480'de 158 kare gönderilen yamalarla sığmıyor (adım 2 kapısında yaklaşık 280 MB eksikle ölüyor); 175 kare yalnız kapı okumasıyla bakıldı (ilk blokta yaklaşık 275 MB eksik çıktı, tam koşu yok). Profil yalnız 141 kare sunar. Başka boyut ve kare sayılarını `-Profil` reddeder (varsayılan yolu kullanın).
 - Varsayılan kalite aynen duruyor: 6 adım, cfg 1, karosuz VAE, 17k+5 kare. Bayrakların açık olduğu yerlerde çıktı, bayraksız koşunun sığdığı boyutlarda bayraksız videoyla bayt bayt karşılaştırıldı (`docs/YAMALAR.md`); 832x480 x 141 ve 896x512 x 124'te bayraksız koşu sığmıyor, orada eşitlik doğrudan kıyasa değil en yakın hücrelere dayanır [ölçtüm, okudum].
 - İki aşamalı koşuda 1. aşama artık gizli durum (latent) dosyası tamamlanır tamamlanmaz bitiyor (`VT_ERKEN_CIKIS=0` bunu kapatır).
@@ -261,4 +261,4 @@ Köşeli parantezde geçen koşu adları (bize ait koşu adları, bu depoda dosy
 - **Temiz kök testi bekliyor:** kurulum ve çalıştırma betikleri boş klasörde yalnız bu talimatla henüz doğrulanmadı; test (56 karede referansa bayt kıyası dahil) kaydedilince bu bölüm güncellenir.
 - Çıktı videolar depoda yok.
 
-<!-- i18n-source: README.md sha256:a26a5a878a5f -->
+<!-- i18n-source: README.md sha256:19eaf465ff57 -->

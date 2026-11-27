@@ -91,10 +91,10 @@ Không mục nào dưới đây thay đổi lần chạy mặc định (640x384,
 | `yuksek832` | 832x480, 141 khung hình (5,9 giây) | khoảng 55-56 phút | dùng được, hai prompt [đã đo] |
 | `yuksek832 -Kare 124` | 832x480, 124 khung hình (5,2 giây) | khoảng 45-46 phút, không cần cờ tốc độ | dùng được, hai prompt [đã đo] |
 | `yuksek896` | 896x512, 124 khung hình (5,2 giây) | khoảng 56-57,5 phút | dùng được, hai prompt [đã đo] |
-| `uzun260` | 640x384, 260 khung hình (10,8 giây) | 78 phút đo được khi không có thoát sớm; với thoát sớm khoảng 71-72 phút [phỏng đoán: chưa đo trọn vẹn qua `uret.ps1`] | có điều kiện và thử nghiệm |
+| `uzun260` | 640x384, 260 khung hình (10,8 giây) | khoảng 71 phút [đã đo: 70,7 phút trọn vẹn qua `uret.ps1`, có thoát sớm; 78 phút khi không có] | chạy sát giới hạn bộ nhớ; prompt đã đo tới khoảng 2000 ký tự |
 
 - **Biên hẹp:** ở 832x480 x 141, cổng bộ nhớ chỉ chừa biên một chữ số MB (5,7 và 6,8 MB trong hai lần chạy đầy đủ). Hai prompt dài (1520 và 2041 ký tự) chỉ được kiểm tra bằng cách đọc cổng cho bước 1 và một phần bước 2, không chạy đầy đủ: biên 10,9 và 4,0 MB. Bất kỳ tiến trình nào khác đang giữ bộ nhớ card (trình duyệt, màn hình thứ hai) có thể làm lần chạy thất bại; khi đó hãy dùng `-Kare 124` hoặc kích thước mặc định [đã đo, GTX 1050 Ti 4 GB].
-- **`uzun260` có điều kiện:** giới hạn bộ nhớ rất hẹp (đỉnh VRAM 3903 trên 4096 MiB), mức dùng bộ nhớ dùng chung tăng 45 và 61 MiB (giới hạn 68), và không có tham chiếu không cờ để so sánh bằng nhau từng byte, nên nó không được cung cấp như một tính năng thông thường. Bản vá 0023 chỉ được chấp nhận cho riêng ô này.
+- **`uzun260` chạy sát giới hạn bộ nhớ:** đỉnh VRAM 3861-3903 trên 4096 MiB. Ba lần chạy đầy đủ (hai cảnh); mức dùng bộ nhớ dùng chung tăng 28 đến 61 MiB so với giới hạn 68 MiB. Prompt đã được đo tới 1403 ký tự trong các lần chạy đầy đủ và tới 2009 ký tự bằng cách đọc cổng kiểm; ở 2527 ký tự đã vượt giới hạn bộ nhớ dùng chung. Ở độ dài này không có tham chiếu không cờ để so sánh bằng nhau từng byte. Hãy đóng các chương trình khác dùng GPU; nếu một lần chạy thất bại, hãy dùng mặc định 209 khung hình. Bản vá 0023 chỉ được chấp nhận cho riêng ô này.
 - **Không cung cấp:** 832x480 ở 158 khung hình không vừa với các bản vá kèm theo (ở cổng của bước 2 thiếu khoảng 280 MB); 175 khung hình chỉ được xem bằng cách đọc cổng (khối đầu thiếu khoảng 275 MB, không chạy đầy đủ). Hồ sơ chỉ cung cấp 141 khung hình. `-Profil` từ chối các kích thước và số khung hình khác (hãy dùng đường mặc định).
 - Chất lượng mặc định không bị động đến: 6 bước, cfg 1, VAE không chia ô, 17k+5 khung hình. Ở nơi cờ được bật, đầu ra đã được so sánh từng byte với video không cờ tại các kích thước mà lần chạy không cờ vừa (`docs/YAMALAR.md`); ở 832x480 x 141 và 896x512 x 124 lần chạy không cờ không vừa, nên sự bằng nhau ở đó dựa trên các ô gần nhất, không phải so sánh trực tiếp [đã đo, đã đọc].
 - Giai đoạn 1 của lần chạy hai giai đoạn giờ kết thúc ngay khi tệp tiềm ẩn hoàn tất (`VT_ERKEN_CIKIS=0` tắt việc này).
@@ -268,4 +268,4 @@ Tên các lần chạy được dùng trong ngoặc vuông (là tên lần chạ
 - **Bài kiểm tra clean-root chưa thực hiện:** các script cài đặt và chạy chưa được xác minh từ một thư mục trống chỉ bằng các hướng dẫn này; mục này sẽ được cập nhật khi bài kiểm tra đó (gồm cả phép so sánh byte 56 khung hình với bản tham chiếu) được ghi nhận.
 - Không có video được tạo ra nào đi kèm ở đây.
 
-<!-- i18n-source: README.md sha256:a26a5a878a5f -->
+<!-- i18n-source: README.md sha256:19eaf465ff57 -->

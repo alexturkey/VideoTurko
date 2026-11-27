@@ -105,7 +105,7 @@ Patches 0021, 0023 and 0024 (`docs/YAMALAR.md`), all off by default. Same qualit
 | 832x480 x 124 | 5.2 s | none | none | 45-46 min | plain engine |
 | 832x480 x 141 | 5.9 s | `SD_ATTN_HEAD_QKV=1` | `SD_VAE_BLOCK_SPLIT=2` | 55-56 min | headroom at the sampling memory gate 5.7 and 6.8 MB (two full runs) |
 | 896x512 x 124 | 5.2 s | `SD_ATTN_HEAD_QKV=1` | `SD_VAE_BLOCK_SPLIT=2` | 56-57.5 min | |
-| 640x384 x 260 | 10.8 s | `SD_ATTN_HEAD_QKV=1` | `SD_VRAM_SHORT_OK_MB=32` (+ margins 1) | 78.4 min without the early exit | VRAM peak 3903 / 4096 MiB, shared memory +45 and +61 MiB in the two full runs (limit +68); conditional |
+| 640x384 x 260 | 10.8 s | `SD_ATTN_HEAD_QKV=1` | `SD_VRAM_SHORT_OK_MB=32` (+ margins 1) | 70.7 min with the early exit (78.4 without) | VRAM peak 3861-3903 / 4096 MiB; three full runs, shared memory +45 / +61 MiB (system-wide counter) and +28 MiB (process share), limit +68; prompt up to 1403 characters in full runs, 2009 by gate reading (2527 exceeded the limit); runs close to the memory limit |
 
 - Long prompts at 832x480 x 141: 1520 and 2041 characters were checked by reading the memory gate only (all of step 1 and the first two blocks of step 2, no full run): no failed gate, headroom 10.9 and 4.0 MB. Not a full-run result.
 - 832x480 at 158 frames does not fit with the shipped patches: it dies at the step-2 gate (need 2475.5 MB, available 2195.3 MB, about 280 MB short). The one 158-frame result that passed used an extra patch that is not shipped and was not accepted. 175 frames was only gate-read (about 275 MB short at the first block, no full run). Not offered; the profile is 141 frames only.

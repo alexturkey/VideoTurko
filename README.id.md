@@ -91,10 +91,10 @@ Tidak satu pun di bawah ini mengubah proses bawaan (640x384, 209 frame, 3414 s p
 | `yuksek832` | 832x480, 141 frame (5,9 s) | sekitar 55-56 mnt | dapat dipakai, dua prompt [terukur] |
 | `yuksek832 -Kare 124` | 832x480, 124 frame (5,2 s) | sekitar 45-46 mnt, tanpa flag kecepatan | dapat dipakai, dua prompt [terukur] |
 | `yuksek896` | 896x512, 124 frame (5,2 s) | sekitar 56-57,5 mnt | dapat dipakai, dua prompt [terukur] |
-| `uzun260` | 640x384, 260 frame (10,8 s) | 78 mnt terukur tanpa keluar dini; dengan keluar dini sekitar 71-72 mnt [perkiraan: tidak diukur dari ujung ke ujung lewat `uret.ps1`] | bersyarat dan eksperimental |
+| `uzun260` | 640x384, 260 frame (10,8 s) | sekitar 71 mnt [terukur: 70,7 mnt dari ujung ke ujung lewat `uret.ps1`, dengan keluar dini; 78 mnt tanpanya] | berjalan dekat batas memori; prompt terukur hingga sekitar 2000 karakter |
 
 - **Margin sempit:** pada 832x480 x 141 gerbang memori hanya menyisakan ruang satu digit MB (5,7 dan 6,8 MB pada dua proses penuh). Dua prompt panjang (1520 dan 2041 karakter) hanya diperiksa dengan membaca gerbang untuk langkah 1 dan sebagian langkah 2, tidak dijalankan penuh: ruang 10,9 dan 4,0 MB. Proses lain mana pun yang memakai memori kartu (peramban, layar kedua) bisa membuatnya gagal; kalau begitu gunakan `-Kare 124` atau ukuran bawaan [terukur, GTX 1050 Ti 4 GB].
-- **`uzun260` bersyarat:** batas memorinya sangat sempit (puncak VRAM 3903 dari 4096 MiB), pemakaian memori bersama naik 45 dan 61 MiB (batas 68), dan tidak ada acuan tanpa flag untuk kesamaan byte, sehingga tidak ditawarkan sebagai fitur biasa. Patch 0023 diterima hanya untuk sel ini.
+- **`uzun260` berjalan dekat batas memori:** puncak VRAM 3861-3903 dari 4096 MiB. Tiga kali jalan penuh (dua adegan); pemakaian memori bersama naik 28 sampai 61 MiB terhadap batas 68 MiB. Prompt terukur hingga 1403 karakter pada jalan penuh dan hingga 2009 karakter lewat pembacaan gerbang; pada 2527 karakter batas memori bersama terlampaui. Tidak ada acuan tanpa flag untuk kesamaan byte pada panjang ini. Tutup program lain yang memakai GPU; jika sebuah proses gagal, gunakan 209 frame bawaan. Patch 0023 diterima hanya untuk sel ini.
 - **Tidak ditawarkan:** 832x480 pada 158 frame tidak muat dengan patch yang disertakan (di gerbang langkah 2 kurang sekitar 280 MB); 175 frame hanya diperiksa lewat pembacaan gerbang (blok pertama kurang sekitar 275 MB, tanpa uji penuh). Profil hanya menawarkan 141 frame. Ukuran dan jumlah frame lain ditolak oleh `-Profil` (gunakan jalur bawaan).
 - Kualitas bawaan tidak disentuh: 6 langkah, cfg 1, VAE tanpa tile, 17k+5 frame. Di mana flag aktif, keluaran dibandingkan byte demi byte dengan video tanpa flag pada ukuran yang muat untuk proses tanpa flag (`docs/YAMALAR.md`); pada 832x480 x 141 dan 896x512 x 124 proses tanpa flag tidak muat, sehingga kesamaan di sana bertumpu pada sel terdekat, bukan perbandingan langsung [terukur, dibaca].
 - Tahap 1 dari proses dua tahap kini berakhir begitu berkas laten lengkap (`VT_ERKEN_CIKIS=0` mematikannya).
@@ -268,4 +268,4 @@ Nama run yang dipakai dalam tanda kurung (nama run internal kami, bukan file di 
 - **Uji clean-root tertunda:** skrip instalasi dan penggunaan belum diverifikasi dari folder kosong hanya dengan petunjuk ini; bagian ini akan diperbarui saat uji itu (termasuk perbandingan byte 56 frame dengan referensi) dicatat.
 - Tidak ada video hasil generasi yang disertakan di sini.
 
-<!-- i18n-source: README.md sha256:a26a5a878a5f -->
+<!-- i18n-source: README.md sha256:19eaf465ff57 -->

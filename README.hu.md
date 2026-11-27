@@ -91,10 +91,10 @@ Az alábbiak közül semmi nem változtatja meg az alapértelmezett futtatást (
 | `yuksek832` | 832x480, 141 képkocka (5,9 s) | kb. 55-56 perc | használható, két prompt [mért] |
 | `yuksek832 -Kare 124` | 832x480, 124 képkocka (5,2 s) | kb. 45-46 perc, sebességkapcsoló nem kell | használható, két prompt [mért] |
 | `yuksek896` | 896x512, 124 képkocka (5,2 s) | kb. 56-57,5 perc | használható, két prompt [mért] |
-| `uzun260` | 640x384, 260 képkocka (10,8 s) | 78 perc mérve a korai kilépés nélkül; vele kb. 71-72 perc [feltételezés: nem mértük végig az `uret.ps1`-en keresztül] | feltételes és kísérleti |
+| `uzun260` | 640x384, 260 képkocka (10,8 s) | kb. 71 perc [mért: 70,7 perc végig az `uret.ps1`-en keresztül, a korai kilépéssel; 78 perc nélküle] | a memóriahatár közelében fut; a promptot kb. 2000 karakterig mértük |
 
 - **Szűk tartalék:** 832x480 x 141 esetén a memóriakapu csak egyjegyű MB tartalékot hagy (5,7 és 6,8 MB a két teljes futásban). Két hosszú promptot (1520 és 2041 karakter) csak úgy ellenőriztünk, hogy az 1. lépés és a 2. lépés egy részének kapuját olvastuk, teljes futtatás nélkül: tartalék 10,9 és 4,0 MB. Bármely más, a kártya memóriáját foglaló folyamat (böngésző, második kijelző) hibát okozhat; ilyenkor használja a `-Kare 124` kapcsolót vagy az alapméretet [mért, GTX 1050 Ti 4 GB].
-- **Az `uzun260` feltételes:** a memóriahatár nagyon szűk (VRAM-csúcs 3903 a 4096 MiB-ból), a megosztott memória használata 45 és 61 MiB (határ 68)-tal nőtt, és bájtegyezéshez nincs kapcsoló nélküli referencia, ezért nem sima funkcióként kínáljuk. A 0023 javítást csak erre az egy cellára fogadtuk el.
+- **Az `uzun260` a memóriahatár közelében fut:** VRAM-csúcs 3861-3903 a 4096 MiB-ból. Három teljes futás (két jelenet); a megosztott memória használata 28 és 61 MiB közötti mértékben nőtt a 68 MiB-os határhoz képest. A promptokat teljes futásokban 1403 karakterig, a kapu leolvasásával 2009 karakterig mértük; 2527 karakternél a megosztott memória határát túllépte. Ennél a hossznál nincs kapcsoló nélküli referencia a bájtegyezéshez. Zárja be a GPU-t használó többi programot; ha egy futás elbukik, használja az alapértelmezett 209 képkockát. A 0023 javítást csak erre az egy cellára fogadtuk el.
 - **Nem kínált:** a a a 832x480 158 képkockával a mellékelt patchekkel nem fér el (a 2. lépés kapujánál kb. 280 MB hiányzik); a 175 képkockát csak a kapu leolvasásával vizsgáltuk (az első blokknál kb. 275 MB hiányzott, teljes futás nem volt). A profil csak 141 képkockát kínál. Más méreteket és képkockaszámokat a `-Profil` elutasít (használja az alapértelmezett utat).
 - Az alapértelmezett minőség érintetlen: 6 lépés, cfg 1, csempe nélküli VAE, 17k+5 képkocka. Ahol a kapcsolók be vannak kapcsolva, a kimenetet bájtról bájtra összevetettük a kapcsolók nélküli videóval azokon a méreteken, ahol a kapcsolók nélküli futás elfér (`docs/YAMALAR.md`); 832x480 x 141 és 896x512 x 124 esetén a kapcsolók nélküli futás nem fér el, ezért ott az egyezés a legközelebbi cellákon alapul, nem közvetlen összehasonlításon [mért, elolvasva].
 - A kétlépéses futás 1. lépése most azonnal véget ér, amint a látens fájl teljes (`VT_ERKEN_CIKIS=0` kikapcsolja).
@@ -268,4 +268,4 @@ A szögletes zárójelben használt futásnevek (saját elnevezéseink, nem a t�
 - **A tiszta mappás teszt hátravan:** a telepítő és futtató szkripteket még nem ellenőriztük üres mappából kizárólag ezen útmutató alapján; ezt a szakaszt frissítjük, amikor a teszt (köztük az 56 képkockás bájtösszehasonlítás a referenciával) rögzítésre kerül.
 - Generált videókat itt nem mellékelünk.
 
-<!-- i18n-source: README.md sha256:a26a5a878a5f -->
+<!-- i18n-source: README.md sha256:19eaf465ff57 -->

@@ -489,8 +489,8 @@
    "ornek_log": [
     "[VT-E-LISANS] Lisans kabul gerekli"
    ],
-   "ilk_adim_en": "Read docs/LISANS_KABUL.txt and, only if you accept, rerun with -LisansKabul E (TR) or Y (EN). AI agents must never accept for the user.",
-   "ilk_adim_tr": "docs/LISANS_KABUL.txt dosyasini okuyun; yalniz kabul ediyorsaniz -LisansKabul E (TR) ya da Y (EN) ile tekrar calistirin. Yapay zeka ajanlari kullanici adina asla kabul etmez.",
+   "ilk_adim_en": "Read docs/LISANS_KABUL.txt and, only if you accept, rerun with -LisansKabul E (TR) or Y (EN). AI agents must never accept for the user: with redirected input kur.ps1 also wants a line LISANS-KABUL: <the user's words> | <time> in DURUM.md (VT_CI=1 skips it).",
+   "ilk_adim_tr": "docs/LISANS_KABUL.txt dosyasini okuyun; yalniz kabul ediyorsaniz -LisansKabul E (TR) ya da Y (EN) ile tekrar calistirin. Yapay zeka ajanlari kullanici adina asla kabul etmez; girdi yonlendirilmisse kur.ps1 ayrica DURUM.md icinde LISANS-KABUL: <kullanicinin sozu> | <saat> satirini ister (VT_CI=1 atlar).",
    "capa": "docs/SIK_HATALAR.md#vt-e-lisans"
   },
   {
@@ -984,8 +984,8 @@
    "ornek_log": [
     "[VT-E-PROFIL] -Profil yuksek832 yalniz olculen kare sayilarinda calisir: 124 / 141 (verilen: 158). Baska sayi icin profilsiz kosun (209 kareye kadar 640x384)."
    ],
-   "ilk_adim_en": "Use one of the measured cells: -Profil yuksek832 (141 or 124 frames), yuksek896 (124), uzun260 (260, experimental); without -W/-H/-InitImg/-EndImg/-TekAsama. Otherwise run without -Profil.",
-   "ilk_adim_tr": "Olculen hucrelerden birini kullanin: -Profil yuksek832 (141 ya da 124 kare), yuksek896 (124), uzun260 (260, deneysel); -W/-H/-InitImg/-EndImg/-TekAsama olmadan. Olmazsa -Profil vermeden kosun.",
+   "ilk_adim_en": "Use one of the measured cells: -Profil yuksek832 (141 or 124 frames), yuksek896 (124), uzun260 (260; runs close to the memory limit); without -W/-H/-InitImg/-EndImg/-TekAsama. Otherwise run without -Profil.",
+   "ilk_adim_tr": "Olculen hucrelerden birini kullanin: -Profil yuksek832 (141 ya da 124 kare), yuksek896 (124), uzun260 (260; bellege yakin calisir); -W/-H/-InitImg/-EndImg/-TekAsama olmadan. Olmazsa -Profil vermeden kosun.",
    "capa": "docs/SIK_HATALAR.md#vt-e-profil"
   },
   {

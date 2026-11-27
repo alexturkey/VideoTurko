@@ -68,13 +68,16 @@ class Profiller(unittest.TestCase):
         self.assertIn("SD_ATTN_HEAD_QKV=1", asama(c, 1))
         self.assertIn("SD_VAE_BLOCK_SPLIT=2", asama(c, 2))
 
-    def test_uzun260_kosullu_deneysel_ve_0023_yalniz_asama_2(self):
+    def test_uzun260_bellege_yakin_etiketi_ve_0023_yalniz_asama_2(self):
         with tempfile.TemporaryDirectory() as t:
             kod, c = uret(t, "-Profil", "uzun260")
         self.assertEqual(kod, 0, c)
         self.assertIn("kare=260", c)
         self.assertIn("cozunurluk=640x384", c)
-        self.assertIn("VT-W-DENEYSEL", c)
+        self.assertNotIn("VT-W-DENEYSEL", c)               # label "conditional/experimental" is gone (user accepted the second scene)
+        self.assertNotIn("KOSULLU", c)
+        self.assertIn("bellege yakin", c)
+        self.assertIn("2000 karakter", c)                  # the stated limit: prompts measured up to about 2000 characters
         self.assertIn("SD_ATTN_HEAD_QKV=1", asama(c, 1))
         self.assertNotIn("SD_VRAM_SHORT_OK_MB", asama(c, 1))
         self.assertIn("SD_VRAM_SHORT_OK_MB=32", asama(c, 2))

@@ -6,7 +6,7 @@
 #   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -InitImg ilk.png -EndImg son.png -Kare 107   (ilk + son kare / first + last frame)
 #   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -W 384 -H 640 -Kare 56   (dikey / vertical; 32'nin kati, alan >= 640x384)
 #   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -Profil yuksek832    (ISTEGE BAGLI: 832x480, 141 kare = 5,9 sn, ~55 dk; yamali hiz motoru gerekir)
-#   -Profil: yuksek832 (832x480 x 141 ya da 124 kare) | yuksek896 (896x512 x 124 kare) | uzun260 (640x384 x 260 kare = 10,8 sn, KOSULLU/DENEYSEL). Varsayilan (profilsiz) 640x384 x 209 DEGISMEZ.
+#   -Profil: yuksek832 (832x480 x 141 ya da 124 kare) | yuksek896 (896x512 x 124 kare) | uzun260 (640x384 x 260 kare = 10,8 sn, bellek siniri dar; istem ~2000 karaktere kadar olculdu). Varsayilan (profilsiz) 640x384 x 209 DEGISMEZ.
 #   -Kuru : komutlari ve ortam degiskenlerini yazar, calistirmaz / print only, do not run
 #   -TekAsama : iki asamayi elle kapatir (buyuk VRAM'li kartlar icin; 4 GB'da 108+ karede VAE bellege sigmaz) / force single process
 # Sabitler (kalite): 6 adim, cfg 1, tohum 42, KAROSUZ VAE (--vae-tiling/--temporal-tiling HICBIR ZAMAN eklenmez).
@@ -113,7 +113,7 @@ if ($EndImg -and $KareVarsayilan) { $Kare = $KareEndTavan }
 #   engine\bin\HIZ_PAKETI.txt (motor zip'inde gelir; yama 0021 + 0023 + 0024). Eski motor bayraklari sessizce yok sayar ve ~1 saat sonra bellekte dusersiniz: bu yuzden once reddedilir.
 #   Kendi derlediginiz motor icin VT_HIZ_MOTOR=1 (UYARI; sonuc garanti degil).
 $ProfilAd = "$Profil".Trim().ToLowerInvariant()
-$ProfilKareler = @(); $ProfilVarsayilanKare = 0; $ProfilYama = @(); $ProfilDeneysel = $false; $ProfilSure = ''
+$ProfilKareler = @(); $ProfilVarsayilanKare = 0; $ProfilYama = @(); $ProfilBellekDar = $false; $ProfilSure = ''
 $ProfilEnv1 = [ordered]@{}; $ProfilEnv2 = [ordered]@{}
 if ($ProfilAd) {
     if ($ProfilAd -eq 'yuksek832') {
@@ -123,7 +123,7 @@ if ($ProfilAd) {
         $PW = 896; $PH = 512; $ProfilKareler = @(124); $ProfilVarsayilanKare = 124; $ProfilYama = @('0021', '0024'); $ProfilSure = '~56-57,5 dk [olctum]'
         $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'; $ProfilEnv2['SD_VAE_BLOCK_SPLIT'] = '2'
     } elseif ($ProfilAd -eq 'uzun260') {
-        $PW = 640; $PH = 384; $ProfilKareler = @(260); $ProfilVarsayilanKare = 260; $ProfilYama = @('0021', '0023'); $ProfilDeneysel = $true; $ProfilSure = '~71-72 dk [tahmin: erken cikisli 260 kare uctan uca olculmedi]; erken cikissiz 78 dk olculdu'
+        $PW = 640; $PH = 384; $ProfilKareler = @(260); $ProfilVarsayilanKare = 260; $ProfilYama = @('0021', '0023'); $ProfilBellekDar = $true; $ProfilSure = '~71 dk [olctum: 70,7 dk, erken cikisli, uret.ps1 uzerinden uctan uca]; erken cikissiz 78 dk olculdu'
         $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'
         $ProfilEnv2['SD_VRAM_MARGIN_MB'] = '1'; $ProfilEnv2['SD_VAE_VRAM_MARGIN_MB'] = '1'; $ProfilEnv2['SD_VRAM_SHORT_OK_MB'] = '32'
     } else { throw "[VT-E-PROFIL] bilinmeyen -Profil '$Profil' (yuksek832 | yuksek896 | uzun260; bos birakirsaniz varsayilan 640x384)" }
@@ -243,7 +243,7 @@ if ($ProfilAd -and $IkiAsama) {
     foreach ($k in $ProfilEnv1.Keys) { $Env1[$k] = $ProfilEnv1[$k] }
     foreach ($k in $ProfilEnv2.Keys) { $Env2[$k] = $ProfilEnv2[$k] }
     Write-Output ("bilgi: -Profil {0}: {1}x{2}, {3} kare ({4} sn), iki asama; asama 1 +{5}, asama 2 +{6}; sure {7}. GTX 1050 Ti 4 GB'ta olculen hucredir; bellek payi dar (tek haneli MB): kartta baska surec yer tutuyorsa sigmayabilir, o zaman profilsiz kosun. Varsayilan 640x384 x {8} degismedi." -f $ProfilAd, $W, $H, $Kare, ([Math]::Round($Kare / 24.0, 1).ToString($Inv)), (($ProfilEnv1.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ' '), (($ProfilEnv2.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ' '), $ProfilSure, $KareSabit)
-    if ($ProfilDeneysel) { Write-Output 'UYARI: [VT-W-DENEYSEL] uzun260 KOSULLU ve DENEYSEL: bellek siniri cok dar (VRAM tepe 3903 / 4096 MiB, paylasimli bellek artisi iki tam kosuda +45 ve +61 MiB, sinir +68), bayraksiz referans yok (cikti tekrarlanabilir, surum-esit degil), repo uret.ps1 yolunda 260 kare uctan uca olculmedi. Yama 0023 yalniz bu hucre icin kabul edildi.' }
+    if ($ProfilBellekDar) { Write-Output 'bilgi: uzun260 bellege yakin calisir (VRAM tepe 3861-3903 / 4096 MiB, paylasimli bellek artisi 28 ile 61 MiB, sinir +68; uc tam kosu, iki sahne). Istem ~2000 karaktere kadar olculdu (tam kosuda 1403, kapi okumasiyla 2009); 2527 karakterde paylasimli bellek siniri asildi. Bayraksiz referans yok (cikti tekrarlanabilir, surum-esit degil). Kartta baska GPU programi varsa kapatin; sigmazsa 209 kare. Yama 0023 yalniz bu hucre icin kabul edildi.' }
 }
 # cuBLAS f32: compute capability >= 7.0 ve kullanici ayarlamadiysa (sm89'da fp16 >=141 karede tasiyor: siyah video, issue #1). 6.1 (1050 Ti) ve okunamayan cc: dokunulmaz.
 $EkEnvU = Kart-Ek-Env $SinifU   # kart_tablosu.json: cc >= 7.0 siniflarinda GGML_CUDA_CUBLAS_COMPUTE_TYPE=f32; kullanici kendisi ayarladiysa dokunulmaz
