@@ -10,6 +10,8 @@ Traducerile urmează acest README în engleză. Dacă o traducere diferă sau r�
 
 > **În 30 de secunde:** o placă video de 4 GB poate genera un videoclip MiniMax H3 de 209 de cadre (8,7 s) dintr-o singură trecere: verificat pe un singur calculator (GTX 1050 Ti 4 GB; instalarea completă cu `kur.ps1` într-un folder gol nu a fost încă verificată cap-coadă) [măsurat: 209 cadre cu binarul de release prin `uret.ps1`, rularea U209; latentul identic la nivel de octet cu rularea build-ului de dezvoltare; cadrele și sunetul sunt identice în videoclip, sha-ul fișierului diferă din cauza containerului; dovezile sunt păstrate de autori, nu se află în acest depozit]; cu `-InitImg` (imagine-în-video) cel mult 192 de cadre (8,0 s) [măsurat: rularea B192]; 209 cadre durează aproximativ 57 min, limita de timp implicită este de 80 min [măsurat: rularea U209]; cei 3 pași de mai jos arată cum se rulează.
 
+> **Folosiți un agent de programare cu IA (Codex, Claude Code, Gemini, Cursor)?** Dați-i această singură propoziție: „Citește `AGENTS_HIZLI.md` până la capăt, rulează mai întâi `scripts\tani.ps1`, ține-ți progresul în `DURUM.md` și întreabă-mă înainte să ștergi sau să muți ceva, să schimbi Python-ul sistemului sau PATH, să reduci o setare de calitate sau să accepți licența modelului în locul meu.” Agentul va diagnostica acest PC, va scrie o listă de verificare și vă va întreba la fiecare decizie; licența modelului rămâne decizia dumneavoastră.
+
 VideoTurko: patch-uri de memorie pentru stable-diffusion.cpp și rețete pentru a rula generarea text-în-video MiniMax H3 pe un GTX 1050 Ti de 4 GB, până la 209 cadre (8,7 s) dintr-o singură trecere; imagine-în-video (`-InitImg`) până la 192 de cadre (8,0 s) (209 cadre verificate printr-un lanț de octeți; identic la nivel de octet cu rularea fără patch-uri la verificările de 56 și 141 de cadre).
 
 ## Pornire rapidă (Windows, 3 pași)
@@ -266,4 +268,4 @@ Numele de rulări folosite între paranteze (numele noastre proprii de rulări, 
 - **Testul în folder curat este în așteptare:** scripturile de instalare și rulare nu au fost încă verificate dintr-un folder gol, folosind numai aceste instrucțiuni; această secțiune se va actualiza când testul (inclusiv o comparare la nivel de octet pe 56 de cadre cu referința) va fi înregistrat.
 - Nu se livrează aici videoclipuri generate.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

@@ -10,6 +10,8 @@ Překlady následují tento anglický README. Pokud se překlad liší nebo zaos
 
 > **Ve 30 sekundách:** grafická karta se 4 GB paměti dokáže na jeden průchod vytvořit video MiniMax H3 o 209 snímcích (8.7 s): ověřeno na jednom počítači (GTX 1050 Ti 4 GB; úplná instalace `kur.ps1` do prázdné složky zatím není ověřena od začátku do konce) [změřeno: 209 snímků s vydanou binárkou přes `uret.ps1`, běh U209; latent shodný bajt po bajtu s během na vývojovém sestavení; snímky a zvuk ve videu shodné, sha souboru se liší kvůli kontejneru; důkazy uchovávají autoři, v tomto repozitáři nejsou]; s `-InitImg` (obrázek na video) nejvýše 192 snímků (8.0 s) [změřeno: běh B192]; 209 snímků se počítá asi 57 min, výchozí časový limit je 80 min [změřeno: běh U209]; jak to spustit, ukazují 3 kroky níže.
 
+> **Používáte AI programovacího agenta (Codex, Claude Code, Gemini, Cursor)?** Dejte mu tuto jedinou větu: „Přečti `AGENTS_HIZLI.md` až do konce, nejdřív spusť `scripts\tani.ps1`, svůj postup veď v `DURUM.md` a zeptej se mě, než cokoli smažeš nebo přesuneš, změníš systémový Python či PATH, snížíš nastavení kvality nebo za mě přijmeš licenci modelu.“ Agent tento počítač zdiagnostikuje, sepíše kontrolní seznam a u každého rozhodnutí se vás zeptá; licence modelu zůstává vaším rozhodnutím.
+
 VideoTurko: záplaty paměti pro stable-diffusion.cpp a postupy ke spuštění MiniMax H3 (text na video) na 4GB GTX 1050 Ti, až 209 snímků (8.7 s) na jeden průchod; obrázek na video (`-InitImg`) až 192 snímků (8.0 s) (209 snímků potvrzeno řetězcem bajtových kontrol; při kontrolách na 56 a 141 snímcích byl výsledek shodný bajt po bajtu s během bez záplat).
 
 ## Rychlý start (Windows, 3 kroky)
@@ -266,4 +268,4 @@ Názvy běhů použité v hranatých závorkách (naše vlastní názvy, nejsou 
 - **Test v čisté složce teprve čeká:** instalační a spouštěcí skripty zatím nebyly ověřeny z prázdné složky jen podle těchto pokynů; oddíl bude aktualizován, až bude tento test (včetně bajtového porovnání 56 snímků s referencí) zaznamenán.
 - Vygenerovaná videa zde nejsou dodávána.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

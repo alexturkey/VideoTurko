@@ -10,6 +10,8 @@ Les traductions suivent ce README en anglais. Si une traduction diffère ou pren
 
 > **En 30 secondes :** une carte graphique de 4 Go peut produire une vidéo MiniMax H3 de 209 images (8,7 s) en une seule passe : vérifié sur une seule machine (GTX 1050 Ti 4 Go ; l’installation complète avec `kur.ps1` dans un dossier vide n’est pas encore vérifiée de bout en bout) [mesuré : 209 images avec le binaire de la version publiée via `uret.ps1`, exécution U209 ; latent identique octet pour octet à l’exécution avec le binaire de développement ; images et audio identiques dans la vidéo, le sha du fichier diffère à cause du conteneur ; les preuves sont conservées par les auteurs, elles ne sont pas dans ce dépôt] ; avec `-InitImg` (image vers vidéo) au plus 192 images (8,0 s) [mesuré : exécution B192] ; 209 images prennent environ 57 min, la durée maximale par défaut est de 80 min [mesuré : exécution U209] ; les 3 étapes ci-dessous expliquent comment l’exécuter.
 
+> **Vous utilisez un agent de programmation IA (Codex, Claude Code, Gemini, Cursor) ?** Donnez-lui cette seule phrase : « Lis `AGENTS_HIZLI.md` jusqu'au bout, exécute d'abord `scripts\tani.ps1`, note ta progression dans `DURUM.md` et demande-moi avant de supprimer ou déplacer quoi que ce soit, de modifier le Python du système ou le PATH, de baisser un réglage de qualité ou d'accepter la licence du modèle à ma place. » L'agent diagnostiquera ce PC, écrira une liste de contrôle et vous demandera à chaque décision ; la licence du modèle reste votre décision.
+
 VideoTurko : correctifs mémoire pour stable-diffusion.cpp et recettes pour exécuter MiniMax H3 en texte vers vidéo sur une GTX 1050 Ti de 4 Go, jusqu’à 209 images (8,7 s) en une seule passe ; image vers vidéo (`-InitImg`) jusqu’à 192 images (8,0 s) (209 images vérifiées par une chaîne d’octets ; identique octet pour octet à l’exécution sans correctifs sur les vérifications à 56 et 141 images).
 
 ## Démarrage rapide (Windows, 3 étapes)
@@ -266,4 +268,4 @@ Noms d’exécution utilisés entre crochets (nos propres noms d’exécution, p
 - **Test en racine propre en attente :** les scripts d’installation et d’exécution n’ont pas encore été vérifiés depuis un dossier vide en n’utilisant que ces instructions ; cette section sera mise à jour lorsque ce test (y compris une comparaison octet par octet à 56 images avec la référence) sera enregistré.
 - Aucune vidéo générée n’est fournie ici.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

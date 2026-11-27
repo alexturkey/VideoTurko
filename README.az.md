@@ -10,6 +10,8 @@ Tərcümələr bu ingilis dilindəki README-ni izləyir. Tərcümə fərqlənər
 
 > **30 saniyədə:** 4 GB-lıq video kart MiniMax H3 ilə 209 kadrlıq (8,7 san) videonu tək keçidlə hazırlaya bilir: bir kompüterdə yoxlanılıb (GTX 1050 Ti 4 GB; boş qovluqda `kur.ps1` ilə tam quraşdırma hələ başdan sona yoxlanılmayıb) [ölçülüb: `uret.ps1` vasitəsilə buraxılış (release) binarı ilə 209 kadr, U209 işə salınması; latent inkişaf (development) build işə salınması ilə bayt-bayt eynidir; videoda kadrlar və səs eynidir, fayl sha-sı konteynerə görə fərqlənir; sübutu müəlliflər saxlayır, bu repoda yoxdur]; `-InitImg` ilə (şəkildən video) ən çox 192 kadr (8,0 san) [ölçülüb: B192 işə salınması]; 209 kadr təxminən 57 dəq çəkir, standart vaxt həddi 80 dəq [ölçülüb: U209 işə salınması]; aşağıdakı 3 addım onu necə işə salmaq lazım olduğunu göstərir.
 
+> **Süni intellekt kodlaşdırma agentindən (Codex, Claude Code, Gemini, Cursor) istifadə edirsiniz?** Ona bu bir cümləni verin: “`AGENTS_HIZLI.md` faylını sonuna qədər oxu, əvvəlcə `scripts\tani.ps1` işlət, irəliləyişini `DURUM.md` faylında saxla və bir şeyi silməzdən və ya köçürməzdən, sistem Python-unu və ya PATH-ı dəyişməzdən, keyfiyyət ayarını endirməzdən və ya model lisenziyasını mənim əvəzimə qəbul etməzdən əvvəl məndən soruş.” Agent bu kompüteri diaqnoz edəcək, yoxlama siyahısı yazacaq və hər qərarda sizdən soruşacaq; model lisenziyası yenə də sizin qərarınızdır.
+
 VideoTurko: 4 GB-lıq GTX 1050 Ti üzərində MiniMax H3 mətndən-videoya modelini tək keçidlə 209 kadra (8,7 san) qədər işlətmək üçün stable-diffusion.cpp yaddaş yamaqları və resept toplusu; şəkildən video (`-InitImg`) 192 kadra (8,0 san) qədər (209 kadr bayt zənciri ilə yoxlanılıb; 56 və 141 kadrlıq yoxlamalarda yamaqsız işə salınma ilə bayt-bayt eynidir).
 
 ## Sürətli başlanğıc (Windows, 3 addım)
@@ -266,4 +268,4 @@ Mötərizələrdə istifadə olunan işə salınma adları (öz adlarımızdır,
 - **Təmiz-kök testi gözlənilir:** quraşdırma və işə salma skriptləri yalnız bu təlimatlarla boş qovluqdan hələ yoxlanılmayıb; bu test (istinada qarşı 56 kadrlıq bayt müqayisəsi daxil) qeyd olunduqda bu bölmə yenilənəcək.
 - Burada heç bir yaradılmış video verilmir.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

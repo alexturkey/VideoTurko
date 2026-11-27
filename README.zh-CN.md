@@ -10,6 +10,8 @@
 
 > **30 秒速览：** 一张 4 GB 显卡即可单次生成 209 帧（8.7 秒）的 MiniMax H3 视频。已在一台机器（GTX 1050 Ti 4 GB）上验证；在空文件夹中完整安装 `kur.ps1` 的全流程尚未端到端验证 [实测: 使用 release 二进制，经 `uret.ps1` 生成 209 帧，运行 U209；latent 与开发版构建的运行逐字节一致；视频中的帧和音频一致，文件 sha 因容器不同而不同；证据由作者保存，不在本仓库中]；使用 `-InitImg`（图生视频）时最多 192 帧（8.0 秒）[实测: 运行 B192]；209 帧约需 57 分钟，默认时间上限为 80 分钟 [实测: 运行 U209]；下面的 3 个步骤就是运行方法。
 
+> **正在使用 AI 编程代理（Codex、Claude Code、Gemini、Cursor）吗？** 把下面这一句话交给它：“读完 `AGENTS_HIZLI.md`，先运行 `scripts\tani.ps1`，把进度记在 `DURUM.md` 里；在删除或移动任何东西、更改系统 Python 或 PATH、降低任何质量设置、或替我接受模型许可证之前，必须先问我。”代理会诊断这台电脑、写出检查清单，并在每个决定处询问你；模型许可证始终由你自己决定。
+
 VideoTurko：一套 stable-diffusion.cpp 内存补丁与运行方案，让 4 GB 的 GTX 1050 Ti 也能运行 MiniMax H3 文生视频（text-to-video），单次最多 209 帧（8.7 秒）；图生视频（image-to-video，`-InitImg`）最多 192 帧（8.0 秒）（209 帧已通过字节链验证；在 56 帧和 141 帧的检查中，与未打补丁的运行逐字节一致）。
 
 ## 快速开始（Windows，3 步）
@@ -266,4 +268,4 @@ Needs: an NVIDIA driver (`nvidia-smi` works; 4 GB of VRAM or more), the CUDA Too
 - **clean-root 测试待完成：** 安装和运行脚本尚未仅按这些说明从空文件夹验证过；当该测试（包括与基准的 56 帧字节比较）记录完成后，本节会随之更新。
 - 这里不附带任何生成的视频。
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

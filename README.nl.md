@@ -10,6 +10,8 @@ De vertalingen volgen deze Engelse README. Als een vertaling afwijkt of achterlo
 
 > **In 30 seconden:** een videokaart met 4 GB kan in één pass een MiniMax H3-video van 209 frames (8,7 s) maken: geverifieerd op één machine (GTX 1050 Ti 4 GB; een volledige `kur.ps1`-installatie in een lege map is nog niet end-to-end geverifieerd) [gemeten: 209 frames met de release-binary via `uret.ps1`, run U209; latent byte-identiek aan de run met de ontwikkelbuild; frames en audio in de video identiek, de sha van het bestand verschilt door de container; het bewijs wordt bewaard door de auteurs, niet in deze repo]; met `-InitImg` (image-to-video) maximaal 192 frames (8,0 s) [gemeten: run B192]; 209 frames duren ongeveer 57 min, de standaard tijdslimiet is 80 min [gemeten: run U209]; de 3 stappen hieronder laten zien hoe je het draait.
 
+> **Gebruikt u een AI-codeeragent (Codex, Claude Code, Gemini, Cursor)?** Geef hem deze ene zin: “Lees `AGENTS_HIZLI.md` helemaal uit, voer eerst `scripts\tani.ps1` uit, houd je voortgang bij in `DURUM.md` en vraag het me voordat je iets verwijdert of verplaatst, het systeem-Python of PATH wijzigt, een kwaliteitsinstelling verlaagt of de modellicentie namens mij accepteert.” De agent diagnosticeert deze pc, schrijft een checklist en vraagt u bij elke beslissing om akkoord; de modellicentie blijft uw beslissing.
+
 VideoTurko: geheugenpatches voor stable-diffusion.cpp en recepten om MiniMax H3 text-to-video op een GTX 1050 Ti van 4 GB te draaien, tot 209 frames (8,7 s) in één pass; image-to-video (`-InitImg`) tot 192 frames (8,0 s) (209 frames geverifieerd via een bytereeks; byte-identiek aan de run zonder patches bij de controles met 56 en 141 frames).
 
 ## Snel starten (Windows, 3 stappen)
@@ -266,4 +268,4 @@ Gebruikte runnamen tussen haakjes (onze eigen runnamen, geen bestanden in deze r
 - **Clean-root-test staat nog open:** de installatie- en runscripts zijn nog niet vanuit een lege map geverifieerd met alleen deze instructies; deze sectie wordt bijgewerkt wanneer die test (inclusief een bytevergelijking van 56 frames met de referentie) is vastgelegd.
 - Hier worden geen gegenereerde video's meegeleverd.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

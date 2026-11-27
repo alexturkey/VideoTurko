@@ -10,6 +10,8 @@ Terjemahan mengikuti README bahasa Inggeris ini. Jika terjemahan berbeza atau ke
 
 > **Dalam 30 saat:** kad grafik 4 GB boleh menghasilkan video MiniMax H3 sepanjang 209 bingkai (8.7 saat) dalam satu laluan: disahkan pada satu mesin (GTX 1050 Ti 4 GB; pemasangan penuh `kur.ps1` pada folder kosong belum disahkan dari awal hingga akhir) [diukur: 209 bingkai dengan binari keluaran melalui `uret.ps1`, larian U209; latent sama bait demi bait dengan larian binaan pembangunan; bingkai dan audio dalam video sama, sha fail berbeza kerana bekas (container); bukti disimpan oleh penulis, tiada dalam repositori ini]; dengan `-InitImg` (imej ke video) paling banyak 192 bingkai (8.0 saat) [diukur: larian B192]; 209 bingkai mengambil masa kira-kira 57 minit, had masa lalai 80 minit [diukur: larian U209]; 3 langkah di bawah ialah cara menjalankannya.
 
+> **Menggunakan ejen pengekodan AI (Codex, Claude Code, Gemini, Cursor)?** Berikan satu ayat ini kepadanya: “Baca `AGENTS_HIZLI.md` hingga habis, jalankan `scripts\tani.ps1` dahulu, simpan kemajuan anda dalam `DURUM.md`, dan tanya saya sebelum memadam atau memindahkan apa-apa, menukar Python sistem atau PATH, menurunkan sebarang tetapan kualiti, atau menerima lesen model bagi pihak saya.” Ejen akan mendiagnosis PC ini, menulis senarai semak dan bertanya kepada anda pada setiap keputusan; lesen model kekal sebagai keputusan anda.
+
 VideoTurko: tampalan memori stable-diffusion.cpp beserta resipi untuk menjalankan MiniMax H3 text-to-video pada GTX 1050 Ti 4 GB, sehingga 209 bingkai (8.7 saat) dalam satu laluan; image-to-video (`-InitImg`) sehingga 192 bingkai (8.0 saat) (209 bingkai disahkan dengan rantai bait; sama bait dengan larian tanpa tampalan pada semakan 56 dan 141 bingkai).
 
 ## Mula pantas (Windows, 3 langkah)
@@ -266,4 +268,4 @@ Nama larian yang digunakan dalam kurungan (nama larian dalaman kami, bukan fail 
 - **Ujian clean-root belum dibuat:** skrip pemasangan dan larian belum disahkan daripada folder kosong hanya dengan arahan ini; bahagian ini akan dikemas kini apabila ujian itu (termasuk perbandingan bait 56 bingkai dengan rujukan) direkodkan.
 - Tiada video yang dijana disertakan di sini.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

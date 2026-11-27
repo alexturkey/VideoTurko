@@ -10,6 +10,8 @@ Terjemahan mengikuti README bahasa Inggris ini. Jika terjemahan berbeda atau ter
 
 > **Dalam 30 detik:** kartu grafis 4 GB bisa membuat video MiniMax H3 sepanjang 209 frame (8,7 dtk) dalam satu kali proses: terverifikasi pada satu mesin (GTX 1050 Ti 4 GB; instalasi `kur.ps1` lengkap pada folder kosong belum diverifikasi dari awal sampai akhir) [terukur: 209 frame dengan binary rilis melalui `uret.ps1`, run U209; latent identik byte demi byte dengan run dengan build pengembangan; frame dan audio pada video identik, sha file berbeda karena kontainer; bukti disimpan oleh penulis, tidak ada di repo ini]; dengan `-InitImg` (gambar ke video) paling banyak 192 frame (8,0 dtk) [terukur: run B192]; 209 frame memakan waktu sekitar 57 menit, batas waktu bawaan 80 menit [terukur: run U209]; 3 langkah di bawah adalah cara menjalankannya.
 
+> **Memakai agen pemrograman AI (Codex, Claude Code, Gemini, Cursor)?** Berikan satu kalimat ini kepadanya: “Baca `AGENTS_HIZLI.md` sampai habis, jalankan `scripts\tani.ps1` lebih dulu, catat kemajuanmu di `DURUM.md`, dan tanyakan kepada saya sebelum menghapus atau memindahkan apa pun, mengubah Python sistem atau PATH, menurunkan pengaturan kualitas, atau menerima lisensi model atas nama saya.” Agen akan mendiagnosis PC ini, menulis daftar periksa, dan bertanya kepada Anda pada setiap keputusan; lisensi model tetap menjadi keputusan Anda.
+
 VideoTurko: patch memori stable-diffusion.cpp beserta resep menjalankan MiniMax H3 text-to-video di GTX 1050 Ti 4 GB, hingga 209 frame (8,7 dtk) dalam satu kali proses; image-to-video (`-InitImg`) hingga 192 frame (8,0 dtk) (209 frame diverifikasi dengan rantai byte; identik byte dengan proses tanpa patch pada pemeriksaan 56 dan 141 frame).
 
 ## Mulai cepat (Windows, 3 langkah)
@@ -266,4 +268,4 @@ Nama run yang dipakai dalam tanda kurung (nama run internal kami, bukan file di 
 - **Uji clean-root tertunda:** skrip instalasi dan penggunaan belum diverifikasi dari folder kosong hanya dengan petunjuk ini; bagian ini akan diperbarui saat uji itu (termasuk perbandingan byte 56 frame dengan referensi) dicatat.
 - Tidak ada video hasil generasi yang disertakan di sini.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

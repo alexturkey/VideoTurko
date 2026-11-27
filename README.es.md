@@ -10,6 +10,8 @@ Las traducciones siguen este README en inglés. Si una traducción difiere o se 
 
 > **En 30 segundos:** una tarjeta gráfica de 4 GB puede generar un video MiniMax H3 de 209 fotogramas (8,7 s) en una sola pasada: verificado en una sola máquina (GTX 1050 Ti de 4 GB; la instalación completa con `kur.ps1` en una carpeta vacía aún no se ha verificado de principio a fin) [medido: 209 fotogramas con el binario de la versión publicada mediante `uret.ps1`, ejecución U209; latente idéntico byte a byte al de la ejecución con el binario de desarrollo; fotogramas y audio idénticos en el video, el sha del archivo difiere por el contenedor; las pruebas las conservan los autores, no están en este repositorio]; con `-InitImg` (imagen a video) como máximo 192 fotogramas (8,0 s) [medido: ejecución B192]; 209 fotogramas tardan unos 57 min, el límite de tiempo por defecto es de 80 min [medido: ejecución U209]; los 3 pasos de abajo explican cómo ejecutarlo.
 
+> **¿Usa un agente de programación con IA (Codex, Claude Code, Gemini, Cursor)?** Dele esta única frase: «Lee `AGENTS_HIZLI.md` hasta el final, ejecuta primero `scripts\tani.ps1`, lleva tu progreso en `DURUM.md` y pregúntame antes de borrar o mover nada, cambiar el Python del sistema o el PATH, bajar un ajuste de calidad o aceptar la licencia del modelo por mí.» El agente diagnosticará este PC, escribirá una lista de comprobación y le preguntará en cada decisión; la licencia del modelo sigue siendo decisión suya.
+
 VideoTurko: parches de memoria para stable-diffusion.cpp y recetas para ejecutar MiniMax H3 de texto a video en una GTX 1050 Ti de 4 GB, hasta 209 fotogramas (8,7 s) en una sola pasada; imagen a video (`-InitImg`) hasta 192 fotogramas (8,0 s) (209 fotogramas verificados mediante una cadena de bytes; idéntico byte a byte a la ejecución sin parches en las comprobaciones de 56 y 141 fotogramas).
 
 ## Inicio rápido (Windows, 3 pasos)
@@ -266,4 +268,4 @@ Nombres de ejecución usados entre corchetes (nuestros propios nombres de ejecuc
 - **Prueba en raíz limpia pendiente:** los scripts de instalación y ejecución aún no se han verificado desde una carpeta vacía usando solo estas instrucciones; esta sección se actualizará cuando se registre esa prueba (incluida una comparación byte a byte de 56 fotogramas con la referencia).
 - Aquí no se incluye ningún video generado.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

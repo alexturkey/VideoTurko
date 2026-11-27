@@ -10,6 +10,8 @@ Le traduzioni seguono questo README in inglese. Se una traduzione differisce o �
 
 > **In 30 secondi:** una scheda video da 4 GB può generare un video MiniMax H3 da 209 fotogrammi (8,7 s) in un solo passaggio: verificato su una sola macchina (GTX 1050 Ti da 4 GB; l'installazione completa con `kur.ps1` in una cartella vuota non è ancora stata verificata da un capo all'altro) [misurato: 209 fotogrammi con il binario della versione pubblicata tramite `uret.ps1`, esecuzione U209; latente identico byte per byte a quello dell'esecuzione con il binario di sviluppo; fotogrammi e audio identici nel video, lo sha del file differisce a causa del contenitore; le prove sono conservate dagli autori, non sono in questo repository]; con `-InitImg` (da immagine a video) al massimo 192 fotogrammi (8,0 s) [misurato: esecuzione B192]; 209 fotogrammi richiedono circa 57 min, il limite di tempo predefinito è di 80 min [misurato: esecuzione U209]; i 3 passaggi qui sotto spiegano come eseguirlo.
 
+> **Usa un agente di programmazione IA (Codex, Claude Code, Gemini, Cursor)?** Gli dia questa sola frase: «Leggi `AGENTS_HIZLI.md` fino in fondo, esegui prima `scripts\tani.ps1`, tieni traccia dei progressi in `DURUM.md` e chiedimi prima di eliminare o spostare qualcosa, cambiare il Python di sistema o il PATH, abbassare un'impostazione di qualità o accettare la licenza del modello al posto mio.» L'agente diagnosticherà questo PC, scriverà una lista di controllo e le chiederà conferma a ogni decisione; la licenza del modello resta una sua decisione.
+
 VideoTurko: patch di memoria per stable-diffusion.cpp e ricette per eseguire MiniMax H3 da testo a video su una GTX 1050 Ti da 4 GB, fino a 209 fotogrammi (8,7 s) in un solo passaggio; da immagine a video (`-InitImg`) fino a 192 fotogrammi (8,0 s) (209 fotogrammi verificati con una catena di byte; identico byte per byte all'esecuzione senza patch nei controlli a 56 e 141 fotogrammi).
 
 ## Avvio rapido (Windows, 3 passaggi)
@@ -266,4 +268,4 @@ Nomi delle esecuzioni usati tra parentesi quadre (nomi nostri, non file di quest
 - **Test in radice pulita in sospeso:** gli script di installazione ed esecuzione non sono ancora stati verificati da una cartella vuota usando solo queste istruzioni; questa sezione sarà aggiornata quando quel test (compreso un confronto byte per byte a 56 fotogrammi con il riferimento) sarà registrato.
 - Qui non viene distribuito alcun video generato.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

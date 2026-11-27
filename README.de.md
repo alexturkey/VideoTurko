@@ -10,6 +10,8 @@
 
 > **In 30 Sekunden:** Eine Grafikkarte mit 4 GB kann ein MiniMax-H3-Video mit 209 Frames (8,7 s) in einem einzigen Durchlauf erzeugen: auf einem Rechner verifiziert (GTX 1050 Ti 4 GB; die vollständige Installation mit `kur.ps1` in einem leeren Ordner ist noch nicht durchgehend verifiziert) [gemessen: 209 Frames mit dem Release-Binary über `uret.ps1`, Lauf U209; Latent byte-identisch zum Lauf mit dem Entwicklungs-Build; Frames und Audio im Video identisch, die Datei-sha unterscheidet sich wegen des Containers; Belege liegen bei den Autoren, nicht in diesem Repo]; mit `-InitImg` (Image-to-Video) höchstens 192 Frames (8,0 s) [gemessen: Lauf B192]; 209 Frames dauern etwa 57 min, das Standard-Zeitlimit beträgt 80 min [gemessen: Lauf U209]; die 3 Schritte unten zeigen, wie man es ausführt.
 
+> **Nutzen Sie einen KI-Coding-Agenten (Codex, Claude Code, Gemini, Cursor)?** Geben Sie ihm diesen einen Satz: „Lies `AGENTS_HIZLI.md` bis zum Ende, führe zuerst `scripts\tani.ps1` aus, halte deinen Fortschritt in `DURUM.md` fest und frag mich, bevor du etwas löschst oder verschiebst, das System-Python oder PATH änderst, eine Qualitätseinstellung senkst oder die Modelllizenz für mich akzeptierst.“ Der Agent diagnostiziert diesen PC, schreibt eine Checkliste und fragt Sie bei jeder Entscheidung; die Modelllizenz bleibt Ihre Entscheidung.
+
 VideoTurko: Speicher-Patches für stable-diffusion.cpp und Rezepte, um MiniMax-H3-Text-to-Video auf einer GTX 1050 Ti mit 4 GB auszuführen, bis zu 209 Frames (8,7 s) in einem einzigen Durchlauf; Image-to-Video (`-InitImg`) bis zu 192 Frames (8,0 s) (209 Frames per Byte-Kette verifiziert; byte-identisch zum ungepatchten Lauf bei den Prüfungen mit 56 und 141 Frames).
 
 ## Schnellstart (Windows, 3 Schritte)
@@ -266,4 +268,4 @@ In eckigen Klammern verwendete Lauf-Namen (unsere eigenen Lauf-Namen, keine Date
 - **Clean-Root-Test steht aus:** Die Installations- und Ausführungsskripte wurden noch nicht allein mit diesen Anleitungen aus einem leeren Ordner verifiziert; dieser Abschnitt wird aktualisiert, sobald dieser Test (einschließlich eines 56-Frame-Byte-Vergleichs mit der Referenz) dokumentiert ist.
 - Es werden hier keine erzeugten Videos mitgeliefert.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

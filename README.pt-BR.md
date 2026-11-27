@@ -10,6 +10,8 @@ As traduções seguem este README em inglês. Se uma tradução divergir ou fica
 
 > **Em 30 segundos:** uma placa de vídeo de 4 GB consegue gerar um vídeo MiniMax H3 de 209 quadros (8,7 s) em uma única passada: verificado em uma única máquina (GTX 1050 Ti de 4 GB; a instalação completa com `kur.ps1` em uma pasta vazia ainda não foi verificada de ponta a ponta) [medido: 209 quadros com o binário da versão publicada por meio do `uret.ps1`, execução U209; latente idêntico byte a byte ao da execução com o binário de desenvolvimento; quadros e áudio idênticos no vídeo, o sha do arquivo difere por causa do contêiner; as evidências ficam com os autores, não estão neste repositório]; com `-InitImg` (imagem para vídeo) no máximo 192 quadros (8,0 s) [medido: execução B192]; 209 quadros levam cerca de 57 min, o limite de tempo padrão é de 80 min [medido: execução U209]; os 3 passos abaixo mostram como executar.
 
+> **Você usa um agente de programação com IA (Codex, Claude Code, Gemini, Cursor)?** Dê a ele esta única frase: “Leia `AGENTS_HIZLI.md` até o fim, execute primeiro `scripts\tani.ps1`, registre seu progresso em `DURUM.md` e pergunte a mim antes de apagar ou mover qualquer coisa, mudar o Python do sistema ou o PATH, reduzir uma configuração de qualidade ou aceitar a licença do modelo por mim.” O agente vai diagnosticar este PC, escrever uma lista de verificação e perguntar a você a cada decisão; a licença do modelo continua sendo uma decisão sua.
+
 VideoTurko: patches de memória para o stable-diffusion.cpp e receitas para rodar o MiniMax H3 de texto para vídeo em uma GTX 1050 Ti de 4 GB, até 209 quadros (8,7 s) em uma única passada; imagem para vídeo (`-InitImg`) até 192 quadros (8,0 s) (209 quadros verificados por uma cadeia de bytes; idêntico byte a byte à execução sem patches nas verificações de 56 e 141 quadros).
 
 ## Início rápido (Windows, 3 passos)
@@ -266,4 +268,4 @@ Nomes de execução usados entre colchetes (nossos próprios nomes de execução
 - **Teste em raiz limpa pendente:** os scripts de instalação e execução ainda não foram verificados a partir de uma pasta vazia usando só estas instruções; esta seção será atualizada quando esse teste (incluindo uma comparação byte a byte de 56 quadros com a referência) for registrado.
 - Nenhum vídeo gerado é distribuído aqui.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

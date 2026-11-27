@@ -10,6 +10,8 @@ A fordítások ezt az angol README-t követik. Ha egy fordítás eltér vagy lem
 
 > **30 másodpercben:** egy 4 GB-os videókártya egyetlen menetben el tud készíteni egy 209 képkockás (8.7 s) MiniMax H3 videót: egy gépen ellenőrizve (GTX 1050 Ti 4 GB; a `kur.ps1` teljes telepítése üres mappában még nincs végigellenőrizve) [mért: 209 képkocka a kiadási binárissal a `uret.ps1`-en keresztül, U209 futás; a latent bájtra azonos a fejlesztői build futásával; a képkockák és a hang a videóban azonosak, a fájl sha-ja a konténer miatt eltér; a bizonyítékokat a szerzők őrzik, ebben a tárolóban nincsenek]; `-InitImg` mellett (kép videóvá) legfeljebb 192 képkocka (8.0 s) [mért: B192 futás]; 209 képkocka kb. 57 percig tart, az alapértelmezett időkorlát 80 perc [mért: U209 futás]; a futtatást az alábbi 3 lépés mutatja.
 
+> **MI-programozó ügynököt (Codex, Claude Code, Gemini, Cursor) használ?** Adja neki ezt az egy mondatot: „Olvasd el az `AGENTS_HIZLI.md` fájlt a végéig, először futtasd a `scripts\tani.ps1` fájlt, az előrehaladásodat vezesd a `DURUM.md` fájlban, és kérdezz meg, mielőtt bármit törölsz vagy áthelyezel, módosítod a rendszer Pythonját vagy a PATH-ot, csökkentesz egy minőségi beállítást, vagy helyettem elfogadod a modell licencét.” Az ügynök kiértékeli ezt a gépet, ellenőrzőlistát ír, és minden döntésnél megkérdezi Önt; a modell licence továbbra is az Ön döntése.
+
 VideoTurko: stable-diffusion.cpp memóriapatchek és receptek a MiniMax H3 (szövegből videó) futtatásához 4 GB-os GTX 1050 Ti-n, legfeljebb 209 képkocka (8.7 s) egyetlen menetben; kép videóvá (`-InitImg`) legfeljebb 192 képkocka (8.0 s) (a 209 képkockát bájtlánc igazolja; az 56 és 141 képkockás ellenőrzéseken az eredmény bájtra azonos volt a patchek nélküli futással).
 
 ## Gyorsindítás (Windows, 3 lépés)
@@ -266,4 +268,4 @@ A szögletes zárójelben használt futásnevek (saját elnevezéseink, nem a t�
 - **A tiszta mappás teszt hátravan:** a telepítő és futtató szkripteket még nem ellenőriztük üres mappából kizárólag ezen útmutató alapján; ezt a szakaszt frissítjük, amikor a teszt (köztük az 56 képkockás bájtösszehasonlítás a referenciával) rögzítésre kerül.
 - Generált videókat itt nem mellékelünk.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

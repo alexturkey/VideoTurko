@@ -10,6 +10,8 @@ Translations follow this English README. If a translation differs or lags behind
 
 > **In 30 seconds:** a 4 GB graphics card can make a 209-frame (8.7 s) MiniMax H3 video in a single pass: verified on one machine (GTX 1050 Ti 4 GB; full `kur.ps1` install on an empty folder not yet verified end to end) [measured: 209 frames with the release binary through `uret.ps1`, run U209; latent byte-identical to the development-build run; frames and audio identical in the video, the file sha differs because of the container; evidence kept by the authors, not in this repo]; with `-InitImg` (image-to-video) at most 192 frames (8.0 s) [measured: run B192]; 209 frames take about 57 min, default time cap 80 min [measured: run U209]; the 3 steps below are how to run it.
 
+> **Using an AI coding agent (Codex, Claude Code, Gemini, Cursor)?** Give it this one sentence: "Read `AGENTS_HIZLI.md` to the end, run `scripts\tani.ps1` first, keep your progress in `DURUM.md`, and ask me before you delete or move anything, change system Python or PATH, lower a quality setting, or accept the model license for me." The agent will diagnose this PC, write a checklist and ask you at every decision; the model license stays your decision.
+
 VideoTurko: stable-diffusion.cpp memory patches and recipes to run MiniMax H3 text-to-video on a 4 GB GTX 1050 Ti, up to 209 frames (8.7 s) in a single pass; image-to-video (`-InitImg`) up to 192 frames (8.0 s) (209 frames verified by a byte chain; byte-identical to the unpatched run on the 56- and 141-frame checks).
 
 ## Quick start (Windows, 3 steps)

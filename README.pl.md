@@ -10,6 +10,8 @@ Tłumaczenia podążają za tym angielskim README. Jeśli tłumaczenie się ró�
 
 > **W 30 sekund:** karta graficzna z 4 GB pamięci może w jednym przebiegu wygenerować wideo MiniMax H3 o długości 209 klatek (8.7 s): sprawdzone na jednym komputerze (GTX 1050 Ti 4 GB; pełna instalacja `kur.ps1` w pustym folderze nie została jeszcze sprawdzona od początku do końca) [zmierzone: 209 klatek na binarce wydaniowej przez `uret.ps1`, przebieg U209; latent identyczny bajt w bajt z przebiegiem na kompilacji deweloperskiej; klatki i dźwięk w wideo identyczne, sha pliku różni się z powodu kontenera; dowody przechowują autorzy, nie ma ich w tym repozytorium]; z `-InitImg` (obraz do wideo) co najwyżej 192 klatki (8.0 s) [zmierzone: przebieg B192]; 209 klatek liczy się około 57 min, domyślny limit czasu to 80 min [zmierzone: przebieg U209]; jak to uruchomić, pokazują 3 kroki poniżej.
 
+> **Używasz agenta programistycznego AI (Codex, Claude Code, Gemini, Cursor)?** Daj mu to jedno zdanie: „Przeczytaj `AGENTS_HIZLI.md` do końca, najpierw uruchom `scripts\tani.ps1`, postępy zapisuj w `DURUM.md` i zapytaj mnie, zanim cokolwiek usuniesz lub przeniesiesz, zmienisz systemowy Python albo PATH, obniżysz ustawienie jakości lub zaakceptujesz za mnie licencję modelu.” Agent zdiagnozuje ten komputer, napisze listę kontrolną i przy każdej decyzji zapyta Ciebie; licencja modelu pozostaje Twoją decyzją.
+
 VideoTurko: łatki pamięci do stable-diffusion.cpp oraz przepisy na uruchomienie MiniMax H3 (tekst do wideo) na 4-gigabajtowej GTX 1050 Ti, do 209 klatek (8.7 s) w jednym przebiegu; obraz do wideo (`-InitImg`) do 192 klatek (8.0 s) (209 klatek potwierdzone łańcuchem sprawdzeń bajtowych; przy sprawdzeniach na 56 i 141 klatkach wynik był identyczny bajt w bajt z przebiegiem bez łatek).
 
 ## Szybki start (Windows, 3 kroki)
@@ -266,4 +268,4 @@ Nazwy przebiegów używane w nawiasach (nasze własne nazwy, nie pliki tego repo
 - **Test w czystym folderze przed nami:** skrypty instalacji i uruchomienia nie zostały jeszcze sprawdzone z pustego folderu wyłącznie według tej instrukcji; sekcja zostanie zaktualizowana, gdy test (łącznie z bajtowym porównaniem 56 klatek z wzorcem) zostanie zapisany.
 - Wygenerowane wideo nie są tu dostarczane.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

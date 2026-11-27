@@ -10,6 +10,8 @@ Các bản dịch bám theo README tiếng Anh này. Nếu một bản dịch kh
 
 > **Tóm tắt trong 30 giây:** một card đồ họa 4 GB có thể tạo video MiniMax H3 dài 209 khung hình (8,7 giây) trong một lượt chạy duy nhất. Đã kiểm chứng trên một máy (GTX 1050 Ti 4 GB); việc cài đặt đầy đủ bằng `kur.ps1` trong một thư mục trống thì chưa được kiểm chứng từ đầu đến cuối [đã đo: 209 khung hình với bản nhị phân release qua `uret.ps1`, lần chạy U209; latent giống hệt từng byte so với lần chạy bản build phát triển; khung hình và âm thanh trong video giống hệt nhau, sha của tệp khác vì container; bằng chứng do tác giả giữ, không có trong repo này]; với `-InitImg` (image-to-video) tối đa 192 khung hình (8,0 giây) [đã đo: lần chạy B192]; 209 khung hình mất khoảng 57 phút, giới hạn thời gian mặc định là 80 phút [đã đo: lần chạy U209]; 3 bước bên dưới là cách chạy.
 
+> **Bạn đang dùng tác tử lập trình AI (Codex, Claude Code, Gemini, Cursor)?** Hãy đưa cho nó đúng một câu này: “Đọc `AGENTS_HIZLI.md` đến hết, chạy `scripts\tani.ps1` trước, ghi tiến độ của bạn vào `DURUM.md`, và hỏi tôi trước khi xóa hoặc di chuyển bất cứ thứ gì, đổi Python hệ thống hay PATH, hạ bất kỳ cài đặt chất lượng nào, hoặc chấp nhận giấy phép mô hình thay tôi.” Tác tử sẽ chẩn đoán máy tính này, viết một danh sách kiểm tra và hỏi bạn ở mỗi quyết định; giấy phép mô hình vẫn là quyết định của bạn.
+
 VideoTurko: các bản vá bộ nhớ cho stable-diffusion.cpp cùng công thức chạy MiniMax H3 text-to-video trên GTX 1050 Ti 4 GB, tối đa 209 khung hình (8,7 giây) trong một lượt; image-to-video (`-InitImg`) tối đa 192 khung hình (8,0 giây) (209 khung hình được kiểm chứng bằng chuỗi byte; giống hệt từng byte so với lần chạy chưa vá ở các phép kiểm tra 56 và 141 khung hình).
 
 ## Bắt đầu nhanh (Windows, 3 bước)
@@ -266,4 +268,4 @@ Tên các lần chạy được dùng trong ngoặc vuông (là tên lần chạ
 - **Bài kiểm tra clean-root chưa thực hiện:** các script cài đặt và chạy chưa được xác minh từ một thư mục trống chỉ bằng các hướng dẫn này; mục này sẽ được cập nhật khi bài kiểm tra đó (gồm cả phép so sánh byte 56 khung hình với bản tham chiếu) được ghi nhận.
 - Không có video được tạo ra nào đi kèm ở đây.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

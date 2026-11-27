@@ -10,6 +10,8 @@
 
 > **30 saniyede:** 4 GB bir ekran kartı 209 karelik (8,7 sn) MiniMax H3 videosunu tek geçişte üretebiliyor: tek makinede doğrulandı (GTX 1050 Ti 4 GB; boş klasörde tam `kur.ps1` kurulumu uçtan uca henüz doğrulanmadı) [ölçtüm: 209 kare, sürüm ikilisiyle, `uret.ps1` üzerinden, koşu U209; latent bayt-aynı; videoda kareler ve ses aynı, dosya sha'sı konteyner nedeniyle farklı; kanıt yazarlarda, bu depoda yok]; `-InitImg` (resimden video) ile en çok 192 kare (8,0 sn) [ölçtüm: koşu B192]; 209 kare yaklaşık 57 dk sürer, varsayılan süre tavanı 80 dk [ölçtüm: koşu U209]; aşağıdaki 3 adım nasıl çalıştırılacağını gösterir.
 
+> **Yapay zeka ajanı (Codex, Claude Code, Gemini, Cursor) mı kullanıyorsunuz?** Ona şu cümleyi verin: "`AGENTS_HIZLI.md` dosyasını sonuna kadar oku, önce `scripts\tani.ps1` çalıştır, ilerlemeni `DURUM.md` dosyasında tut; bir şeyi silmeden ya da taşımadan, sistem Python'unu ya da PATH'i değiştirmeden, kalite ayarını düşürmeden ve model lisansını benim yerime kabul etmeden önce bana sor." Ajan bu bilgisayarı teşhis eder, kontrol listesi yazar ve her kararda size sorar; model lisansı sizin kararınız olarak kalır.
+
 VideoTurko: 4 GB GTX 1050 Ti'de MiniMax H3 ile metinden videoyu tek seferde 209 kareye (8,7 sn) kadar, resimden videoyu (`-InitImg`) 192 kareye (8,0 sn) kadar (209 kare bayt zinciriyle doğrulandı) üretmek için stable-diffusion.cpp bellek yamaları ve tarifler; 56 ve 141 karelik kontrollerde yamasız koşuyla bayt aynı.
 
 ## Hızlı başlangıç (Windows, 3 adım)
@@ -259,4 +261,4 @@ Köşeli parantezde geçen koşu adları (bize ait koşu adları, bu depoda dosy
 - **Temiz kök testi bekliyor:** kurulum ve çalıştırma betikleri boş klasörde yalnız bu talimatla henüz doğrulanmadı; test (56 karede referansa bayt kıyası dahil) kaydedilince bu bölüm güncellenir.
 - Çıktı videolar depoda yok.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->

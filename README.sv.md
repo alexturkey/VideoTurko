@@ -10,6 +10,8 @@
 
 > **Kort version (30 sekunder):** ett grafikkort med 4 GB kan göra en MiniMax H3-video på 209 bildrutor (8,7 s) i ett enda pass: verifierat på en dator (GTX 1050 Ti 4 GB; en fullständig `kur.ps1`-installation i en tom mapp är ännu inte verifierad från början till slut) [uppmätt: 209 bildrutor med release-binären via `uret.ps1`, körning U209; latenten är byte-identisk med körningen på utvecklingsbygget; bildrutor och ljud är identiska i videon, filens sha skiljer sig på grund av containern; underlaget förvaras av skaparna och finns inte i det här repot]; med `-InitImg` (image-to-video) högst 192 bildrutor (8,0 s) [uppmätt: körning B192]; 209 bildrutor tar ungefär 57 min, standardgräns för körtid 80 min [uppmätt: körning U209]; de 3 stegen nedan visar hur du kör det.
 
+> **Använder du en AI-kodagent (Codex, Claude Code, Gemini, Cursor)?** Ge den den här enda meningen: ”Läs `AGENTS_HIZLI.md` till slutet, kör `scripts\tani.ps1` först, för din framfart i `DURUM.md` och fråga mig innan du raderar eller flyttar något, ändrar systemets Python eller PATH, sänker en kvalitetsinställning eller godkänner modellicensen åt mig.” Agenten diagnostiserar den här datorn, skriver en checklista och frågar dig vid varje beslut; modellicensen förblir ditt beslut.
+
 VideoTurko: minnespatchar för stable-diffusion.cpp och recept för att köra MiniMax H3 text-to-video på ett GTX 1050 Ti med 4 GB, upp till 209 bildrutor (8,7 s) i ett enda pass; image-to-video (`-InitImg`) upp till 192 bildrutor (8,0 s) (209 bildrutor verifierade med en bytekedja; byte-identiska med den opatchade körningen i kontrollerna med 56 och 141 bildrutor).
 
 ## Snabbstart (Windows, 3 steg)
@@ -266,4 +268,4 @@ Körningsnamn som används inom hakparentes (våra egna körningsnamn, inte file
 - **Test i tom rotmapp återstår:** installations- och körskripten har ännu inte verifierats från en tom mapp med enbart de här instruktionerna; det här avsnittet uppdateras när det testet (inklusive en byte-jämförelse med 56 bildrutor mot referensen) är dokumenterat.
 - Inga genererade videor levereras här.
 
-<!-- i18n-source: README.md sha256:4d4973e30a37 -->
+<!-- i18n-source: README.md sha256:a26a5a878a5f -->
