@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Profiluri de viteză opționale (pachet de viteză; dezactivate implicit)
+Nimic din cele de mai jos nu schimbă rularea implicită (640x384, 209 cadre, 3414 s pe placa noastră). Sunt trei celule măsurate dincolo de ea, fiecare un profil denumit al `uret.ps1`; au nevoie de motorul pachetului de viteză (motorul din release plus patch-urile 0021, 0023, 0024, toate dezactivate implicit: `docs/YAMALAR.md`). Instalați-l cu `scripts\kur.ps1 -HizPaketi` (un zip local funcționează cu `-MotorZip`), apoi adăugați `-Profil <name>`; `-Kuru` afișează ce s-ar executa.
+
+| Profil | Dimensiune, lungime | Timp total pe un GTX 1050 Ti 4 GB | Stare |
+|---|---|---|---|
+| (niciunul, implicit) | 640x384, până la 209 cadre (8,7 s) | 209 cadre: 3414 s | verificat, neschimbat |
+| `yuksek832` | 832x480, 141 cadre (5,9 s) | aproximativ 55-56 min | utilizabil, două prompturi [măsurat] |
+| `yuksek832 -Kare 124` | 832x480, 124 cadre (5,2 s) | aproximativ 45-46 min, fără indicator de viteză | utilizabil, două prompturi [măsurat] |
+| `yuksek896` | 896x512, 124 cadre (5,2 s) | aproximativ 56-57,5 min | utilizabil, două prompturi [măsurat] |
+| `uzun260` | 640x384, 260 cadre (10,8 s) | 78 min măsurate fără ieșirea timpurie; cu ea aproximativ 71-72 min [presupunere: nemăsurat cap la cap prin `uret.ps1`] | condiționat și experimental |
+
+- **Marjă îngustă:** la 832x480 x 141 poarta de memorie lasă o marjă de o singură cifră în MB (5,7 și 6,8 MB în cele două rulări complete). Două prompturi lungi (1520 și 2041 de caractere) au fost verificate doar citind poarta pentru pasul 1 și o parte din pasul 2, fără rulare completă: marjă 10,9 și 4,0 MB. Orice alt proces care ocupă memoria plăcii (browser, al doilea monitor) poate face rularea să eșueze; atunci folosiți `-Kare 124` sau dimensiunea implicită [măsurat, GTX 1050 Ti 4 GB].
+- **`uzun260` este condiționat:** limita de memorie este foarte îngustă (vârf VRAM 3903 din 4096 MiB), utilizarea memoriei partajate a crescut cu 61 și 68 MiB, iar pentru egalitatea la nivel de octet nu există o referință fără indicatori, deci nu este oferit ca funcție obișnuită. Patch-ul 0023 este acceptat doar pentru această celulă.
+- **Neoferit:** 832x480 la 158 sau 175 de cadre nu încape; căutarea lungimii s-a oprit acolo la 141 de cadre. Alte dimensiuni și numere de cadre sunt refuzate de `-Profil` (folosiți calea implicită).
+- Calitatea implicită rămâne neatinsă: 6 pași, cfg 1, VAE fără dale, 17k+5 cadre. Acolo unde indicatorii sunt activi, ieșirea a fost comparată octet cu octet cu videoclipul fără indicatori la dimensiunile la care rularea fără indicatori încape (`docs/YAMALAR.md`); la 832x480 x 141 și 896x512 x 124 rularea fără indicatori nu încape, așa că egalitatea se sprijină acolo pe cele mai apropiate celule, nu pe o comparație directă [măsurat, citit].
+- Etapa 1 a unei rulări în două etape se încheie acum imediat ce fișierul latent este complet (`VT_ERKEN_CIKIS=0` o dezactivează).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Numele de rulări folosite între paranteze (numele noastre proprii de rulări, 
 - **Testul în folder curat este în așteptare:** scripturile de instalare și rulare nu au fost încă verificate dintr-un folder gol, folosind numai aceste instrucțiuni; această secțiune se va actualiza când testul (inclusiv o comparare la nivel de octet pe 56 de cadre cu referința) va fi înregistrat.
 - Nu se livrează aici videoclipuri generate.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

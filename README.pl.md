@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Opcjonalne profile szybkości (pakiet szybkości; domyślnie wyłączone)
+Nic poniżej nie zmienia domyślnego uruchomienia (640x384, 209 klatek, 3414 s na naszej karcie). To trzy zmierzone komórki poza nim, każda jako nazwany profil `uret.ps1`; wymagają silnika pakietu szybkości (silnik z wydania plus łatki 0021, 0023, 0024, wszystkie domyślnie wyłączone: `docs/YAMALAR.md`). Zainstaluj go poleceniem `scripts\kur.ps1 -HizPaketi` (lokalny zip działa z `-MotorZip`), a następnie dodaj `-Profil <name>`; `-Kuru` wypisuje, co zostałoby uruchomione.
+
+| Profil | Rozmiar, długość | Całkowity czas na GTX 1050 Ti 4 GB | Status |
+|---|---|---|---|
+| (brak, domyślny) | 640x384, do 209 klatek (8,7 s) | 209 klatek: 3414 s | zweryfikowane, bez zmian |
+| `yuksek832` | 832x480, 141 klatek (5,9 s) | około 55-56 min | użyteczne, dwa prompty [zmierzone] |
+| `yuksek832 -Kare 124` | 832x480, 124 klatek (5,2 s) | około 45-46 min, bez flagi przyspieszającej | użyteczne, dwa prompty [zmierzone] |
+| `yuksek896` | 896x512, 124 klatek (5,2 s) | około 56-57,5 min | użyteczne, dwa prompty [zmierzone] |
+| `uzun260` | 640x384, 260 klatek (10,8 s) | 78 min zmierzone bez wczesnego wyjścia; z nim około 71-72 min [przypuszczenie: nie zmierzono od początku do końca przez `uret.ps1`] | warunkowe i eksperymentalne |
+
+- **Wąski margines:** przy 832x480 x 141 bramka pamięci zostawia jednocyfrowy zapas w MB (5,7 i 6,8 MB w dwóch pełnych uruchomieniach). Dwa długie prompty (1520 i 2041 znaków) sprawdzono tylko przez odczyt bramki dla kroku 1 i części kroku 2, bez pełnego uruchomienia: zapas 10,9 i 4,0 MB. Każdy inny proces zajmujący pamięć karty (przeglądarka, drugi monitor) może spowodować błąd; wtedy użyj `-Kare 124` lub rozmiaru domyślnego [zmierzone, GTX 1050 Ti 4 GB].
+- **`uzun260` jest warunkowy:** limit pamięci jest bardzo wąski (szczyt VRAM 3903 z 4096 MiB), zużycie pamięci współdzielonej wzrosło o 61 i 68 MiB, a nie ma odniesienia bez flag dla równości bajtowej, więc nie jest oferowany jako zwykła funkcja. Łatka 0023 jest przyjęta tylko dla tej jednej komórki.
+- **Nieoferowane:** 832x480 przy 158 lub 175 klatkach się nie mieści; wyszukiwanie długości zakończyło się tam na 141 klatkach. Inne rozmiary i liczby klatek są odrzucane przez `-Profil` (użyj ścieżki domyślnej).
+- Domyślna jakość pozostaje nietknięta: 6 kroków, cfg 1, VAE bez kafelków, 17k+5 klatek. Tam, gdzie flagi są włączone, wynik porównano bajt po bajcie z wideo bez flag w rozmiarach, w których uruchomienie bez flag się mieści (`docs/YAMALAR.md`); przy 832x480 x 141 i 896x512 x 124 uruchomienie bez flag się nie mieści, więc równość opiera się tam na najbliższych komórkach, nie na bezpośrednim porównaniu [zmierzone, przeczytane].
+- Etap 1 uruchomienia dwuetapowego kończy się teraz, gdy tylko plik latentny jest kompletny (`VT_ERKEN_CIKIS=0` to wyłącza).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Nazwy przebiegów używane w nawiasach (nasze własne nazwy, nie pliki tego repo
 - **Test w czystym folderze przed nami:** skrypty instalacji i uruchomienia nie zostały jeszcze sprawdzone z pustego folderu wyłącznie według tej instrukcji; sekcja zostanie zaktualizowana, gdy test (łącznie z bajtowym porównaniem 56 klatek z wzorcem) zostanie zapisany.
 - Wygenerowane wideo nie są tu dostarczane.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

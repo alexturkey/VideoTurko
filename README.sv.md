@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Valfria hastighetsprofiler (hastighetspaket; avstängda som standard)
+Inget nedan ändrar standardkörningen (640x384, 209 bildrutor, 3414 s på vårt kort). Det är tre uppmätta celler utöver den, var och en en namngiven profil i `uret.ps1`; de kräver hastighetspaketets motor (releasemotorn plus patcharna 0021, 0023 och 0024, alla avstängda som standard: `docs/YAMALAR.md`). Installera den med `scripts\kur.ps1 -HizPaketi` (ett lokalt zip fungerar med `-MotorZip`) och lägg sedan till `-Profil <name>`; `-Kuru` visar vad som skulle köras.
+
+| Profil | Storlek, längd | Total tid på ett GTX 1050 Ti 4 GB | Status |
+|---|---|---|---|
+| (ingen, standard) | 640x384, upp till 209 bildrutor (8,7 s) | 209 bildrutor: 3414 s | verifierad, oförändrad |
+| `yuksek832` | 832x480, 141 bildrutor (5,9 s) | cirka 55-56 min | användbar, två prompter [uppmätt] |
+| `yuksek832 -Kare 124` | 832x480, 124 bildrutor (5,2 s) | cirka 45-46 min, ingen hastighetsflagga behövs | användbar, två prompter [uppmätt] |
+| `yuksek896` | 896x512, 124 bildrutor (5,2 s) | cirka 56-57,5 min | användbar, två prompter [uppmätt] |
+| `uzun260` | 640x384, 260 bildrutor (10,8 s) | 78 min uppmätt utan den tidiga avslutningen; med den cirka 71-72 min [gissning: inte mätt från början till slut via `uret.ps1`] | villkorad och experimentell |
+
+- **Smal marginal:** vid 832x480 x 141 lämnar minnesgrinden bara en ensiffrig marginal i MB (5,7 och 6,8 MB i de två fullständiga körningarna). Två långa prompter (1520 och 2041 tecken) kontrollerades endast genom att läsa grinden för steg 1 och en del av steg 2, de kördes inte fullt ut: marginal 10,9 och 4,0 MB. Varje annan process som håller kortets minne (webbläsare, andra skärm) kan få den att misslyckas; använd då `-Kare 124` eller standardstorleken [uppmätt, GTX 1050 Ti 4 GB].
+- **`uzun260` är villkorad:** minnesgränsen är mycket snäv (VRAM-topp 3903 av 4096 MiB), användningen av delat minne ökade med 61 och 68 MiB, och det finns ingen referens utan flaggor för bytelikhet, så den erbjuds inte som en vanlig funktion. Patch 0023 godtas bara för denna enda cell.
+- **Erbjuds inte:** 832x480 med 158 eller 175 bildrutor ryms inte; längdsökningen slutade där vid 141 bildrutor. Andra storlekar och antal bildrutor avvisas av `-Profil` (använd standardvägen).
+- Standardkvaliteten är orörd: 6 steg, cfg 1, VAE utan rutor, 17k+5 bildrutor. Där flaggor är på har utdata jämförts byte för byte med videon utan flaggor vid de storlekar där körningen utan flaggor ryms (`docs/YAMALAR.md`); vid 832x480 x 141 och 896x512 x 124 ryms inte körningen utan flaggor, så likheten där vilar på de närmaste cellerna, inte på en direkt jämförelse [uppmätt, läst].
+- Steg 1 i en tvåstegskörning slutar nu så snart den latenta filen är komplett (`VT_ERKEN_CIKIS=0` stänger av det).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Körningsnamn som används inom hakparentes (våra egna körningsnamn, inte file
 - **Test i tom rotmapp återstår:** installations- och körskripten har ännu inte verifierats från en tom mapp med enbart de här instruktionerna; det här avsnittet uppdateras när det testet (inklusive en byte-jämförelse med 56 bildrutor mot referensen) är dokumenterat.
 - Inga genererade videor levereras här.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

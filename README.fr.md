@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Profils de vitesse facultatifs (pack de vitesse ; désactivés par défaut)
+Rien de ce qui suit ne modifie l’exécution par défaut (640x384, 209 images, 3414 s sur notre carte). Ce sont trois cellules mesurées au-delà, chacune étant un profil nommé de `uret.ps1` ; elles demandent le moteur du pack de vitesse (le moteur de la release plus les correctifs 0021, 0023, 0024, tous désactivés par défaut : `docs/YAMALAR.md`). Installez-le avec `scripts\kur.ps1 -HizPaketi` (un zip local fonctionne avec `-MotorZip`), puis ajoutez `-Profil <name>` ; `-Kuru` affiche ce qui serait exécuté.
+
+| Profil | Taille, durée | Temps total sur une GTX 1050 Ti 4 GB | Statut |
+|---|---|---|---|
+| (aucun, par défaut) | 640x384, jusqu’à 209 images (8,7 s) | 209 images : 3414 s | vérifié, inchangé |
+| `yuksek832` | 832x480, 141 images (5,9 s) | environ 55-56 min | utilisable, deux prompts [mesuré] |
+| `yuksek832 -Kare 124` | 832x480, 124 images (5,2 s) | environ 45-46 min, aucun indicateur de vitesse nécessaire | utilisable, deux prompts [mesuré] |
+| `yuksek896` | 896x512, 124 images (5,2 s) | environ 56-57,5 min | utilisable, deux prompts [mesuré] |
+| `uzun260` | 640x384, 260 images (10,8 s) | 78 min mesurées sans la sortie anticipée ; avec elle, environ 71-72 min [estimation : non mesuré de bout en bout via `uret.ps1`] | conditionnel et expérimental |
+
+- **Marge étroite :** à 832x480 x 141, la porte mémoire ne laisse qu’une marge à un chiffre en Mo (5,7 et 6,8 Mo dans les deux exécutions complètes). Deux longs prompts (1520 et 2041 caractères) n’ont été vérifiés qu’en lisant la porte pour l’étape 1 et une partie de l’étape 2, sans exécution complète : marge de 10,9 et 4,0 Mo. Tout autre processus qui occupe la mémoire de la carte (navigateur, second écran) peut la faire échouer ; utilisez alors `-Kare 124` ou la taille par défaut [mesuré, GTX 1050 Ti 4 GB].
+- **`uzun260` est conditionnel :** la limite mémoire est très étroite (pic de VRAM 3903 sur 4096 MiB), l’usage de mémoire partagée a augmenté de 61 et 68 MiB, et il n’existe pas de référence sans indicateur pour l’égalité octet par octet ; il n’est donc pas proposé comme simple fonctionnalité. Le correctif 0023 n’est accepté que pour cette seule cellule.
+- **Non proposé :** 832x480 à 158 ou 175 images ne tient pas ; la recherche de longueur s’est arrêtée à 141 images. Les autres tailles et nombres d’images sont refusés par `-Profil` (utilisez la voie par défaut).
+- La qualité par défaut est intacte : 6 étapes, cfg 1, VAE sans tuiles, 17k+5 images. Là où les indicateurs sont activés, la sortie a été comparée octet par octet à la vidéo sans indicateurs aux tailles où l’exécution sans indicateurs tient (`docs/YAMALAR.md`) ; à 832x480 x 141 et 896x512 x 124, l’exécution sans indicateurs ne tient pas, l’égalité y repose donc sur les cellules les plus proches, non sur une comparaison directe [mesuré, lu].
+- L’étape 1 d’une exécution en deux étapes se termine désormais dès que le fichier latent est complet (`VT_ERKEN_CIKIS=0` le désactive).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Noms d’exécution utilisés entre crochets (nos propres noms d’exécution, p
 - **Test en racine propre en attente :** les scripts d’installation et d’exécution n’ont pas encore été vérifiés depuis un dossier vide en n’utilisant que ces instructions ; cette section sera mise à jour lorsque ce test (y compris une comparaison octet par octet à 56 images avec la référence) sera enregistré.
 - Aucune vidéo générée n’est fournie ici.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## 可选的速度配置(速度包;默认关闭)
+以下内容都不会改变默认运行(640x384、209 帧、在我们的显卡上 3414 秒)。它们是默认之外三个已测量的单元格,每个都是 `uret.ps1` 的一个命名配置;需要速度包引擎(发布版引擎加补丁 0021、0023、0024,均默认关闭:`docs/YAMALAR.md`)。用 `scripts\kur.ps1 -HizPaketi` 安装(本地 zip 可配合 `-MotorZip` 使用),然后加上 `-Profil <name>`;`-Kuru` 会打印将要运行的内容。
+
+| 配置 | 尺寸、长度 | 在 GTX 1050 Ti 4 GB 上的总时间 | 状态 |
+|---|---|---|---|
+| (无,默认) | 640x384,最多 209 帧(8.7 秒) | 209 帧:3414 秒 | 已验证,未改变 |
+| `yuksek832` | 832x480,141 帧(5.9 秒) | 约 55-56 分钟 | 可用,两条提示词 [实测] |
+| `yuksek832 -Kare 124` | 832x480,124 帧(5.2 秒) | 约 45-46 分钟,无需速度标志 | 可用,两条提示词 [实测] |
+| `yuksek896` | 896x512,124 帧(5.2 秒) | 约 56-57.5 分钟 | 可用,两条提示词 [实测] |
+| `uzun260` | 640x384,260 帧(10.8 秒) | 不含提前退出实测 78 分钟;含提前退出约 71-72 分钟 [推测:未通过 `uret.ps1` 端到端测量] | 有条件,实验性 |
+
+- **余量很窄:** 在 832x480 x 141 时,内存门只留下个位数 MB 的余量(两次完整运行分别为 5.7 和 6.8 MB)。两条长提示词(1520 和 2041 个字符)只通过读取步骤 1 和步骤 2 一部分的门来检查,没有完整运行:余量为 10.9 和 4.0 MB。任何其他占用显卡内存的进程(浏览器、第二块显示器)都可能让它失败;这时请用 `-Kare 124` 或默认尺寸 [实测,GTX 1050 Ti 4 GB]。
+- **`uzun260` 是有条件的:** 内存限制非常窄(VRAM 峰值 4096 MiB 中的 3903 MiB),共享内存用量增加了 61 和 68 MiB,而且没有用于字节一致比对的关闭标志的参考,所以不作为普通功能提供。补丁 0023 只对这一个单元格接受。
+- **不提供:** 832x480 在 158 或 175 帧时放不下;长度搜索在那里止于 141 帧。其他尺寸和帧数会被 `-Profil` 拒绝(请用默认路径)。
+- 默认质量不受影响:6 步,cfg 1,无分块 VAE,17k+5 帧。在标志开启的地方,在关闭标志的运行能放下的尺寸上,输出已与关闭标志的视频逐字节比对(`docs/YAMALAR.md`);在 832x480 x 141 和 896x512 x 124 时关闭标志的运行放不下,所以那里的一致性依据最接近的单元格,而不是直接比对 [实测,已读]。
+- 两阶段运行的阶段 1 现在在潜变量文件完整时立即结束(`VT_ERKEN_CIKIS=0` 可将其关闭)。
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Needs: an NVIDIA driver (`nvidia-smi` works; 4 GB of VRAM or more), the CUDA Too
 - **clean-root 测试待完成：** 安装和运行脚本尚未仅按这些说明从空文件夹验证过；当该测试（包括与基准的 56 帧字节比较）记录完成后，本节会随之更新。
 - 这里不附带任何生成的视频。
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

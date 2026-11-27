@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Hồ sơ tốc độ tùy chọn (gói tốc độ; mặc định tắt)
+Không mục nào dưới đây thay đổi lần chạy mặc định (640x384, 209 khung hình, 3414 giây trên card của chúng tôi). Đây là ba ô đã đo nằm ngoài mặc định, mỗi ô là một hồ sơ có tên của `uret.ps1`; chúng cần engine của gói tốc độ (engine bản phát hành cùng các bản vá 0021, 0023, 0024, tất cả mặc định tắt: `docs/YAMALAR.md`). Cài bằng `scripts\kur.ps1 -HizPaketi` (zip cục bộ dùng được với `-MotorZip`), rồi thêm `-Profil <name>`; `-Kuru` in ra những gì sẽ chạy.
+
+| Hồ sơ | Kích thước, độ dài | Tổng thời gian trên GTX 1050 Ti 4 GB | Trạng thái |
+|---|---|---|---|
+| (không có, mặc định) | 640x384, tối đa 209 khung hình (8,7 giây) | 209 khung hình: 3414 giây | đã xác minh, không đổi |
+| `yuksek832` | 832x480, 141 khung hình (5,9 giây) | khoảng 55-56 phút | dùng được, hai prompt [đã đo] |
+| `yuksek832 -Kare 124` | 832x480, 124 khung hình (5,2 giây) | khoảng 45-46 phút, không cần cờ tốc độ | dùng được, hai prompt [đã đo] |
+| `yuksek896` | 896x512, 124 khung hình (5,2 giây) | khoảng 56-57,5 phút | dùng được, hai prompt [đã đo] |
+| `uzun260` | 640x384, 260 khung hình (10,8 giây) | 78 phút đo được khi không có thoát sớm; với thoát sớm khoảng 71-72 phút [phỏng đoán: chưa đo trọn vẹn qua `uret.ps1`] | có điều kiện và thử nghiệm |
+
+- **Biên hẹp:** ở 832x480 x 141, cổng bộ nhớ chỉ chừa biên một chữ số MB (5,7 và 6,8 MB trong hai lần chạy đầy đủ). Hai prompt dài (1520 và 2041 ký tự) chỉ được kiểm tra bằng cách đọc cổng cho bước 1 và một phần bước 2, không chạy đầy đủ: biên 10,9 và 4,0 MB. Bất kỳ tiến trình nào khác đang giữ bộ nhớ card (trình duyệt, màn hình thứ hai) có thể làm lần chạy thất bại; khi đó hãy dùng `-Kare 124` hoặc kích thước mặc định [đã đo, GTX 1050 Ti 4 GB].
+- **`uzun260` có điều kiện:** giới hạn bộ nhớ rất hẹp (đỉnh VRAM 3903 trên 4096 MiB), mức dùng bộ nhớ dùng chung tăng 61 và 68 MiB, và không có tham chiếu không cờ để so sánh bằng nhau từng byte, nên nó không được cung cấp như một tính năng thông thường. Bản vá 0023 chỉ được chấp nhận cho riêng ô này.
+- **Không cung cấp:** 832x480 ở 158 hoặc 175 khung hình không vừa; việc dò độ dài kết thúc ở 141 khung hình tại đó. `-Profil` từ chối các kích thước và số khung hình khác (hãy dùng đường mặc định).
+- Chất lượng mặc định không bị động đến: 6 bước, cfg 1, VAE không chia ô, 17k+5 khung hình. Ở nơi cờ được bật, đầu ra đã được so sánh từng byte với video không cờ tại các kích thước mà lần chạy không cờ vừa (`docs/YAMALAR.md`); ở 832x480 x 141 và 896x512 x 124 lần chạy không cờ không vừa, nên sự bằng nhau ở đó dựa trên các ô gần nhất, không phải so sánh trực tiếp [đã đo, đã đọc].
+- Giai đoạn 1 của lần chạy hai giai đoạn giờ kết thúc ngay khi tệp tiềm ẩn hoàn tất (`VT_ERKEN_CIKIS=0` tắt việc này).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Tên các lần chạy được dùng trong ngoặc vuông (là tên lần chạ
 - **Bài kiểm tra clean-root chưa thực hiện:** các script cài đặt và chạy chưa được xác minh từ một thư mục trống chỉ bằng các hướng dẫn này; mục này sẽ được cập nhật khi bài kiểm tra đó (gồm cả phép so sánh byte 56 khung hình với bản tham chiếu) được ghi nhận.
 - Không có video được tạo ra nào đi kèm ở đây.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

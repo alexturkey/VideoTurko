@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Profil kelajuan pilihan (pek kelajuan; dimatikan secara lalai)
+Tiada satu pun di bawah mengubah larian lalai (640x384, 209 bingkai, 3414 s pada kad kami). Ini tiga sel terukur di luarnya, masing-masing profil bernama bagi `uret.ps1`; semuanya memerlukan enjin pek kelajuan (enjin keluaran ditambah tampalan 0021, 0023, 0024, semuanya dimatikan secara lalai: `docs/YAMALAR.md`). Pasang dengan `scripts\kur.ps1 -HizPaketi` (zip tempatan berfungsi dengan `-MotorZip`), kemudian tambah `-Profil <name>`; `-Kuru` memaparkan apa yang akan dijalankan.
+
+| Profil | Saiz, panjang | Jumlah masa pada GTX 1050 Ti 4 GB | Status |
+|---|---|---|---|
+| (tiada, lalai) | 640x384, sehingga 209 bingkai (8.7 s) | 209 bingkai: 3414 s | disahkan, tidak berubah |
+| `yuksek832` | 832x480, 141 bingkai (5.9 s) | kira-kira 55-56 min | boleh digunakan, dua prompt [diukur] |
+| `yuksek832 -Kare 124` | 832x480, 124 bingkai (5.2 s) | kira-kira 45-46 min, tanpa bendera kelajuan | boleh digunakan, dua prompt [diukur] |
+| `yuksek896` | 896x512, 124 bingkai (5.2 s) | kira-kira 56-57.5 min | boleh digunakan, dua prompt [diukur] |
+| `uzun260` | 640x384, 260 bingkai (10.8 s) | 78 min diukur tanpa keluar awal; dengan keluar awal kira-kira 71-72 min [anggaran: tidak diukur hujung ke hujung melalui `uret.ps1`] | bersyarat dan eksperimen |
+
+- **Margin sempit:** pada 832x480 x 141 pintu memori hanya meninggalkan ruang satu digit MB (5.7 dan 6.8 MB dalam dua larian penuh). Dua prompt panjang (1520 dan 2041 aksara) hanya disemak dengan membaca pintu bagi langkah 1 dan sebahagian langkah 2, tidak dijalankan sepenuhnya: ruang 10.9 dan 4.0 MB. Mana-mana proses lain yang memegang memori kad (pelayar, skrin kedua) boleh menyebabkannya gagal; jika begitu gunakan `-Kare 124` atau saiz lalai [diukur, GTX 1050 Ti 4 GB].
+- **`uzun260` bersyarat:** had memori sangat sempit (puncak VRAM 3903 daripada 4096 MiB), penggunaan memori kongsi meningkat 61 dan 68 MiB, dan tiada rujukan tanpa bendera untuk kesamaan bait, jadi ia tidak ditawarkan sebagai ciri biasa. Tampalan 0023 diterima untuk sel ini sahaja.
+- **Tidak ditawarkan:** 832x480 pada 158 atau 175 bingkai tidak muat; carian panjang di sana berakhir pada 141 bingkai. Saiz dan bilangan bingkai lain ditolak oleh `-Profil` (gunakan laluan lalai).
+- Kualiti lalai tidak disentuh: 6 langkah, cfg 1, VAE tanpa jubin, 17k+5 bingkai. Di mana bendera dihidupkan, output dibandingkan bait demi bait dengan video tanpa bendera pada saiz yang muat untuk larian tanpa bendera (`docs/YAMALAR.md`); pada 832x480 x 141 dan 896x512 x 124 larian tanpa bendera tidak muat, jadi kesamaan di sana bergantung pada sel terdekat, bukan perbandingan langsung [diukur, dibaca].
+- Peringkat 1 larian dua peringkat kini tamat sebaik sahaja fail laten lengkap (`VT_ERKEN_CIKIS=0` mematikannya).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Nama larian yang digunakan dalam kurungan (nama larian dalaman kami, bukan fail 
 - **Ujian clean-root belum dibuat:** skrip pemasangan dan larian belum disahkan daripada folder kosong hanya dengan arahan ini; bahagian ini akan dikemas kini apabila ujian itu (termasuk perbandingan bait 56 bingkai dengan rujukan) direkodkan.
 - Tiada video yang dijana disertakan di sini.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

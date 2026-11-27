@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Optionele snelheidsprofielen (snelheidspakket; standaard uit)
+Niets hieronder verandert de standaardrun (640x384, 209 frames, 3414 s op onze kaart). Het zijn drie gemeten cellen daarbuiten, elk een benoemd profiel van `uret.ps1`; ze hebben de snelheidspakket-engine nodig (de release-engine plus de patches 0021, 0023 en 0024, allemaal standaard uit: `docs/YAMALAR.md`). Installeer die met `scripts\kur.ps1 -HizPaketi` (een lokale zip werkt met `-MotorZip`) en voeg dan `-Profil <name>` toe; `-Kuru` toont wat er zou draaien.
+
+| Profiel | Grootte, lengte | Totale tijd op een GTX 1050 Ti 4 GB | Status |
+|---|---|---|---|
+| (geen, standaard) | 640x384, tot 209 frames (8,7 s) | 209 frames: 3414 s | geverifieerd, ongewijzigd |
+| `yuksek832` | 832x480, 141 frames (5,9 s) | ongeveer 55-56 min | bruikbaar, twee prompts [gemeten] |
+| `yuksek832 -Kare 124` | 832x480, 124 frames (5,2 s) | ongeveer 45-46 min, geen snelheidsvlag nodig | bruikbaar, twee prompts [gemeten] |
+| `yuksek896` | 896x512, 124 frames (5,2 s) | ongeveer 56-57,5 min | bruikbaar, twee prompts [gemeten] |
+| `uzun260` | 640x384, 260 frames (10,8 s) | 78 min gemeten zonder de vroege uitstap; daarmee ongeveer 71-72 min [gok: niet van begin tot eind via `uret.ps1` gemeten] | voorwaardelijk en experimenteel |
+
+- **Krappe marge:** bij 832x480 x 141 laat de geheugenpoort een marge van slechts enkele MB over (5,7 en 6,8 MB in de twee volledige runs). Twee lange prompts (1520 en 2041 tekens) zijn alleen gecontroleerd door de poort voor stap 1 en een deel van stap 2 te lezen, niet volledig uitgevoerd: marge 10,9 en 4,0 MB. Elk ander proces dat kaartgeheugen vasthoudt (browser, tweede scherm) kan de run laten mislukken; gebruik dan `-Kare 124` of de standaardgrootte [gemeten, GTX 1050 Ti 4 GB].
+- **`uzun260` is voorwaardelijk:** de geheugengrens is zeer krap (VRAM-piek 3903 van 4096 MiB), het gebruik van gedeeld geheugen nam met 61 en 68 MiB toe en er bestaat geen referentie zonder vlaggen voor bytegelijkheid, daarom wordt het niet als gewone functie aangeboden. Patch 0023 wordt alleen voor deze ene cel geaccepteerd.
+- **Niet aangeboden:** 832x480 met 158 of 175 frames past niet; de lengtezoektocht eindigde daar bij 141 frames. Andere groottes en framecijfers worden door `-Profil` geweigerd (gebruik het standaardpad).
+- De standaardkwaliteit blijft onaangetast: 6 stappen, cfg 1, VAE zonder tegels, 17k+5 frames. Waar vlaggen aan staan, is de uitvoer byte voor byte vergeleken met de video zonder vlaggen bij de groottes waar de run zonder vlaggen past (`docs/YAMALAR.md`); bij 832x480 x 141 en 896x512 x 124 past de run zonder vlaggen niet, dus daar berust de gelijkheid op de dichtstbijzijnde cellen, niet op een directe vergelijking [gemeten, gelezen].
+- Fase 1 van een run in twee fasen eindigt nu zodra het latente bestand compleet is (`VT_ERKEN_CIKIS=0` zet dat uit).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Gebruikte runnamen tussen haakjes (onze eigen runnamen, geen bestanden in deze r
 - **Clean-root-test staat nog open:** de installatie- en runscripts zijn nog niet vanuit een lege map geverifieerd met alleen deze instructies; deze sectie wordt bijgewerkt wanneer die test (inclusief een bytevergelijking van 56 frames met de referentie) is vastgelegd.
 - Hier worden geen gegenereerde video's meegeleverd.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Volitelné rychlostní profily (rychlostní balíček; ve výchozím stavu vypnuté)
+Nic z následujícího nemění výchozí běh (640x384, 209 snímků, 3414 s na naší kartě). Jsou to tři změřené buňky nad ním, každá jako pojmenovaný profil `uret.ps1`; vyžadují engine rychlostního balíčku (release engine plus záplaty 0021, 0023, 0024, všechny ve výchozím stavu vypnuté: `docs/YAMALAR.md`). Nainstalujete ho příkazem `scripts\kur.ps1 -HizPaketi` (lokální zip funguje s `-MotorZip`) a poté přidáte `-Profil <name>`; `-Kuru` vypíše, co by se spustilo.
+
+| Profil | Velikost, délka | Celkový čas na GTX 1050 Ti 4 GB | Stav |
+|---|---|---|---|
+| (žádný, výchozí) | 640x384, až 209 snímků (8,7 s) | 209 snímků: 3414 s | ověřeno, beze změny |
+| `yuksek832` | 832x480, 141 snímků (5,9 s) | přibližně 55-56 min | použitelné, dva prompty [změřeno] |
+| `yuksek832 -Kare 124` | 832x480, 124 snímků (5,2 s) | přibližně 45-46 min, rychlostní příznak není potřeba | použitelné, dva prompty [změřeno] |
+| `yuksek896` | 896x512, 124 snímků (5,2 s) | přibližně 56-57,5 min | použitelné, dva prompty [změřeno] |
+| `uzun260` | 640x384, 260 snímků (10,8 s) | 78 min změřeno bez předčasného ukončení; s ním přibližně 71-72 min [odhad: neměřeno od začátku do konce přes `uret.ps1`] | podmíněné a experimentální |
+
+- **Úzká rezerva:** při 832x480 x 141 nechává paměťová brána jen jednocifernou rezervu v MB (5,7 a 6,8 MB ve dvou úplných bězích). Dva dlouhé prompty (1520 a 2041 znaků) byly ověřeny jen čtením brány pro krok 1 a část kroku 2, ne úplným během: rezerva 10,9 a 4,0 MB. Jakýkoli jiný proces, který drží paměť karty (prohlížeč, druhý monitor), může běh shodit; pak použijte `-Kare 124` nebo výchozí velikost [změřeno, GTX 1050 Ti 4 GB].
+- **`uzun260` je podmíněný:** paměťový limit je velmi úzký (špička VRAM 3903 ze 4096 MiB), využití sdílené paměti vzrostlo o 61 a 68 MiB a pro bajtovou shodu neexistuje reference bez příznaků, proto se nenabízí jako běžná funkce. Záplata 0023 se přijímá jen pro tuto jednu buňku.
+- **Nenabízeno:** 832x480 při 158 nebo 175 snímcích se nevejde; hledání délky tam skončilo na 141 snímcích. Jiné velikosti a počty snímků `-Profil` odmítne (použijte výchozí cestu).
+- Výchozí kvalita zůstává nedotčena: 6 kroků, cfg 1, VAE bez dlaždic, 17k+5 snímků. Kde jsou příznaky zapnuty, výstup byl porovnán bajt po bajtu s videem bez příznaků v těch velikostech, kde se běh bez příznaků vejde (`docs/YAMALAR.md`); u 832x480 x 141 a 896x512 x 124 se běh bez příznaků nevejde, takže tam shoda stojí na nejbližších buňkách, ne na přímém srovnání [změřeno, přečteno].
+- Fáze 1 dvoufázového běhu nyní končí, jakmile je latentní soubor kompletní (`VT_ERKEN_CIKIS=0` to vypne).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Názvy běhů použité v hranatých závorkách (naše vlastní názvy, nejsou 
 - **Test v čisté složce teprve čeká:** instalační a spouštěcí skripty zatím nebyly ověřeny z prázdné složky jen podle těchto pokynů; oddíl bude aktualizován, až bude tento test (včetně bajtového porovnání 56 snímků s referencí) zaznamenán.
 - Vygenerovaná videa zde nejsou dodávána.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

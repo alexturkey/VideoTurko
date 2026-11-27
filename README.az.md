@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## İstəyə bağlı sürət profilləri (sürət paketi; standart olaraq söndürülüb)
+Aşağıdakıların heç biri standart işə salmanı dəyişmir (640x384, 209 kadr, kartımızda 3414 s). Bunlar ondan kənarda ölçülmüş üç xanadır, hər biri `uret.ps1`-in adlandırılmış profilidir; sürət paketi mühərrikini tələb edirlər (release mühərriki üstəgəl 0021, 0023, 0024 yamaları, hamısı standart olaraq söndürülüb: `docs/YAMALAR.md`). Onu `scripts\kur.ps1 -HizPaketi` ilə quraşdırın (lokal zip `-MotorZip` ilə işləyir), sonra `-Profil <name>` əlavə edin; `-Kuru` nəyin işləyəcəyini göstərir.
+
+| Profil | Ölçü, uzunluq | GTX 1050 Ti 4 GB üzərində ümumi vaxt | Status |
+|---|---|---|---|
+| (yoxdur, standart) | 640x384, 209 kadra qədər (8,7 s) | 209 kadr: 3414 s | yoxlanılıb, dəyişməyib |
+| `yuksek832` | 832x480, 141 kadr (5,9 s) | təxminən 55-56 dəq | istifadə oluna bilər, iki prompt [ölçülüb] |
+| `yuksek832 -Kare 124` | 832x480, 124 kadr (5,2 s) | təxminən 45-46 dəq, sürət bayrağı lazım deyil | istifadə oluna bilər, iki prompt [ölçülüb] |
+| `yuksek896` | 896x512, 124 kadr (5,2 s) | təxminən 56-57,5 dəq | istifadə oluna bilər, iki prompt [ölçülüb] |
+| `uzun260` | 640x384, 260 kadr (10,8 s) | erkən çıxış olmadan 78 dəq ölçülüb; onunla təxminən 71-72 dəq [təxmin: `uret.ps1` vasitəsilə başdan sona ölçülməyib] | şərti və eksperimental |
+
+- **Dar ehtiyat:** 832x480 x 141-də yaddaş qapısı yalnız təkrəqəmli MB ehtiyat saxlayır (iki tam işə salmada 5,7 və 6,8 MB). İki uzun prompt (1520 və 2041 simvol) yalnız 1-ci addım və 2-ci addımın bir hissəsi üçün qapını oxumaqla yoxlanıb, tam işə salınmayıb: ehtiyat 10,9 və 4,0 MB. Kartın yaddaşını tutan hər hansı başqa proses (brauzer, ikinci ekran) onu uğursuz edə bilər; onda `-Kare 124` və ya standart ölçüdən istifadə edin [ölçülüb, GTX 1050 Ti 4 GB].
+- **`uzun260` şərtidir:** yaddaş həddi çox dardır (VRAM zirvəsi 4096 MiB-dən 3903), paylaşılan yaddaş istifadəsi 61 və 68 MiB artıb və bayt bərabərliyi üçün bayraqsız istinad yoxdur, ona görə də adi funksiya kimi təklif olunmur. 0023 yaması yalnız bu bir xana üçün qəbul edilib.
+- **Təklif olunmur:** 832x480 158 və ya 175 kadrda yerləşmir; uzunluq axtarışı orada 141 kadrda bitdi. Digər ölçüləri və kadr saylarını `-Profil` rədd edir (standart yoldan istifadə edin).
+- Standart keyfiyyət toxunulmazdır: 6 addım, cfg 1, kafelsiz VAE, 17k+5 kadr. Bayraqların açıq olduğu yerlərdə çıxış, bayraqsız işə salmanın yerləşdiyi ölçülərdə bayraqsız videoyla bayt-bayt müqayisə edilib (`docs/YAMALAR.md`); 832x480 x 141 və 896x512 x 124-də bayraqsız işə salma yerləşmir, ona görə orada bərabərlik birbaşa müqayisəyə yox, ən yaxın xanalara əsaslanır [ölçülüb, oxunub].
+- İki mərhələli işə salmanın 1-ci mərhələsi indi latent fayl tamamlanan kimi bitir (`VT_ERKEN_CIKIS=0` bunu söndürür).
+
 ## Disk layout and removal
 
 > Translation of this section is pending; the English text is authoritative. / Bu bölümün çevirisi bekliyor; İngilizce metin esastır.
@@ -249,4 +266,4 @@ Mötərizələrdə istifadə olunan işə salınma adları (öz adlarımızdır,
 - **Təmiz-kök testi gözlənilir:** quraşdırma və işə salma skriptləri yalnız bu təlimatlarla boş qovluqdan hələ yoxlanılmayıb; bu test (istinada qarşı 56 kadrlıq bayt müqayisəsi daxil) qeyd olunduqda bu bölmə yenilənəcək.
 - Burada heç bir yaradılmış video verilmir.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->

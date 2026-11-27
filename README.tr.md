@@ -81,7 +81,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 ```
 
 ## İsteğe bağlı hız profilleri (hız paketi; varsayılan kapalı)
-Aşağıdakilerin hiçbiri varsayılan çalıştırmayı değiştirmez (640x384, 209 kare, kartımızda 3414 sn). Bunlar onun ötesinde ölçülmüş üç hücredir; her biri `uret.ps1`'in adlı bir profili. Hız paketi motoru gerekir (release motoru + 0021, 0023, 0024 yamaları, hepsi varsayılan kapalı: `docs/YAMALAR.md`). `scripts\kur.ps1 -HizPaketi` ile kurulur (yerel zip için `-MotorZip`), sonra `-Profil <ad>` eklenir; `-Kuru` ne çalışacağını yazar.
+Aşağıdakilerin hiçbiri varsayılan çalıştırmayı değiştirmez (640x384, 209 kare, kartımızda 3414 sn). Bunlar onun ötesinde ölçülmüş üç hücredir; her biri `uret.ps1`'in adlı bir profili. Hız paketi motoru gerekir (release motoru + 0021, 0023, 0024 yamaları, hepsi varsayılan kapalı: `docs/YAMALAR.md`). `scripts\kur.ps1 -HizPaketi` ile kurulur (yerel zip için `-MotorZip`), sonra `-Profil <name>` eklenir; `-Kuru` ne çalışacağını yazar.
 
 | Profil | Boyut, uzunluk | GTX 1050 Ti 4 GB'ta toplam süre | Durum |
 |---|---|---|---|
@@ -259,4 +259,4 @@ Köşeli parantezde geçen koşu adları (bize ait koşu adları, bu depoda dosy
 - **Temiz kök testi bekliyor:** kurulum ve çalıştırma betikleri boş klasörde yalnız bu talimatla henüz doğrulanmadı; test (56 karede referansa bayt kıyası dahil) kaydedilince bu bölüm güncellenir.
 - Çıktı videolar depoda yok.
 
-<!-- i18n-source: README.md sha256:57932e241b79 -->
+<!-- i18n-source: README.md sha256:67497404d89b -->
