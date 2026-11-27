@@ -36,12 +36,12 @@ $UyariBosGiB = 40   # 32-40 GiB arasi bos yer: HATA degil UYARI (pay dar; ihtiya
 $MinBosGiB = 32   # 29,31 GiB model + motor/CUDA zip ve acma payi (en kotu an ~31,4 GiB) [olctum: modeller.json boyutlari + dist/ zip boyutlari]
 
 # --- Zip adlari paketleme betigiyle ayni (motor adindaki surum numarasi yayin surumudur; VT_MOTOR_ZIP_AD ile ezilir).
-# --- Release adresleri: release henuz yayinlanmadi; adres ve sha256 YER TUTUCUDUR (yayin sonrasi doldurulur).
-# --- Release URLs/sha256 are PLACEHOLDERS until the release exists; override with VT_MOTOR_URL / VT_MOTOR_SHA256 / VT_CUDA_URL / VT_CUDA_SHA256.
+# --- Release adresleri: v0.1.0 release'inin (yayinlandi) motor ve CUDA zip adresleri ve sha256'lari; VT_MOTOR_URL / VT_MOTOR_SHA256 / VT_CUDA_URL / VT_CUDA_SHA256 ile ezilebilir.
+# --- Release URLs and sha256 of the published v0.1.0 engine and CUDA zips; override with VT_MOTOR_URL / VT_MOTOR_SHA256 / VT_CUDA_URL / VT_CUDA_SHA256.
 $ZipMotor = @{ ad = $(if ($env:VT_MOTOR_ZIP_AD) { $env:VT_MOTOR_ZIP_AD } else { 'videoturko-motor-0.1.0-win64-cuda12.8-sm61.zip' }); url = $(if ($env:VT_MOTOR_URL) { $env:VT_MOTOR_URL } else { 'https://github.com/alexturkey/VideoTurko/releases/download/v0.1.0/videoturko-motor-0.1.0-win64-cuda12.8-sm61.zip' }); sha = $(if ($env:VT_MOTOR_SHA256) { $env:VT_MOTOR_SHA256 } else { '7d28ff900ef4799f75cbe91c39e0a7b260f0207a7e2a4ebd3d8450590b79a64d' }) }
 $ZipCuda = @{ ad = 'videoturko-cuda-runtime-12.8-win64.zip'; url = $(if ($env:VT_CUDA_URL) { $env:VT_CUDA_URL } else { 'https://github.com/alexturkey/VideoTurko/releases/download/v0.1.0/videoturko-cuda-runtime-12.8-win64.zip' }); sha = $(if ($env:VT_CUDA_SHA256) { $env:VT_CUDA_SHA256 } else { '344a0b04f043fb9cccdfe38ec77716afb59bafb894f11f0fac2365f151777355' }) }
 
-# Hiz paketi motoru (v0.1.4, istege bagli, -HizPaketi): ayni release motoru + yama 0021/0023/0024 (varsayilan kapali). Adres/sha256 release yayinlaninca gecerli olur; yerel zip icin -MotorZip.
+# Hiz paketi motoru (v0.1.4, istege bagli, -HizPaketi): ayni release motoru + yama 0021/0023/0024 (varsayilan kapali). v0.1.4 release'inde yayinlandi (adres 200, sha256 release ile ayni); yerel zip icin -MotorZip.
 if ($HizPaketi -and -not $env:VT_MOTOR_URL) {
     $ZipMotor = @{ ad = 'videoturko-motor-0.1.4-hiz-win64-cuda12.8-sm61.zip'; url = 'https://github.com/alexturkey/VideoTurko/releases/download/v0.1.4/videoturko-motor-0.1.4-hiz-win64-cuda12.8-sm61.zip'; sha = 'baa168eab0589ca28e1ad6bc86d7059ec260ef8900b93f431ea1959ce9425b8d' }
 }
