@@ -392,6 +392,22 @@ function Adim-Kontrol {
     Say 'First video (56 frames, about 11 min on a GTX 1050 Ti), same command. Longer: -Kare 141 or 209 (209 = about 57 min).'
 }
 
+function Lisans-Koruma {
+    # Ajan korkulugu (kolaylik ve caydirici, KANIT DEGIL: DURUM.md'yi ajan da yazabilir): -LisansKabul verilmis ve girdi yonlendirilmisse
+    # (ajan/betik gibi), kok klasordeki DURUM.md'de kullanicinin sozunu tasiyan bir "LISANS-KABUL: <soz> | <saat>" satiri olmali.
+    # Terminalde elle yazan insan (girdi yonlendirilmemis) ve CI (VT_CI=1) etkilenmez. Yalniz bu betik; modelleri_indir.ps1'i dogrudan cagirmayi kapsamaz.
+    if ($LisansKabul -and $env:VT_CI -ne '1') {
+        $yonlendirilmis = $true
+        try { $yonlendirilmis = [Console]::IsInputRedirected } catch { }
+        if ($yonlendirilmis) {
+            $durumYol = Join-Path $Root 'DURUM.md'
+            $iz = $false
+            if (Test-Path -LiteralPath $durumYol) { $iz = [bool](Select-String -LiteralPath $durumYol -Pattern '^\s*(?:[-*]\s*)?LISANS-KABUL:\s*[^<\s]\S{2,}' -Quiet) }
+            if (-not $iz) { Say '[VT-E-LISANS] -LisansKabul verildi ama girdi yonlendirilmis (ajan/betik gibi gorunuyor) ve kok klasordeki DURUM.md icinde kullanicinin sozunu tasiyan "LISANS-KABUL: <soz> | <saat>" satiri yok: lisansi (docs\LISANS_KABUL.txt) kullaniciya gosterin, acik "evet" sozunu alin, o satiri yazin, sonra yeniden calistirin. Bu bir kolaylik/caydirici, kanit degil; CI icin VT_CI=1. Model indirilmedi.'; exit 2 }
+        }
+    }
+}
+if (-not $Kuru -and ($Adim -contains 'model')) { Lisans-Koruma }   # motor indirmeden ve GPU isinden once reddet
 if (-not $Kuru) { New-Item -ItemType Directory -Force (Join-Path $Root 'runs') | Out-Null }   # -Kuru yan etkisiz: hicbir klasor/dosya olusturulmaz
 foreach ($a in $Adim) {
     Dur-Kontrol
