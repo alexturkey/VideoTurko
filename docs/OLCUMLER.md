@@ -95,3 +95,19 @@ Karar: 8 GB alti kartta (6 GB dahil; ya da VRAM okunamazsa) `-EndImg` verilince 
 Girdi kareleri: U209 videosunun 0., 55. ve 174. kareleri (FLF 56: 0 -> 55, FLF 175: 0 -> 174); istem U209 istemi.
 `GGML_CUDA_CUBLAS_COMPUTE_TYPE=f32` bu kartta (6.1) varsayilan KAPALI ve zorla kosulmadi: kod okumasina gore cuBLAS yolu sm61'de f32 hesapliyor, ama bf16 condition_proj yolu degisebilecegi icin kapali tutuldu [okudum; etkisi: denenmedi].
 Olculmeyen: `-EndImg` tek basina (`-InitImg` olmadan); FLF 8 GB ve ustu kartta (12 GB'ta 141 kare FLF gecti: §8, dis rapor).
+
+## 10. Speed pack: optional high-resolution and long cells (OUR MEASUREMENT, GTX 1050 Ti 4 GB, 2026-11-25 to 27)
+Patches 0021, 0023 and 0024 (`docs/YAMALAR.md`), all off by default. Same quality settings (6 steps, cfg 1, tile-less VAE, seed 42). Times are the whole run (two processes). One machine, two prompts per cell unless noted [measured].
+
+| Cell | Length | Stage 1 flag | Stage 2 flag | Total time | Note |
+|---|---|---|---|---|---|
+| 640x384 x 209 (default) | 8.7 s | none | none | 3414 s | verified, unchanged |
+| 832x480 x 124 | 5.2 s | none | none | 45-46 min | plain engine |
+| 832x480 x 141 | 5.9 s | `SD_ATTN_HEAD_QKV=1` | `SD_VAE_BLOCK_SPLIT=2` | 55-56 min | headroom at the sampling memory gate 5.7 and 6.8 MB (two full runs) |
+| 896x512 x 124 | 5.2 s | `SD_ATTN_HEAD_QKV=1` | `SD_VAE_BLOCK_SPLIT=2` | 56-57.5 min | |
+| 640x384 x 260 | 10.8 s | `SD_ATTN_HEAD_QKV=1` | `SD_VRAM_SHORT_OK_MB=32` (+ margins 1) | 78.4 min without the early exit | VRAM peak 3903 / 4096 MiB, shared memory +61 / +68 MiB; conditional |
+
+- Long prompts at 832x480 x 141: 1520 and 2041 characters were checked by reading the memory gate only (all of step 1 and the first two blocks of step 2, no full run): no failed gate, headroom 10.9 and 4.0 MB. Not a full-run result.
+- 832x480 at 158 and 175 frames does not fit with these patches; not offered.
+- Byte checks: with the flags on, 56 / 209 / 243 frames at 640x384 and 832x480 x 124 are byte-identical to the flag-off result; the 260-frame decode is repeatable (two runs, same video) but has no flag-off reference. At 832x480 x 141 and 896x512 x 124 the flag-off run does not fit, so a direct comparison is impossible.
+- The `uret.ps1 -Profil` wiring and the engine zip were checked by dry run and an install test; no new GPU run was made for them.

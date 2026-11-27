@@ -80,6 +80,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 141 -Kuru
 ```
 
+## Optional speed profiles (speed pack; off by default)
+Nothing below changes the default run (640x384, 209 frames, 3414 s on our card). These are three measured cells beyond it, each one a named profile of `uret.ps1`; they need the speed-pack engine (the release engine plus patches 0021, 0023, 0024, all off by default: `docs/YAMALAR.md`). Install it with `scripts\kur.ps1 -HizPaketi` (a local zip works with `-MotorZip`), then add `-Profil <name>`; `-Kuru` prints what would run.
+
+| Profile | Size, length | Total time on a GTX 1050 Ti 4 GB | Status |
+|---|---|---|---|
+| (none, default) | 640x384, up to 209 frames (8.7 s) | 3414 s for 209 frames | verified, unchanged |
+| `yuksek832` | 832x480, 141 frames (5.9 s) | about 55-56 min | usable, two prompts [measured] |
+| `yuksek832 -Kare 124` | 832x480, 124 frames (5.2 s) | about 45-46 min, no speed flag needed | usable, two prompts [measured] |
+| `yuksek896` | 896x512, 124 frames (5.2 s) | about 56-57.5 min | usable, two prompts [measured] |
+| `uzun260` | 640x384, 260 frames (10.8 s) | 78 min measured without the early exit; with it about 71-72 min [guess: not measured end to end through `uret.ps1`] | conditional and experimental |
+
+- **Narrow margin:** at 832x480 x 141 the memory gate keeps single-digit MB of headroom (5.7 and 6.8 MB in the two full runs). Two long prompts (1520 and 2041 characters) were checked only by reading the gate for step 1 and part of step 2, not run in full: headroom 10.9 and 4.0 MB. Any other process holding card memory (browser, second display) can make it fail; then use `-Kare 124` or the default size [measured, GTX 1050 Ti 4 GB].
+- **`uzun260` is conditional:** the memory limit is very narrow (VRAM peak 3903 of 4096 MiB), the shared-memory use grew by 61 and 68 MiB, and no flag-off reference exists for byte equality, so it is not offered as a plain feature. Patch 0023 is accepted for this one cell only.
+- **Not offered:** 832x480 at 158 or 175 frames does not fit; the length search ended at 141 frames there. Other sizes and frame counts are refused by `-Profil` (use the default path).
+- Default quality is untouched: 6 steps, cfg 1, tile-less VAE, 17k+5 frames. Where flags are on, the output was checked against the flag-off video byte for byte at the sizes where the flag-off run fits (`docs/YAMALAR.md`); at 832x480 x 141 and 896x512 x 124 the flag-off run does not fit, so equality there rests on the nearest cells, not on a direct comparison [measured, read].
+- Stage 1 of a two-stage run now ends as soon as the latent file is complete (`VT_ERKEN_CIKIS=0` turns that off).
+
 ## Disk layout and removal
 Everything VideoTurko installs lives in one root folder, `<VT_ROOT>` (default: the folder you extracted; set the environment variable `VT_ROOT` before running the scripts to use another place). Nothing is written to the system PATH, the user profile or the registry.
 
