@@ -28,7 +28,7 @@ Windows 10/11 64-bit, NVIDIA GPU with 4 GB or more (tested: GTX 1050 Ti 4 GB; Di
 ## Hard rules (do not break them)
 - **Quality is fixed:** 6 steps, cfg 1, 24 fps, seed 42, same model and quantization; size 640x384 by default. Never lower them to save time or memory. `-W`/`-H` may only keep or raise the picture area (multiples of 32, area at least 640x384), never shrink it.
 - **No tiled VAE:** never add `--vae-tiling` or `--temporal-tiling`. A log line `retrying with temporal tiling` means the output is invalid; run again, do not accept it.
-- **Frame counts follow 17k+5:** 56, 73, 90, 107, 124, 141, 158, 175, 192, 209. Any other number is rounded up by the engine. With `-InitImg` the cap is 192 frames; with `-EndImg` 175 frames on cards under 8 GB (192 on 8 GB+ cards, not measured by us).
+- **Frame counts follow 17k+5:** 39, 56, 73, 90, 107, 124, 141, 158, 175, 192, 209. Any other number is rounded up by the engine. With `-InitImg` the cap is 192 frames; with `-EndImg` 175 frames on cards under 8 GB (192 on 8 GB+ cards, not measured by us).
 - **One GPU job at a time.** Close other GPU programs. About 10-11 GB RAM is used; close browsers.
 - **Patches are LF** (`.gitattributes` protects them). Do not convert them to CRLF; their hashes matter.
 - **Evidence rule:** write "works" only for something you saw run in an empty folder using only these instructions. Label claims as measured / read from a file / guess.

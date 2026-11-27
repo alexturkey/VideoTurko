@@ -33,7 +33,7 @@ VideoTurko : correctifs mémoire pour stable-diffusion.cpp et recettes pour exé
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` suit la grille 17k+5 (56, 73, ... 192, 209) ; 209 par défaut (8,7 s), la plus longue durée que nous couvrons. Le VAE s’exécute dans un processus séparé, jamais par tuiles [une exécution réelle du moteur via `uret.ps1` avec le binaire de la version publiée, VAE en processus séparé, a réussi lors de l’exécution U209].
+   `-Kare` suit la grille 17k+5 (39, 56, 73, ... 192, 209) ; 209 par défaut (8,7 s), la plus longue durée que nous couvrons. Le VAE s’exécute dans un processus séparé, jamais par tuiles [une exécution réelle du moteur via `uret.ps1` avec le binaire de la version publiée, VAE en processus séparé, a réussi lors de l’exécution U209].
 
    Guide d’écriture du prompt : [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (modèle du plan-séquence unique, tranches de temps égales, deux exemples complets).
 
@@ -194,7 +194,7 @@ Cette porte ne vérifie pas la cohérence du mouvement (sauts d’échelle ou de
 3. Bruit normalisé par la texture, `scripts/doku_norm.py` (la version de ce dépôt) : N = résidu médian / texture de Sobel, toutes les 6 images. **Note d’échelle :** dans cette version, les 10 clips mesurés donnent N = 0,034-0,052 (tableau dans `docs/KAPILAR.md` ; le dernier quart de F192/F209V2 atteint 0,062) et le seuil de la porte supplémentaire est N <= 0,065. Une autre implémentation a mesuré 0,028-0,036 sur les mêmes clips, donc les seuils ne sont PAS interchangeables d’une version à l’autre. Sur des textures très fines (rangées d’herbe), le N propre était de 0,075 ; le seuil dépend donc de la famille de scènes. Un estimateur robuste de haute fréquence (sigma-HH <= 1,5 ; propre 0,74-1,19, avec un bruit ajouté s=2 il donne 2,2-3,0) est la porte supplémentaire recommandée.
 
 Portée : VideoTurko traite UNE seule passe (jusqu’à 209 images, environ 8,7 s). Notre propre test d’enchaînement a montré des raccords visibles (la scène ne continue pas proprement) ; les films plus longs ne font donc pas partie de ce que nous vérifions. Pour enchaîner, il existe le guide communautaire `docs/KLIP_ZINCIRI.md` et notre utilitaire CPU seul `scripts/zincir.py` (`plan`, `son-kare`, `bagla` ; il ne lance jamais le moteur) ; nous n’avons pas mesuré la qualité des films enchaînés [non essayé], vérifiez donc chaque raccord à l’œil et avec `scripts/dikis_denetim.py`.
-Vos réglages vous appartiennent : 209 images est notre valeur par défaut testée sur une carte de 4 Go, pas une limite que vous devez utiliser. Choisissez n’importe quel nombre d’images de la grille 17k+5 (56, 73, ... 192, 209 ; voir `docs/KURULUM.md`), changez le prompt, la graine, la résolution ou toute option à votre guise. Les clips plus courts demandent moins de mémoire et de temps ; des GPU plus gros peuvent en accepter davantage.
+Vos réglages vous appartiennent : 209 images est notre valeur par défaut testée sur une carte de 4 Go, pas une limite que vous devez utiliser. Choisissez n’importe quel nombre d’images de la grille 17k+5 (39, 56, 73, ... 192, 209 ; voir `docs/KURULUM.md`), changez le prompt, la graine, la résolution ou toute option à votre guise. Les clips plus courts demandent moins de mémoire et de temps ; des GPU plus gros peuvent en accepter davantage.
 
 ## Avertissement sur la licence du modèle
 **VideoTurko ne contient que des correctifs et des scripts (MIT) ; quiconque utilise le modèle et ses sorties est responsable de la licence MiniMax.** Ceci n’est pas un avis juridique. Ci-dessous figurent les clauses de la MiniMax H3 Community License (2 août 2026) résumées avec leurs numéros ; la licence elle-même fait foi : https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Noms d’exécution utilisés entre crochets (nos propres noms d’exécution, p
 - **Test en racine propre en attente :** les scripts d’installation et d’exécution n’ont pas encore été vérifiés depuis un dossier vide en n’utilisant que ces instructions ; cette section sera mise à jour lorsque ce test (y compris une comparaison octet par octet à 56 images avec la référence) sera enregistré.
 - Aucune vidéo générée n’est fournie ici.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

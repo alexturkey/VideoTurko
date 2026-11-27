@@ -33,7 +33,7 @@ VideoTurko: łatki pamięci do stable-diffusion.cpp oraz przepisy na uruchomieni
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` podąża za siatką 17k+5 (56, 73, ... 192, 209); domyślnie 209 (8.7 s), najdłuższa długość, jaką obejmujemy. VAE działa w osobnym procesie i nigdy nie używa kafelkowania [prawdziwy przebieg silnika przez `uret.ps1` na binarce wydaniowej, VAE w osobnym procesie, zaliczony w przebiegu U209].
+   `-Kare` podąża za siatką 17k+5 (39, 56, 73, ... 192, 209); domyślnie 209 (8.7 s), najdłuższa długość, jaką obejmujemy. VAE działa w osobnym procesie i nigdy nie używa kafelkowania [prawdziwy przebieg silnika przez `uret.ps1` na binarce wydaniowej, VAE w osobnym procesie, zaliczony w przebiegu U209].
 
    Przewodnik pisania promptu: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (wzorzec jednego ciągłego ujęcia, równe odcinki czasu, dwa pełne przykłady).
 
@@ -194,7 +194,7 @@ Ta kontrola nie sprawdza spójności ruchu (skoków skali lub położenia obiekt
 3. Szum znormalizowany względem tekstury, `scripts/doku_norm.py` (wersja z tego repozytorium): N = mediana residuum / tekstura Sobela, co 6. klatka. **Uwaga o skali:** w tej wersji 10 zmierzonych klipów daje N = 0.034-0.052 (tabela w `docs/KAPILAR.md`; w ostatniej ćwiartce F192/F209V2 dochodzi do 0.062), a próg dodatkowej kontroli to N <= 0.065. Inna implementacja na tych samych klipach dała 0.028-0.036, więc progi NIE są wymienne między wersjami. Na bardzo drobnych teksturach (rzędy trawy) czyste N wynosiło 0.075, więc próg ustala się dla każdej rodziny scen. Zalecana dodatkowa kontrola: odporny estymator wysokich częstotliwości (sigma-HH <= 1.5; czyste klipy 0.74-1.19, dodany szum s=2 daje 2.2-3.0).
 
 Zakres: VideoTurko dotyczy JEDNEGO przebiegu (do 209 klatek, około 8,7 s). Nasz własny test łączenia pokazał widoczne łączenia (scena nie kontynuuje się czysto), więc dłuższe filmy nie należą do tego, co weryfikujemy. Do łączenia służy przewodnik społeczności `docs/KLIP_ZINCIRI.md` i nasze narzędzie tylko na CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; nigdy nie uruchamia silnika); jakości połączonych filmów nie mierzyliśmy [nie próbowano], więc sprawdzaj każde łączenie okiem i za pomocą `scripts/dikis_denetim.py`.
-Ustawienia są Twoje: 209 klatek to nasza sprawdzona wartość domyślna na karcie 4 GB, a nie limit, którego musisz przestrzegać. Wybierz dowolną liczbę klatek z siatki 17k+5 (56, 73, ... 192, 209; zob. `docs/KURULUM.md`), zmieniaj prompt, seed, rozdzielczość czy dowolną flagę według uznania. Krótsze klipy wymagają mniej pamięci i czasu; większe GPU mogą pomieścić więcej.
+Ustawienia są Twoje: 209 klatek to nasza sprawdzona wartość domyślna na karcie 4 GB, a nie limit, którego musisz przestrzegać. Wybierz dowolną liczbę klatek z siatki 17k+5 (39, 56, 73, ... 192, 209; zob. `docs/KURULUM.md`), zmieniaj prompt, seed, rozdzielczość czy dowolną flagę według uznania. Krótsze klipy wymagają mniej pamięci i czasu; większe GPU mogą pomieścić więcej.
 
 ## Ostrzeżenie o licencji modelu
 **VideoTurko zawiera wyłącznie łatki i skrypty (MIT); kto używa modelu i jego wyników, sam odpowiada za przestrzeganie licencji MiniMax.** To nie jest porada prawna. Poniżej klauzule MiniMax H3 Community License (2 sierpnia 2026) w streszczeniu, z numerami; wiążąca jest sama licencja: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Nazwy przebiegów używane w nawiasach (nasze własne nazwy, nie pliki tego repo
 - **Test w czystym folderze przed nami:** skrypty instalacji i uruchomienia nie zostały jeszcze sprawdzone z pustego folderu wyłącznie według tej instrukcji; sekcja zostanie zaktualizowana, gdy test (łącznie z bajtowym porównaniem 56 klatek z wzorcem) zostanie zapisany.
 - Wygenerowane wideo nie są tu dostarczane.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

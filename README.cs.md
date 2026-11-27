@@ -33,7 +33,7 @@ VideoTurko: záplaty paměti pro stable-diffusion.cpp a postupy ke spuštění M
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` se řídí mřížkou 17k+5 (56, 73, ... 192, 209); výchozí je 209 (8.7 s), nejdelší délka, kterou pokrýváme. VAE běží v samostatném procesu a nikdy nepoužívá dlaždicování (tiling) [skutečný běh enginu přes `uret.ps1` s vydanou binárkou, VAE v samostatném procesu, prošel v běhu U209].
+   `-Kare` se řídí mřížkou 17k+5 (39, 56, 73, ... 192, 209); výchozí je 209 (8.7 s), nejdelší délka, kterou pokrýváme. VAE běží v samostatném procesu a nikdy nepoužívá dlaždicování (tiling) [skutečný běh enginu přes `uret.ps1` s vydanou binárkou, VAE v samostatném procesu, prošel v běhu U209].
 
    Průvodce psaním promptu: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (vzor jednoho nepřerušeného záběru, stejně dlouhé časové úseky, dva úplné příklady).
 
@@ -194,7 +194,7 @@ Tato kontrola nehlídá konzistenci pohybu (skoky měřítka nebo polohy objekt�
 3. Šum normalizovaný vůči textuře, `scripts/doku_norm.py` (verze z tohoto repozitáře): N = mediánový zbytek / Sobelova textura, každý 6. snímek. **Poznámka o škále:** v této verzi dává 10 změřených klipů N = 0.034-0.052 (tabulka v `docs/KAPILAR.md`; v poslední čtvrtině F192/F209V2 dosahuje 0.062) a práh dodatečné kontroly je N <= 0.065. Jiná implementace naměřila na stejných klipech 0.028-0.036, takže prahy mezi verzemi NEJSOU zaměnitelné. U velmi jemných textur (řady trávy) bylo čisté N 0.075, práh se proto volí podle rodiny scén. Doporučená dodatečná kontrola: robustní odhad vysokých frekvencí (sigma-HH <= 1.5; čisté klipy 0.74-1.19, přidaný šum s=2 dává 2.2-3.0).
 
 Rozsah: VideoTurko se týká JEDNOHO průchodu (až 209 snímků, asi 8,7 s). Náš vlastní test zřetězení ukázal viditelné spoje (scéna nepokračuje čistě), takže delší filmy nepatří mezi to, co ověřujeme. Ke zřetězení slouží komunitní průvodce `docs/KLIP_ZINCIRI.md` a náš pomocník jen pro CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; motor nikdy nespouští); kvalitu zřetězených filmů jsme neměřili [nezkoušeno], proto každý spoj zkontrolujte okem a pomocí `scripts/dikis_denetim.py`.
-Nastavení je vaše: 209 snímků je naše ověřená výchozí hodnota na kartě se 4 GB, ne limit, který musíte dodržet. Zvolte libovolný počet snímků z mřížky 17k+5 (56, 73, ... 192, 209; viz `docs/KURULUM.md`), měňte prompt, seed, rozlišení nebo jakýkoli přepínač podle potřeby. Kratší klipy potřebují méně paměti a času; větší GPU jich mohou pojmout více.
+Nastavení je vaše: 209 snímků je naše ověřená výchozí hodnota na kartě se 4 GB, ne limit, který musíte dodržet. Zvolte libovolný počet snímků z mřížky 17k+5 (39, 56, 73, ... 192, 209; viz `docs/KURULUM.md`), měňte prompt, seed, rozlišení nebo jakýkoli přepínač podle potřeby. Kratší klipy potřebují méně paměti a času; větší GPU jich mohou pojmout více.
 
 ## Upozornění k licenci modelu
 **VideoTurko obsahuje jen záplaty a skripty (MIT); kdo používá model a jeho výstupy, odpovídá za licenci MiniMax sám.** Nejde o právní poradenství. Níže jsou body MiniMax H3 Community License (2. srpna 2026) ve shrnutí s čísly; závazná je samotná licence: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Názvy běhů použité v hranatých závorkách (naše vlastní názvy, nejsou 
 - **Test v čisté složce teprve čeká:** instalační a spouštěcí skripty zatím nebyly ověřeny z prázdné složky jen podle těchto pokynů; oddíl bude aktualizován, až bude tento test (včetně bajtového porovnání 56 snímků s referencí) zaznamenán.
 - Vygenerovaná videa zde nejsou dodávána.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

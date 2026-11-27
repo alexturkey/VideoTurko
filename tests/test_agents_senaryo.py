@@ -90,6 +90,12 @@ class KartCalisiyor(unittest.TestCase):
         self.uret_hata("VT-E-BOYUT", "-Istem", str(KOK / "docs" / "ornek_istem_R0.txt"), "-Kare", "56", "-W", "700",
                        "-H", "384")
 
+    def test_uret_kare_39_gecerli_40_gecersiz(self):
+        """Issue #23: the docs list 39 as a valid frame count (17k+5 grid from 5); the script agrees: 39 passes, 40 is VT-E-KARE."""
+        cikis, _, out, _ = kos("uret.ps1", "-Kuru", "-Istem", str(KOK / "docs" / "ornek_istem_R0.txt"), "-Kare", "39")
+        self.assertEqual(cikis, 0, out[-600:])
+        self.uret_hata("VT-E-KARE", "-Istem", str(KOK / "docs" / "ornek_istem_R0.txt"), "-Kare", "40")
+
     def test_uret_ilk_video_komutu_kabul_edilir_exit0(self):
         cikis, _, out, _ = kos("uret.ps1", "-Kuru", "-Istem", str(KOK / "docs" / "ornek_istem_R0.txt"), "-Kare", "56")
         self.assertEqual(cikis, 0, out[-600:])

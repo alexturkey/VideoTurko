@@ -33,7 +33,7 @@ VideoTurko: stable-diffusion.cpp memory patches and recipes to run MiniMax H3 te
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` follows the 17k+5 grid (56, 73, ... 192, 209); default 209 (8.7 s), the longest length we cover. The VAE runs in a separate process, never tiled [a real engine run through `uret.ps1` with the release binary, separate-process VAE, passed in run U209].
+   `-Kare` follows the 17k+5 grid (39, 56, 73, ... 192, 209); default 209 (8.7 s), the longest length we cover. The VAE runs in a separate process, never tiled [a real engine run through `uret.ps1` with the release binary, separate-process VAE, passed in run U209].
 
    Prompt writing guide: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (one-continuous-shot pattern, equal time slices, two full examples).
 
@@ -187,7 +187,7 @@ This gate does not check motion consistency (object scale or position jumps): wa
 3. Texture-normalised noise, `scripts/doku_norm.py` (this repo's version): N = median residual / Sobel texture, every 6th frame. **Scale note:** in this version the 10 measured clips give N = 0.034-0.052 (table in `docs/KAPILAR.md`; last quarter of F192/F209V2 reaches 0.062) and the extra-gate threshold is N <= 0.065. A different implementation measured 0.028-0.036 on the same clips, so thresholds are NOT interchangeable between versions. On very fine textures (grass rows) clean N was 0.075, so the threshold is per scene family. A robust high-frequency estimator (sigma-HH <= 1.5; clean 0.74-1.19, added noise s=2 gives 2.2-3.0) is the recommended extra gate.
 
 Scope: VideoTurko is about ONE single pass (up to 209 frames, about 8.7 s). Our own chaining test showed visible seams (the scene does not continue cleanly), so longer films are not part of what we verify. For chaining, see the community guide `docs/KLIP_ZINCIRI.md` and our CPU-only helper `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; it never starts the engine); we did not measure the quality of chained films [not tried], so check every seam by eye and with `scripts/dikis_denetim.py`.
-Your settings are yours: 209 frames is our tested default on a 4 GB card, not a limit you must use. Pick any frame count on the 17k+5 grid (56, 73, ... 192, 209; see `docs/KURULUM.md`), change the prompt, seed, resolution or any flag as you like. Shorter clips need less memory and time; larger GPUs may fit more.
+Your settings are yours: 209 frames is our tested default on a 4 GB card, not a limit you must use. Pick any frame count on the 17k+5 grid (39, 56, 73, ... 192, 209; see `docs/KURULUM.md`), change the prompt, seed, resolution or any flag as you like. Shorter clips need less memory and time; larger GPUs may fit more.
 
 ## Model license warning
 **VideoTurko contains only patches and scripts (MIT); whoever uses the model and its outputs is responsible for the MiniMax license themselves.** Not legal advice. Below are the clauses of the MiniMax H3 Community License (August 2, 2026) summarized with their numbers; the license itself is binding: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE

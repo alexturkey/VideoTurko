@@ -33,7 +33,7 @@ VideoTurko: 4 GB-lıq GTX 1050 Ti üzərində MiniMax H3 mətndən-videoya model
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` 17k+5 şəbəkəsinə uyğundur (56, 73, ... 192, 209); standart 209 (8,7 san), əhatə etdiyimiz ən uzun müddətdir. VAE ayrı prosesdə işləyir, heç vaxt plitələrə (tiling) bölünmür [`uret.ps1` vasitəsilə buraxılış binarı ilə real mühərrik işə salınması, ayrı proses VAE ilə, U209 işə salınmasında keçdi].
+   `-Kare` 17k+5 şəbəkəsinə uyğundur (39, 56, 73, ... 192, 209); standart 209 (8,7 san), əhatə etdiyimiz ən uzun müddətdir. VAE ayrı prosesdə işləyir, heç vaxt plitələrə (tiling) bölünmür [`uret.ps1` vasitəsilə buraxılış binarı ilə real mühərrik işə salınması, ayrı proses VAE ilə, U209 işə salınmasında keçdi].
 
    İstəm yazma bələdçisi: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (fasiləsiz tək plan nümunəsi, bərabər zaman dilimləri, iki tam nümunə).
 
@@ -194,7 +194,7 @@ Bu keçid hərəkət ardıcıllığını (obyektin ölçüsündə və ya mövqey
 3. Teksturaya görə normallaşdırılmış küy, `scripts/doku_norm.py` (bu repozitoriyanın versiyası): N = median qalıq / Sobel teksturası, hər 6-cı kadr. **Şkala qeydi:** bu versiyada ölçülmüş 10 klip N = 0,034-0,052 verir (cədvəl `docs/KAPILAR.md` faylındadır; F192/F209V2-nin son rübü 0,062-yə çatır) və əlavə keçid həddi N <= 0,065-dir. Başqa bir implementasiya eyni kliplərdə 0,028-0,036 ölçdü, ona görə hədlər versiyalar arasında dəyişdirilə BİLMƏZ. Çox incə teksturalarda (ot cərgələri) təmiz N 0,075 idi, yəni hədd səhnə ailəsinə görə təyin olunur. Möhkəm yüksək tezlikli qiymətləndirici (sigma-HH <= 1,5; təmiz 0,74-1,19, s=2 əlavə küy 2,2-3,0 verir) tövsiyə olunan əlavə keçiddir.
 
 Əhatə: VideoTurko TƏK bir keçidlə bağlıdır (209 kadra qədər, təxminən 8,7 san). Öz zəncirləmə sınağımızda görünən tikişlər çıxdı (səhnə təmiz davam etmir); buna görə daha uzun filmlər yoxladığımız işə daxil deyil. Zəncirləmək üçün icma bələdçisi `docs/KLIP_ZINCIRI.md` və yalnız CPU işlədən köməkçimiz `scripts/zincir.py` var (`plan`, `son-kare`, `bagla`; mühərriki heç vaxt işə salmır); zəncirlənmiş filmlərin keyfiyyətini ölçməmişik [sınanmayıb], ona görə hər tikişi gözlə və `scripts/dikis_denetim.py` ilə yoxlayın.
-Ayarlar sizindir: 209 kadr 4 GB-lıq kartda sınanmış standartımızdır, məcburi olduğunuz hədd deyil. 17k+5 şəbəkəsindən istənilən kadr sayını seçin (56, 73, ... 192, 209; bax: `docs/KURULUM.md`), istəyi (prompt), seed-i, ayırdetməni və ya istənilən bayrağı öz istəyinizə görə dəyişin. Daha qısa kliplər daha az yaddaş və vaxt tələb edir; daha böyük GPU-lar daha çoxunu götürə bilər.
+Ayarlar sizindir: 209 kadr 4 GB-lıq kartda sınanmış standartımızdır, məcburi olduğunuz hədd deyil. 17k+5 şəbəkəsindən istənilən kadr sayını seçin (39, 56, 73, ... 192, 209; bax: `docs/KURULUM.md`), istəyi (prompt), seed-i, ayırdetməni və ya istənilən bayrağı öz istəyinizə görə dəyişin. Daha qısa kliplər daha az yaddaş və vaxt tələb edir; daha böyük GPU-lar daha çoxunu götürə bilər.
 
 ## Model lisenziyası xəbərdarlığı
 **VideoTurko yalnız yamaqlardan və skriptlərdən ibarətdir (MIT); modeldən və onun çıxışlarından istifadə edən hər kəs MiniMax lisenziyasına görə özü məsuliyyət daşıyır.** Hüquqi məsləhət deyil. Aşağıda MiniMax H3 Community License (2 avqust 2026) bəndləri nömrələri ilə xülasə olunub; məcburi olan lisenziyanın özüdür: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Mötərizələrdə istifadə olunan işə salınma adları (öz adlarımızdır,
 - **Təmiz-kök testi gözlənilir:** quraşdırma və işə salma skriptləri yalnız bu təlimatlarla boş qovluqdan hələ yoxlanılmayıb; bu test (istinada qarşı 56 kadrlıq bayt müqayisəsi daxil) qeyd olunduqda bu bölmə yenilənəcək.
 - Burada heç bir yaradılmış video verilmir.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

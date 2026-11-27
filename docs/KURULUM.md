@@ -64,7 +64,7 @@ sd-cli -M vid_gen `
   --offload-to-cpu --mmap --backend te=cpu `
   --log-level debug -o <out>.avi
 ```
-For the later parts of a long video add `--init-img <real last frame of the previous part>` before `--log-level`. `<N>` follows 17k+5: 56, 73, 90, 107, 124, 141, 158, 175, 192, 209. Use NO `--vae-tiling` and NO `--temporal-tiling` (the non-tiled VAE is the quality reference; `hiz_kos3.ps1` always runs with the non-tiled VAE: `--vae-tiling` and `--temporal-tiling` are not added). `<out>.avi` is the output file (`-o`).
+For the later parts of a long video add `--init-img <real last frame of the previous part>` before `--log-level`. `<N>` follows 17k+5: 39, 56, 73, 90, 107, 124, 141, 158, 175, 192, 209. Use NO `--vae-tiling` and NO `--temporal-tiling` (the non-tiled VAE is the quality reference; `hiz_kos3.ps1` always runs with the non-tiled VAE: `--vae-tiling` and `--temporal-tiling` are not added). `<out>.avi` is the output file (`-o`).
 Measured: 56 frames about 560-590 s, 175 frames about 2300 s per pass; VRAM peak about 3.8-3.9 GB; RAM peak about 11.5 GB (close other applications).
 
 TR: aynı komut; `hiz_kos3.ps1` her zaman karosuz VAE ile koşar (`--vae-tiling` ve `--temporal-tiling` eklenmez); karosuz VAE kalite referansıdır; sonraki parçalarda `--init-img` önceki parçanın GERÇEK son karesi. Ölçülen: 56 kare ~560-590 sn, 175 kare ~2300 sn; VRAM tepe ~3,8-3,9 GB; RAM tepe ~11,5 GB.

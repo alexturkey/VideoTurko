@@ -33,7 +33,7 @@ VideoTurko: parches de memoria para stable-diffusion.cpp y recetas para ejecutar
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` sigue la cuadrícula 17k+5 (56, 73, ... 192, 209); por defecto 209 (8,7 s), la duración más larga que cubrimos. El VAE se ejecuta en un proceso aparte, nunca por mosaicos [una ejecución real del motor mediante `uret.ps1` con el binario de la versión publicada, VAE en proceso aparte, pasó en la ejecución U209].
+   `-Kare` sigue la cuadrícula 17k+5 (39, 56, 73, ... 192, 209); por defecto 209 (8,7 s), la duración más larga que cubrimos. El VAE se ejecuta en un proceso aparte, nunca por mosaicos [una ejecución real del motor mediante `uret.ps1` con el binario de la versión publicada, VAE en proceso aparte, pasó en la ejecución U209].
 
    Guía para escribir el prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (patrón de una toma continua, tramos de tiempo iguales, dos ejemplos completos).
 
@@ -194,7 +194,7 @@ Esta puerta no comprueba la consistencia del movimiento (saltos de escala o de p
 3. Ruido normalizado por textura, `scripts/doku_norm.py` (la versión de este repositorio): N = residuo mediano / textura de Sobel, cada 6.º fotograma. **Nota de escala:** en esta versión los 10 clips medidos dan N = 0,034-0,052 (tabla en `docs/KAPILAR.md`; el último cuarto de F192/F209V2 llega a 0,062) y el umbral de la puerta adicional es N <= 0,065. Otra implementación midió 0,028-0,036 en los mismos clips, así que los umbrales NO son intercambiables entre versiones. En texturas muy finas (filas de césped) el N limpio fue 0,075, por lo que el umbral depende de la familia de escenas. Un estimador robusto de alta frecuencia (sigma-HH <= 1,5; limpio 0,74-1,19, con ruido añadido s=2 da 2,2-3,0) es la puerta adicional recomendada.
 
 Alcance: VideoTurko trata de UNA sola pasada (hasta 209 fotogramas, unos 8,7 s). Nuestra propia prueba de encadenado mostró costuras visibles (la escena no continúa limpiamente), así que las películas más largas no forman parte de lo que verificamos. Para encadenar hay una guía de la comunidad, `docs/KLIP_ZINCIRI.md`, y nuestra utilidad solo CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; nunca inicia el motor); no medimos la calidad de las películas encadenadas [no probado], así que revise cada costura a ojo y con `scripts/dikis_denetim.py`.
-Tu configuración es tuya: 209 fotogramas es nuestro valor por defecto probado en una tarjeta de 4 GB, no un límite que debas usar. Elige cualquier número de fotogramas de la cuadrícula 17k+5 (56, 73, ... 192, 209; consulta `docs/KURULUM.md`), cambia el prompt, la semilla, la resolución o cualquier opción como prefieras. Los clips más cortos necesitan menos memoria y tiempo; las GPU más grandes pueden admitir más.
+Tu configuración es tuya: 209 fotogramas es nuestro valor por defecto probado en una tarjeta de 4 GB, no un límite que debas usar. Elige cualquier número de fotogramas de la cuadrícula 17k+5 (39, 56, 73, ... 192, 209; consulta `docs/KURULUM.md`), cambia el prompt, la semilla, la resolución o cualquier opción como prefieras. Los clips más cortos necesitan menos memoria y tiempo; las GPU más grandes pueden admitir más.
 
 ## Advertencia sobre la licencia del modelo
 **VideoTurko contiene solo parches y scripts (MIT); quien use el modelo y sus salidas es el responsable de la licencia de MiniMax.** No es asesoramiento legal. A continuación se resumen, con su numeración, las cláusulas de la MiniMax H3 Community License (2 de agosto de 2026); la licencia en sí es la vinculante: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Nombres de ejecución usados entre corchetes (nuestros propios nombres de ejecuc
 - **Prueba en raíz limpia pendiente:** los scripts de instalación y ejecución aún no se han verificado desde una carpeta vacía usando solo estas instrucciones; esta sección se actualizará cuando se registre esa prueba (incluida una comparación byte a byte de 56 fotogramas con la referencia).
 - Aquí no se incluye ningún video generado.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

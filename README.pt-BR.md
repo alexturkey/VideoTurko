@@ -33,7 +33,7 @@ VideoTurko: patches de memória para o stable-diffusion.cpp e receitas para roda
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   O `-Kare` segue a grade 17k+5 (56, 73, ... 192, 209); o padrão é 209 (8,7 s), a duração mais longa que cobrimos. O VAE roda em um processo separado, nunca em blocos (tiling) [uma execução real do motor por meio do `uret.ps1` com o binário da versão publicada, VAE em processo separado, passou na execução U209].
+   O `-Kare` segue a grade 17k+5 (39, 56, 73, ... 192, 209); o padrão é 209 (8,7 s), a duração mais longa que cobrimos. O VAE roda em um processo separado, nunca em blocos (tiling) [uma execução real do motor por meio do `uret.ps1` com o binário da versão publicada, VAE em processo separado, passou na execução U209].
 
    Guia para escrever o prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (padrão de uma tomada contínua, fatias de tempo iguais, dois exemplos completos).
 
@@ -194,7 +194,7 @@ Este portão não verifica a consistência do movimento (saltos de escala ou de 
 3. Ruído normalizado por textura, `scripts/doku_norm.py` (a versão deste repositório): N = resíduo mediano / textura de Sobel, a cada 6º quadro. **Nota de escala:** nesta versão os 10 clipes medidos dão N = 0,034-0,052 (tabela em `docs/KAPILAR.md`; o último quarto de F192/F209V2 chega a 0,062) e o limiar do portão extra é N <= 0,065. Outra implementação mediu 0,028-0,036 nos mesmos clipes, então os limiares NÃO são intercambiáveis entre versões. Em texturas muito finas (fileiras de grama) o N limpo foi 0,075, então o limiar é por família de cenas. Um estimador robusto de alta frequência (sigma-HH <= 1,5; limpo 0,74-1,19, com ruído adicionado s=2 dá 2,2-3,0) é o portão extra recomendado.
 
 Escopo: o VideoTurko trata de UMA única passagem (até 209 quadros, cerca de 8,7 s). Nosso próprio teste de encadeamento mostrou emendas visíveis (a cena não continua de forma limpa), então filmes mais longos não fazem parte do que verificamos. Para encadear há o guia da comunidade `docs/KLIP_ZINCIRI.md` e nosso utilitário só de CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; ele nunca inicia o motor); não medimos a qualidade de filmes encadeados [não testado], por isso confira cada emenda a olho e com `scripts/dikis_denetim.py`.
-Suas configurações são suas: 209 quadros é o nosso padrão testado em uma placa de 4 GB, não um limite que você precise usar. Escolha qualquer número de quadros da grade 17k+5 (56, 73, ... 192, 209; veja `docs/KURULUM.md`), mude o prompt, a seed, a resolução ou qualquer opção como quiser. Clipes mais curtos usam menos memória e tempo; GPUs maiores podem comportar mais.
+Suas configurações são suas: 209 quadros é o nosso padrão testado em uma placa de 4 GB, não um limite que você precise usar. Escolha qualquer número de quadros da grade 17k+5 (39, 56, 73, ... 192, 209; veja `docs/KURULUM.md`), mude o prompt, a seed, a resolução ou qualquer opção como quiser. Clipes mais curtos usam menos memória e tempo; GPUs maiores podem comportar mais.
 
 ## Aviso sobre a licença do modelo
 **O VideoTurko contém apenas patches e scripts (MIT); quem usa o modelo e suas saídas é quem responde pela licença da MiniMax.** Não é aconselhamento jurídico. Abaixo estão as cláusulas da MiniMax H3 Community License (2 de agosto de 2026) resumidas com a numeração; a licença em si é a que vale: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Nomes de execução usados entre colchetes (nossos próprios nomes de execução
 - **Teste em raiz limpa pendente:** os scripts de instalação e execução ainda não foram verificados a partir de uma pasta vazia usando só estas instruções; esta seção será atualizada quando esse teste (incluindo uma comparação byte a byte de 56 quadros com a referência) for registrado.
 - Nenhum vídeo gerado é distribuído aqui.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

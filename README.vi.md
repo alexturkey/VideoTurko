@@ -33,7 +33,7 @@ VideoTurko: các bản vá bộ nhớ cho stable-diffusion.cpp cùng công thứ
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` theo lưới 17k+5 (56, 73, ... 192, 209); mặc định 209 (8,7 giây), độ dài lớn nhất mà chúng tôi hỗ trợ. VAE chạy trong một tiến trình riêng, không bao giờ chia tile [một lần chạy engine thật qua `uret.ps1` với bản nhị phân release, VAE trong tiến trình riêng, đã đạt ở lần chạy U209].
+   `-Kare` theo lưới 17k+5 (39, 56, 73, ... 192, 209); mặc định 209 (8,7 giây), độ dài lớn nhất mà chúng tôi hỗ trợ. VAE chạy trong một tiến trình riêng, không bao giờ chia tile [một lần chạy engine thật qua `uret.ps1` với bản nhị phân release, VAE trong tiến trình riêng, đã đạt ở lần chạy U209].
 
    Hướng dẫn viết prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (mẫu một cú máy liên tục, các đoạn thời gian bằng nhau, hai ví dụ đầy đủ).
 
@@ -194,7 +194,7 @@ Cổng này không kiểm tra tính nhất quán của chuyển động (nhảy 
 3. Nhiễu chuẩn hóa theo kết cấu, `scripts/doku_norm.py` (phiên bản của repo này): N = phần dư trung vị / kết cấu Sobel, mỗi 6 khung hình lấy một. **Lưu ý về thang đo:** trong phiên bản này, 10 clip đã đo cho N = 0,034-0,052 (bảng trong `docs/KAPILAR.md`; một phần tư cuối của F192/F209V2 đạt 0,062) và ngưỡng của cổng bổ sung là N <= 0,065. Một cách triển khai khác đo được 0,028-0,036 trên cùng các clip, nên các ngưỡng KHÔNG thể hoán đổi giữa các phiên bản. Với kết cấu rất mịn (các hàng cỏ), N của ảnh sạch là 0,075, nên ngưỡng được đặt theo từng họ cảnh. Một bộ ước lượng tần số cao bền vững (sigma-HH <= 1,5; ảnh sạch 0,74-1,19, thêm nhiễu s=2 cho 2,2-3,0) là cổng bổ sung được khuyến nghị.
 
 Phạm vi: VideoTurko chỉ nói về MỘT lượt chạy duy nhất (tối đa 209 khung hình, khoảng 8,7 giây). Thử nghiệm ghép nối của chính chúng tôi cho thấy đường nối lộ rõ (cảnh không tiếp nối sạch), nên phim dài hơn không nằm trong những gì chúng tôi xác minh. Để ghép nối có hướng dẫn của cộng đồng `docs/KLIP_ZINCIRI.md` và công cụ chỉ dùng CPU của chúng tôi `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; nó không bao giờ khởi động engine); chất lượng phim ghép chúng tôi chưa đo [chưa thử], vì vậy hãy kiểm tra từng đường nối bằng mắt và bằng `scripts/dikis_denetim.py`.
-Cài đặt là của bạn: 209 khung hình là mặc định chúng tôi đã thử trên card 4 GB, không phải giới hạn bạn buộc phải dùng. Hãy chọn bất kỳ số khung hình nào trên lưới 17k+5 (56, 73, ... 192, 209; xem `docs/KURULUM.md`), đổi prompt, seed, độ phân giải hoặc bất kỳ cờ nào tùy ý. Clip ngắn hơn cần ít bộ nhớ và thời gian hơn; GPU lớn hơn có thể chứa được nhiều hơn.
+Cài đặt là của bạn: 209 khung hình là mặc định chúng tôi đã thử trên card 4 GB, không phải giới hạn bạn buộc phải dùng. Hãy chọn bất kỳ số khung hình nào trên lưới 17k+5 (39, 56, 73, ... 192, 209; xem `docs/KURULUM.md`), đổi prompt, seed, độ phân giải hoặc bất kỳ cờ nào tùy ý. Clip ngắn hơn cần ít bộ nhớ và thời gian hơn; GPU lớn hơn có thể chứa được nhiều hơn.
 
 ## Cảnh báo giấy phép mô hình
 **VideoTurko chỉ chứa các bản vá và script (MIT); ai sử dụng mô hình và đầu ra của nó phải tự chịu trách nhiệm về giấy phép MiniMax.** Đây không phải là tư vấn pháp lý. Bên dưới là các điều khoản của MiniMax H3 Community License (ngày 2 tháng 8 năm 2026) được tóm tắt kèm số điều; bản giấy phép mới là văn bản có giá trị ràng buộc: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Tên các lần chạy được dùng trong ngoặc vuông (là tên lần chạ
 - **Bài kiểm tra clean-root chưa thực hiện:** các script cài đặt và chạy chưa được xác minh từ một thư mục trống chỉ bằng các hướng dẫn này; mục này sẽ được cập nhật khi bài kiểm tra đó (gồm cả phép so sánh byte 56 khung hình với bản tham chiếu) được ghi nhận.
 - Không có video được tạo ra nào đi kèm ở đây.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

@@ -33,7 +33,7 @@ VideoTurko: patch di memoria per stable-diffusion.cpp e ricette per eseguire Min
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` segue la griglia 17k+5 (56, 73, ... 192, 209); il valore predefinito è 209 (8,7 s), la durata più lunga che copriamo. Il VAE gira in un processo separato, mai a tasselli (tiling) [un'esecuzione reale del motore tramite `uret.ps1` con il binario della versione pubblicata, VAE in processo separato, è riuscita nell'esecuzione U209].
+   `-Kare` segue la griglia 17k+5 (39, 56, 73, ... 192, 209); il valore predefinito è 209 (8,7 s), la durata più lunga che copriamo. Il VAE gira in un processo separato, mai a tasselli (tiling) [un'esecuzione reale del motore tramite `uret.ps1` con il binario della versione pubblicata, VAE in processo separato, è riuscita nell'esecuzione U209].
 
    Guida alla scrittura del prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (schema di un’unica ripresa continua, segmenti di tempo uguali, due esempi completi).
 
@@ -194,7 +194,7 @@ Questo controllo non verifica la coerenza del movimento (salti di scala o di pos
 3. Rumore normalizzato sulla texture, `scripts/doku_norm.py` (la versione di questo repository): N = residuo mediano / texture di Sobel, ogni 6 fotogrammi. **Nota sulla scala:** in questa versione le 10 clip misurate danno N = 0,034-0,052 (tabella in `docs/KAPILAR.md`; l'ultimo quarto di F192/F209V2 arriva a 0,062) e la soglia del controllo aggiuntivo è N <= 0,065. Un'altra implementazione ha misurato 0,028-0,036 sulle stesse clip, quindi le soglie NON sono intercambiabili tra le versioni. Su texture molto fini (file di erba) l'N pulito era 0,075, quindi la soglia dipende dalla famiglia di scene. Uno stimatore robusto ad alta frequenza (sigma-HH <= 1,5; pulito 0,74-1,19, con rumore aggiunto s=2 dà 2,2-3,0) è il controllo aggiuntivo consigliato.
 
 Ambito: VideoTurko riguarda UN solo passaggio (fino a 209 fotogrammi, circa 8,7 s). Il nostro test di concatenazione ha mostrato giunture visibili (la scena non prosegue in modo pulito), quindi i film più lunghi non fanno parte di ciò che verifichiamo. Per concatenare c’è la guida della community `docs/KLIP_ZINCIRI.md` e il nostro strumento solo CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; non avvia mai il motore); non abbiamo misurato la qualità dei film concatenati [non provato], quindi controlli ogni giuntura a occhio e con `scripts/dikis_denetim.py`.
-Le tue impostazioni sono tue: 209 fotogrammi è il nostro valore predefinito collaudato su una scheda da 4 GB, non un limite che devi usare. Scegli qualsiasi numero di fotogrammi della griglia 17k+5 (56, 73, ... 192, 209; vedi `docs/KURULUM.md`), cambia prompt, seed, risoluzione o qualsiasi opzione come preferisci. Le clip più corte richiedono meno memoria e tempo; GPU più grandi possono reggerne di più.
+Le tue impostazioni sono tue: 209 fotogrammi è il nostro valore predefinito collaudato su una scheda da 4 GB, non un limite che devi usare. Scegli qualsiasi numero di fotogrammi della griglia 17k+5 (39, 56, 73, ... 192, 209; vedi `docs/KURULUM.md`), cambia prompt, seed, risoluzione o qualsiasi opzione come preferisci. Le clip più corte richiedono meno memoria e tempo; GPU più grandi possono reggerne di più.
 
 ## Avviso sulla licenza del modello
 **VideoTurko contiene solo patch e script (MIT); chi usa il modello e i suoi output è responsabile in prima persona della licenza MiniMax.** Non è consulenza legale. Qui sotto sono riassunte, con la numerazione, le clausole della MiniMax H3 Community License (2 agosto 2026); la licenza stessa è vincolante: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Nomi delle esecuzioni usati tra parentesi quadre (nomi nostri, non file di quest
 - **Test in radice pulita in sospeso:** gli script di installazione ed esecuzione non sono ancora stati verificati da una cartella vuota usando solo queste istruzioni; questa sezione sarà aggiornata quando quel test (compreso un confronto byte per byte a 56 fotogrammi con il riferimento) sarà registrato.
 - Qui non viene distribuito alcun video generato.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

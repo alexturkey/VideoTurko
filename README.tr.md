@@ -33,7 +33,7 @@ VideoTurko: 4 GB GTX 1050 Ti'de MiniMax H3 ile metinden videoyu tek seferde 209 
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` 17k+5 dizisinden seçilir (56, 73, ... 192, 209); varsayılan 209 (8,7 sn), kapsadığımız en uzun uzunluktur. VAE ayrı süreçte ve parçasız koşar [`uret.ps1` üzerinden sürüm ikilisiyle gerçek motor koşusu, ayrı süreç VAE, U209 koşusunda geçti].
+   `-Kare` 17k+5 dizisinden seçilir (39, 56, 73, ... 192, 209); varsayılan 209 (8,7 sn), kapsadığımız en uzun uzunluktur. VAE ayrı süreçte ve parçasız koşar [`uret.ps1` üzerinden sürüm ikilisiyle gerçek motor koşusu, ayrı süreç VAE, U209 koşusunda geçti].
 
    İstem yazım rehberi: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (kesintisiz çekim kalıbı, eşit zaman dilimleri, iki tam örnek).
 
@@ -187,7 +187,7 @@ Bu kapı hareket tutarlılığını (nesne ölçeği/konum sıçraması) denetle
 3. Dokuya göre normalize gürültü, `scripts/doku_norm.py` (bu deponun sürümü): N = medyan artık / Sobel doku, her 6. kare. **Ölçek notu:** bu sürümde ölçülen 10 klip N = 0,034-0,052 verir (tablo `docs/KAPILAR.md`; F192/F209V2 son çeyrek 0,062'ye çıkar), ek kapı eşiği N <= 0,065. Başka bir uygulama aynı kliplerde 0,028-0,036 ölçtü, yani eşikler sürümler arasında DEĞİŞTİRİLEMEZ. Çok ince dokuda (çim sırası) temiz N 0,075 çıktı: eşik sahne ailesine göre. Önerilen ek kapı: yüksek frekans bandı sağlam gürültü tahmini (sigma-HH <= 1,5; temiz 0,74-1,19, s=2 gürültüde 2,2-3,0).
 
 Kapsam: VideoTurko TEK geçiş içindir (209 kareye kadar, yaklaşık 8,7 sn). Kendi zincirleme denememizde dikişler görünür oldu (sahne temiz devam etmiyor); bu yüzden daha uzun filmler doğruladığımız şeyin parçası değil. Zincirleme için topluluk rehberi `docs/KLIP_ZINCIRI.md` ve yalnız CPU kullanan yardımcımız `scripts/zincir.py` var (`plan`, `son-kare`, `bagla`; motoru hiç başlatmaz); zincirlenmiş filmlerin kalitesini ölçmedik [denenmedi], bu yüzden her dikişi gözle ve `scripts/dikis_denetim.py` ile kontrol edin.
-Ayarlar sizin: 209 kare bizim 4 GB kartta denediğimiz varsayılandır, zorunlu değil. 17k+5 dizisinden istediğiniz kare sayısını seçin (56, 73, ... 192, 209; bkz. `docs/KURULUM.md`); istemi, tohumu, çözünürlüğü ya da herhangi bir bayrağı istediğiniz gibi değiştirin. Kısa video daha az bellek ve süre ister; büyük kartta daha fazlası sığabilir.
+Ayarlar sizin: 209 kare bizim 4 GB kartta denediğimiz varsayılandır, zorunlu değil. 17k+5 dizisinden istediğiniz kare sayısını seçin (39, 56, 73, ... 192, 209; bkz. `docs/KURULUM.md`); istemi, tohumu, çözünürlüğü ya da herhangi bir bayrağı istediğiniz gibi değiştirin. Kısa video daha az bellek ve süre ister; büyük kartta daha fazlası sığabilir.
 
 ## Model lisans uyarısı
 **VideoTurko yalnız yamalar ve betikler içerir (MIT); modeli ve çıktıları kullanan kişi MiniMax lisansından kendisi sorumludur.** Hukuki tavsiye değildir. Aşağıda MiniMax H3 Community License (2 Ağustos 2026) maddeleri numaralarıyla özetlenmiştir; bağlayıcı olan lisansın kendisidir: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -261,4 +261,4 @@ Köşeli parantezde geçen koşu adları (bize ait koşu adları, bu depoda dosy
 - **Temiz kök testi bekliyor:** kurulum ve çalıştırma betikleri boş klasörde yalnız bu talimatla henüz doğrulanmadı; test (56 karede referansa bayt kıyası dahil) kaydedilince bu bölüm güncellenir.
 - Çıktı videolar depoda yok.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

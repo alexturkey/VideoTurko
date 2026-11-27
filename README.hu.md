@@ -33,7 +33,7 @@ VideoTurko: stable-diffusion.cpp memóriapatchek és receptek a MiniMax H3 (szö
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   A `-Kare` a 17k+5 rácsot követi (56, 73, ... 192, 209); alapértelmezés 209 (8.7 s), a leghosszabb általunk lefedett hossz. A VAE külön folyamatban fut, és soha nem csempézett (tiling) [valódi motorfutás a `uret.ps1`-en keresztül a kiadási binárissal, külön folyamatú VAE, átment az U209 futásban].
+   A `-Kare` a 17k+5 rácsot követi (39, 56, 73, ... 192, 209); alapértelmezés 209 (8.7 s), a leghosszabb általunk lefedett hossz. A VAE külön folyamatban fut, és soha nem csempézett (tiling) [valódi motorfutás a `uret.ps1`-en keresztül a kiadási binárissal, külön folyamatú VAE, átment az U209 futásban].
 
    Prompt-írási útmutató: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (egyetlen megszakítatlan felvétel mintája, egyenlő időszeletek, két teljes példa).
 
@@ -194,7 +194,7 @@ Ez az ellenőrzés nem vizsgálja a mozgás konzisztenciáját (a tárgyak mére
 3. Textúrára normált zaj, `scripts/doku_norm.py` (a tároló saját verziója): N = medián maradék / Sobel-textúra, minden 6. képkockán. **Skálamegjegyzés:** ebben a verzióban a 10 mért klip N = 0.034-0.052 értéket ad (táblázat a `docs/KAPILAR.md`-ben; az F192/F209V2 utolsó negyedében eléri a 0.062-t), a kiegészítő ellenőrzés küszöbe N <= 0.065. Egy másik implementáció ugyanezeken a klipeken 0.028-0.036-ot mért, ezért a küszöbök verziók között NEM cserélhetők. Nagyon finom textúráknál (fűsorok) a tiszta N 0.075 volt, így a küszöb jelenetcsaládonként értendő. Az ajánlott kiegészítő ellenőrzés egy robusztus nagyfrekvenciás becslő (sigma-HH <= 1.5; tiszta klipek 0.74-1.19, hozzáadott s=2 zajnál 2.2-3.0).
 
 Hatókör: a VideoTurko EGYETLEN menetről szól (legfeljebb 209 képkocka, kb. 8,7 mp). Saját összefűzési tesztünk látható varratokat mutatott (a jelenet nem folytatódik tisztán), ezért a hosszabb filmek nem tartoznak az általunk ellenőrzött dolgok közé. Az összefűzéshez ott a közösségi útmutató, a `docs/KLIP_ZINCIRI.md`, és a csak CPU-t használó segédeszközünk, a `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; sosem indítja a motort); az összefűzött filmek minőségét nem mértük [nem próbált], ezért minden varratot nézzen meg szemmel és a `scripts/dikis_denetim.py` segítségével.
-A beállítások a tieid: a 209 képkocka a mi tesztelt alapértelmezésünk egy 4 GB-os kártyán, nem korlát, amelyet használnod kellene. Válassz tetszőleges képkockaszámot a 17k+5 rácsból (56, 73, ... 192, 209; lásd `docs/KURULUM.md`), változtasd a promptot, a seedet, a felbontást vagy bármely kapcsolót kedved szerint. A rövidebb klipek kevesebb memóriát és időt igényelnek; a nagyobb GPU-k többet is elbírhatnak.
+A beállítások a tieid: a 209 képkocka a mi tesztelt alapértelmezésünk egy 4 GB-os kártyán, nem korlát, amelyet használnod kellene. Válassz tetszőleges képkockaszámot a 17k+5 rácsból (39, 56, 73, ... 192, 209; lásd `docs/KURULUM.md`), változtasd a promptot, a seedet, a felbontást vagy bármely kapcsolót kedved szerint. A rövidebb klipek kevesebb memóriát és időt igényelnek; a nagyobb GPU-k többet is elbírhatnak.
 
 ## Figyelmeztetés a modell licencéről
 **A VideoTurko csak patcheket és szkripteket tartalmaz (MIT); aki a modellt és a kimeneteit használja, maga felel a MiniMax licenc betartásáért.** Ez nem jogi tanács. Az alábbiakban a MiniMax H3 Community License (2026. augusztus 2.) kikötései szerepelnek összefoglalva, számozással; a licenc maga a kötelező érvényű: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ A szögletes zárójelben használt futásnevek (saját elnevezéseink, nem a t�
 - **A tiszta mappás teszt hátravan:** a telepítő és futtató szkripteket még nem ellenőriztük üres mappából kizárólag ezen útmutató alapján; ezt a szakaszt frissítjük, amikor a teszt (köztük az 56 képkockás bájtösszehasonlítás a referenciával) rögzítésre kerül.
 - Generált videókat itt nem mellékelünk.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

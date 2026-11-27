@@ -33,7 +33,7 @@ VideoTurko: tampalan memori stable-diffusion.cpp beserta resipi untuk menjalanka
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` mengikut grid 17k+5 (56, 73, ... 192, 209); lalai 209 (8.7 saat), panjang terpanjang yang kami liputi. VAE berjalan dalam proses berasingan, tidak pernah dipecahkan kepada jubin (tiling) [larian enjin sebenar melalui `uret.ps1` dengan binari keluaran, VAE proses berasingan, lulus dalam larian U209].
+   `-Kare` mengikut grid 17k+5 (39, 56, 73, ... 192, 209); lalai 209 (8.7 saat), panjang terpanjang yang kami liputi. VAE berjalan dalam proses berasingan, tidak pernah dipecahkan kepada jubin (tiling) [larian enjin sebenar melalui `uret.ps1` dengan binari keluaran, VAE proses berasingan, lulus dalam larian U209].
 
    Panduan menulis prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (corak satu syot berterusan, kepingan masa yang sama panjang, dua contoh lengkap).
 
@@ -194,7 +194,7 @@ Pintu ini tidak menyemak konsistensi gerakan (lonjakan skala atau kedudukan obje
 3. Hingar ternormal tekstur, `scripts/doku_norm.py` (versi repositori ini): N = baki median / tekstur Sobel, setiap bingkai ke-6. **Nota skala:** dalam versi ini 10 klip yang diukur memberikan N = 0.034-0.052 (jadual dalam `docs/KAPILAR.md`; suku terakhir F192/F209V2 mencapai 0.062) dan ambang pintu tambahan ialah N <= 0.065. Pelaksanaan lain mengukur 0.028-0.036 pada klip yang sama, jadi ambang TIDAK boleh ditukar ganti antara versi. Pada tekstur yang sangat halus (barisan rumput) N bersih ialah 0.075, jadi ambang adalah mengikut keluarga babak. Penganggar frekuensi tinggi yang teguh (sigma-HH <= 1.5; bersih 0.74-1.19, hingar tambahan s=2 memberikan 2.2-3.0) ialah pintu tambahan yang disyorkan.
 
 Skop: VideoTurko adalah tentang SATU laluan sahaja (sehingga 209 bingkai, kira-kira 8,7 saat). Ujian perantaian kami sendiri menunjukkan cantuman yang kelihatan (adegan tidak bersambung dengan bersih), jadi filem yang lebih panjang bukan sebahagian daripada apa yang kami sahkan. Untuk merantai ada panduan komuniti `docs/KLIP_ZINCIRI.md` dan alat bantu kami yang hanya guna CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; ia tidak pernah memulakan enjin); kualiti filem yang dirantai tidak kami ukur [belum dicuba], jadi periksa setiap cantuman dengan mata dan dengan `scripts/dikis_denetim.py`.
-Tetapan anda ialah milik anda: 209 bingkai ialah lalai yang kami uji pada kad 4 GB, bukan had yang mesti anda gunakan. Pilih mana-mana bilangan bingkai pada grid 17k+5 (56, 73, ... 192, 209; lihat `docs/KURULUM.md`), tukar prompt, seed, resolusi atau mana-mana bendera mengikut kehendak anda. Klip yang lebih pendek memerlukan lebih sedikit memori dan masa; GPU yang lebih besar mungkin memuatkan lebih banyak.
+Tetapan anda ialah milik anda: 209 bingkai ialah lalai yang kami uji pada kad 4 GB, bukan had yang mesti anda gunakan. Pilih mana-mana bilangan bingkai pada grid 17k+5 (39, 56, 73, ... 192, 209; lihat `docs/KURULUM.md`), tukar prompt, seed, resolusi atau mana-mana bendera mengikut kehendak anda. Klip yang lebih pendek memerlukan lebih sedikit memori dan masa; GPU yang lebih besar mungkin memuatkan lebih banyak.
 
 ## Amaran lesen model
 **VideoTurko hanya mengandungi tampalan dan skrip (MIT); sesiapa yang menggunakan model dan outputnya bertanggungjawab sendiri terhadap lesen MiniMax.** Bukan nasihat undang-undang. Di bawah ialah klausa MiniMax H3 Community License (2 Ogos 2026) yang diringkaskan beserta nombornya; lesen itu sendiri yang mengikat: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Nama larian yang digunakan dalam kurungan (nama larian dalaman kami, bukan fail 
 - **Ujian clean-root belum dibuat:** skrip pemasangan dan larian belum disahkan daripada folder kosong hanya dengan arahan ini; bahagian ini akan dikemas kini apabila ujian itu (termasuk perbandingan bait 56 bingkai dengan rujukan) direkodkan.
 - Tiada video yang dijana disertakan di sini.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

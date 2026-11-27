@@ -33,7 +33,7 @@ VideoTurko: Speicher-Patches für stable-diffusion.cpp und Rezepte, um MiniMax-H
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` folgt dem 17k+5-Raster (56, 73, ... 192, 209); Standard ist 209 (8,7 s), die längste Länge, die wir abdecken. Das VAE läuft in einem separaten Prozess, nie gekachelt [ein echter Engine-Lauf über `uret.ps1` mit dem Release-Binary, VAE im separaten Prozess, bestanden in Lauf U209].
+   `-Kare` folgt dem 17k+5-Raster (39, 56, 73, ... 192, 209); Standard ist 209 (8,7 s), die längste Länge, die wir abdecken. Das VAE läuft in einem separaten Prozess, nie gekachelt [ein echter Engine-Lauf über `uret.ps1` mit dem Release-Binary, VAE im separaten Prozess, bestanden in Lauf U209].
 
    Anleitung zum Schreiben von Prompts: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (Muster „eine durchgehende Einstellung“, gleich lange Zeitabschnitte, zwei vollständige Beispiele).
 
@@ -194,7 +194,7 @@ Dieses Gate prüft die Bewegungskonsistenz nicht (Sprünge bei Objektgröße ode
 3. Texturnormiertes Rauschen, `scripts/doku_norm.py` (die Version dieses Repos): N = Median-Residuum / Sobel-Textur, jedes 6. Frame. **Hinweis zur Skala:** In dieser Version ergeben die 10 gemessenen Clips N = 0,034-0,052 (Tabelle in `docs/KAPILAR.md`; das letzte Viertel von F192/F209V2 erreicht 0,062) und der Schwellenwert des Zusatz-Gates ist N <= 0,065. Eine andere Implementierung maß auf denselben Clips 0,028-0,036, die Schwellenwerte sind also zwischen den Versionen NICHT austauschbar. Bei sehr feinen Texturen (Grasreihen) lag das saubere N bei 0,075, der Schwellenwert gilt also pro Szenenfamilie. Ein robuster Hochfrequenz-Schätzer (sigma-HH <= 1,5; sauber 0,74-1,19, hinzugefügtes Rauschen s=2 ergibt 2,2-3,0) ist das empfohlene Zusatz-Gate.
 
 Geltungsbereich: VideoTurko befasst sich mit EINEM einzigen Durchlauf (bis zu 209 Frames, etwa 8,7 s). Unser eigener Verkettungstest zeigte sichtbare Nähte (die Szene setzt sich nicht sauber fort); längere Filme gehören daher nicht zu dem, was wir verifizieren. Zum Verketten gibt es die Community-Anleitung `docs/KLIP_ZINCIRI.md` und unser reines CPU-Hilfsprogramm `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; es startet die Engine nie); die Qualität verketteter Filme haben wir nicht gemessen [nicht versucht], prüfen Sie daher jede Naht mit dem Auge und mit `scripts/dikis_denetim.py`.
-Ihre Einstellungen gehören Ihnen: 209 Frames sind unser getesteter Standard auf einer 4-GB-Karte, keine Grenze, die Sie verwenden müssen. Wählen Sie eine beliebige Frame-Anzahl auf dem 17k+5-Raster (56, 73, ... 192, 209; siehe `docs/KURULUM.md`), ändern Sie Prompt, Seed, Auflösung oder jedes Flag nach Belieben. Kürzere Clips brauchen weniger Speicher und Zeit; größere GPUs können mehr verkraften.
+Ihre Einstellungen gehören Ihnen: 209 Frames sind unser getesteter Standard auf einer 4-GB-Karte, keine Grenze, die Sie verwenden müssen. Wählen Sie eine beliebige Frame-Anzahl auf dem 17k+5-Raster (39, 56, 73, ... 192, 209; siehe `docs/KURULUM.md`), ändern Sie Prompt, Seed, Auflösung oder jedes Flag nach Belieben. Kürzere Clips brauchen weniger Speicher und Zeit; größere GPUs können mehr verkraften.
 
 ## Warnung zur Modelllizenz
 **VideoTurko enthält nur Patches und Skripte (MIT); wer das Modell und seine Ausgaben nutzt, ist selbst für die MiniMax-Lizenz verantwortlich.** Keine Rechtsberatung. Unten stehen die Klauseln der MiniMax H3 Community License (2. August 2026) mit ihren Nummern zusammengefasst; verbindlich ist die Lizenz selbst: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ In eckigen Klammern verwendete Lauf-Namen (unsere eigenen Lauf-Namen, keine Date
 - **Clean-Root-Test steht aus:** Die Installations- und Ausführungsskripte wurden noch nicht allein mit diesen Anleitungen aus einem leeren Ordner verifiziert; dieser Abschnitt wird aktualisiert, sobald dieser Test (einschließlich eines 56-Frame-Byte-Vergleichs mit der Referenz) dokumentiert ist.
 - Es werden hier keine erzeugten Videos mitgeliefert.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

@@ -33,7 +33,7 @@ VideoTurko: geheugenpatches voor stable-diffusion.cpp en recepten om MiniMax H3 
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` volgt het 17k+5-raster (56, 73, ... 192, 209); standaard 209 (8,7 s), de langste lengte die we afdekken. De VAE draait in een apart proces, nooit getiled [een echte engine-run via `uret.ps1` met de release-binary, VAE in apart proces, geslaagd in run U209].
+   `-Kare` volgt het 17k+5-raster (39, 56, 73, ... 192, 209); standaard 209 (8,7 s), de langste lengte die we afdekken. De VAE draait in een apart proces, nooit getiled [een echte engine-run via `uret.ps1` met de release-binary, VAE in apart proces, geslaagd in run U209].
 
    Gids voor het schrijven van een prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (patroon van één ononderbroken opname, gelijke tijdvakken, twee volledige voorbeelden).
 
@@ -194,7 +194,7 @@ Deze poort controleert de bewegingsconsistentie (sprongen in schaal of positie v
 3. Textuurgenormaliseerde ruis, `scripts/doku_norm.py` (de versie van deze repo): N = mediaan van het residu / Sobel-textuur, elk 6e frame. **Opmerking over de schaal:** in deze versie geven de 10 gemeten clips N = 0,034-0,052 (tabel in `docs/KAPILAR.md`; het laatste kwart van F192/F209V2 komt op 0,062) en de drempel van de extra poort is N <= 0,065. Een andere implementatie mat 0,028-0,036 op dezelfde clips, dus drempels zijn NIET uitwisselbaar tussen versies. Bij zeer fijne texturen (rijen gras) was een schone N 0,075, dus de drempel geldt per scènefamilie. Een robuuste hoogfrequentieschatter (sigma-HH <= 1,5; schoon 0,74-1,19, toegevoegde ruis s=2 geeft 2,2-3,0) is de aanbevolen extra poort.
 
 Reikwijdte: VideoTurko gaat over ÉÉN enkele doorgang (tot 209 frames, ongeveer 8,7 s). Onze eigen test met aaneenschakelen liet zichtbare naden zien (de scène loopt niet netjes door), dus langere films horen niet bij wat wij verifiëren. Voor aaneenschakelen is er de community-gids `docs/KLIP_ZINCIRI.md` en onze hulptool alleen voor CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; hij start de engine nooit); de kwaliteit van aaneengeschakelde films hebben we niet gemeten [niet geprobeerd], controleer dus elke naad met het oog en met `scripts/dikis_denetim.py`.
-Je instellingen zijn van jou: 209 frames is onze geteste standaard op een kaart van 4 GB, geen grens die je moet aanhouden. Kies elk aantal frames op het 17k+5-raster (56, 73, ... 192, 209; zie `docs/KURULUM.md`), pas de prompt, seed, resolutie of elke vlag aan zoals je wilt. Kortere clips vragen minder geheugen en tijd; grotere GPU's kunnen er meer in kwijt.
+Je instellingen zijn van jou: 209 frames is onze geteste standaard op een kaart van 4 GB, geen grens die je moet aanhouden. Kies elk aantal frames op het 17k+5-raster (39, 56, 73, ... 192, 209; zie `docs/KURULUM.md`), pas de prompt, seed, resolutie of elke vlag aan zoals je wilt. Kortere clips vragen minder geheugen en tijd; grotere GPU's kunnen er meer in kwijt.
 
 ## Waarschuwing over de modellicentie
 **VideoTurko bevat alleen patches en scripts (MIT); wie het model en de uitvoer ervan gebruikt, is zelf verantwoordelijk voor de MiniMax-licentie.** Geen juridisch advies. Hieronder staan de bepalingen van de MiniMax H3 Community License (2 augustus 2026) samengevat met hun nummers; de licentie zelf is bindend: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Gebruikte runnamen tussen haakjes (onze eigen runnamen, geen bestanden in deze r
 - **Clean-root-test staat nog open:** de installatie- en runscripts zijn nog niet vanuit een lege map geverifieerd met alleen deze instructies; deze sectie wordt bijgewerkt wanneer die test (inclusief een bytevergelijking van 56 frames met de referentie) is vastgelegd.
 - Hier worden geen gegenereerde video's meegeleverd.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

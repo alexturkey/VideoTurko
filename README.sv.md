@@ -33,7 +33,7 @@ VideoTurko: minnespatchar för stable-diffusion.cpp och recept för att köra Mi
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` följer 17k+5-rastret (56, 73, ... 192, 209); standard 209 (8,7 s), den längsta längd vi täcker. VAE körs i en separat process, aldrig tiled [en riktig motorkörning via `uret.ps1` med release-binären, VAE i separat process, gick igenom i körning U209].
+   `-Kare` följer 17k+5-rastret (39, 56, 73, ... 192, 209); standard 209 (8,7 s), den längsta längd vi täcker. VAE körs i en separat process, aldrig tiled [en riktig motorkörning via `uret.ps1` med release-binären, VAE i separat process, gick igenom i körning U209].
 
    Guide för att skriva prompten: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (mönster för en enda obruten tagning, lika långa tidsavsnitt, två fullständiga exempel).
 
@@ -194,7 +194,7 @@ Grinden kontrollerar inte rörelsekonsekvens (hopp i objektets skala eller posit
 3. Texturnormaliserat brus, `scripts/doku_norm.py` (det här repots version): N = medianrest / Sobel-textur, var 6:e bildruta. **Skalanteckning:** i den här versionen ger de 10 uppmätta klippen N = 0,034-0,052 (tabell i `docs/KAPILAR.md`; sista kvartalet av F192/F209V2 når 0,062) och tröskeln för extragrinden är N <= 0,065. En annan implementation mätte 0,028-0,036 på samma klipp, så trösklar är INTE utbytbara mellan versioner. På mycket fina texturer (gräsrader) var rent N 0,075, så tröskeln gäller per scenfamilj. En robust högfrekvensskattare (sigma-HH <= 1,5; rent 0,74-1,19, tillagt brus s=2 ger 2,2-3,0) är den rekommenderade extragrinden.
 
 Omfattning: VideoTurko gäller ETT enda pass (upp till 209 bildrutor, cirka 8,7 s). Vårt eget test med hopkedjning visade synliga skarvar (scenen fortsätter inte rent), så längre filmer ingår inte i det vi verifierar. För hopkedjning finns communityguiden `docs/KLIP_ZINCIRI.md` och vårt CPU-hjälpverktyg `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; det startar aldrig motorn); kvaliteten på hopkedjade filmer har vi inte mätt [ej provat], så kontrollera varje skarv med ögat och med `scripts/dikis_denetim.py`.
-Dina inställningar är dina: 209 bildrutor är vår testade standard på ett 4 GB-kort, inte en gräns du måste följa. Välj valfritt antal bildrutor på 17k+5-rastret (56, 73, ... 192, 209; se `docs/KURULUM.md`), ändra prompt, seed, upplösning eller vilken flagga du vill. Kortare klipp kräver mindre minne och tid; större GPU:er kan rymma mer.
+Dina inställningar är dina: 209 bildrutor är vår testade standard på ett 4 GB-kort, inte en gräns du måste följa. Välj valfritt antal bildrutor på 17k+5-rastret (39, 56, 73, ... 192, 209; se `docs/KURULUM.md`), ändra prompt, seed, upplösning eller vilken flagga du vill. Kortare klipp kräver mindre minne och tid; större GPU:er kan rymma mer.
 
 ## Varning för modelllicensen
 **VideoTurko innehåller bara patchar och skript (MIT); den som använder modellen och dess utdata ansvarar själv för MiniMax-licensen.** Inte juridisk rådgivning. Nedan sammanfattas klausulerna i MiniMax H3 Community License (2 augusti 2026) med deras nummer; själva licensen är den bindande: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Körningsnamn som används inom hakparentes (våra egna körningsnamn, inte file
 - **Test i tom rotmapp återstår:** installations- och körskripten har ännu inte verifierats från en tom mapp med enbart de här instruktionerna; det här avsnittet uppdateras när det testet (inklusive en byte-jämförelse med 56 bildrutor mot referensen) är dokumenterat.
 - Inga genererade videor levereras här.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

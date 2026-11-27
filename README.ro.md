@@ -33,7 +33,7 @@ VideoTurko: patch-uri de memorie pentru stable-diffusion.cpp și rețete pentru 
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` urmează grila 17k+5 (56, 73, ... 192, 209); implicit 209 (8,7 s), cea mai lungă durată pe care o acoperim. VAE rulează într-un proces separat, niciodată pe dale (tiled) [o rulare reală a motorului prin `uret.ps1` cu binarul de release, cu VAE în proces separat, a trecut în rularea U209].
+   `-Kare` urmează grila 17k+5 (39, 56, 73, ... 192, 209); implicit 209 (8,7 s), cea mai lungă durată pe care o acoperim. VAE rulează într-un proces separat, niciodată pe dale (tiled) [o rulare reală a motorului prin `uret.ps1` cu binarul de release, cu VAE în proces separat, a trecut în rularea U209].
 
    Ghid de scriere a promptului: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (tipar de cadru continuu unic, segmente de timp egale, două exemple complete).
 
@@ -194,7 +194,7 @@ Această poartă nu verifică consistența mișcării (salturi de scară sau de 
 3. Zgomot normalizat după textură, `scripts/doku_norm.py` (versiunea acestui depozit): N = reziduu median / textură Sobel, la fiecare al 6-lea cadru. **Notă despre scară:** în această versiune cele 10 clipuri măsurate dau N = 0,034-0,052 (tabel în `docs/KAPILAR.md`; ultimul sfert din F192/F209V2 ajunge la 0,062), iar pragul porții suplimentare este N <= 0,065. O altă implementare a măsurat 0,028-0,036 pe aceleași clipuri, deci pragurile NU sunt interschimbabile între versiuni. Pe texturi foarte fine (rânduri de iarbă) N curat a fost 0,075, deci pragul se stabilește pe familie de scene. Un estimator robust de înaltă frecvență (sigma-HH <= 1,5; curat 0,74-1,19, zgomotul adăugat s=2 dă 2,2-3,0) este poarta suplimentară recomandată.
 
 Domeniu: VideoTurko se ocupă de O SINGURĂ trecere (până la 209 cadre, aproximativ 8,7 s). Propriul nostru test de înlănțuire a arătat îmbinări vizibile (scena nu continuă curat), deci filmele mai lungi nu fac parte din ceea ce verificăm. Pentru înlănțuire există ghidul comunității `docs/KLIP_ZINCIRI.md` și utilitarul nostru doar pe CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; nu pornește niciodată motorul); calitatea filmelor înlănțuite nu am măsurat-o [neîncercat], deci verificați fiecare îmbinare cu ochiul și cu `scripts/dikis_denetim.py`.
-Setările sunt ale dumneavoastră: 209 cadre este valoarea implicită testată de noi pe o placă de 4 GB, nu o limită pe care trebuie să o folosiți. Alegeți orice număr de cadre de pe grila 17k+5 (56, 73, ... 192, 209; vedeți `docs/KURULUM.md`), schimbați prompt-ul, seed-ul, rezoluția sau orice opțiune după preferință. Clipurile mai scurte cer mai puțină memorie și timp; GPU-urile mai mari pot suporta mai mult.
+Setările sunt ale dumneavoastră: 209 cadre este valoarea implicită testată de noi pe o placă de 4 GB, nu o limită pe care trebuie să o folosiți. Alegeți orice număr de cadre de pe grila 17k+5 (39, 56, 73, ... 192, 209; vedeți `docs/KURULUM.md`), schimbați prompt-ul, seed-ul, rezoluția sau orice opțiune după preferință. Clipurile mai scurte cer mai puțină memorie și timp; GPU-urile mai mari pot suporta mai mult.
 
 ## Avertisment privind licența modelului
 **VideoTurko conține numai patch-uri și scripturi (MIT); cine folosește modelul și ieșirile lui răspunde personal pentru licența MiniMax.** Nu reprezintă consultanță juridică. Mai jos sunt clauzele MiniMax H3 Community License (2 august 2026) rezumate cu numerele lor; licența însăși este cea obligatorie: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Numele de rulări folosite între paranteze (numele noastre proprii de rulări, 
 - **Testul în folder curat este în așteptare:** scripturile de instalare și rulare nu au fost încă verificate dintr-un folder gol, folosind numai aceste instrucțiuni; această secțiune se va actualiza când testul (inclusiv o comparare la nivel de octet pe 56 de cadre cu referința) va fi înregistrat.
 - Nu se livrează aici videoclipuri generate.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

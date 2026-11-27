@@ -33,7 +33,7 @@ VideoTurko: patch memori stable-diffusion.cpp beserta resep menjalankan MiniMax 
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` mengikuti kisi 17k+5 (56, 73, ... 192, 209); bawaan 209 (8,7 dtk), panjang terpanjang yang kami cakup. VAE berjalan di proses terpisah, tidak pernah dipecah menjadi tile [run engine nyata melalui `uret.ps1` dengan binary rilis, VAE proses terpisah, lulus pada run U209].
+   `-Kare` mengikuti kisi 17k+5 (39, 56, 73, ... 192, 209); bawaan 209 (8,7 dtk), panjang terpanjang yang kami cakup. VAE berjalan di proses terpisah, tidak pernah dipecah menjadi tile [run engine nyata melalui `uret.ps1` dengan binary rilis, VAE proses terpisah, lulus pada run U209].
 
    Panduan menulis prompt: [`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md) (pola satu pengambilan gambar tanpa putus, potongan waktu yang sama panjang, dua contoh lengkap).
 
@@ -194,7 +194,7 @@ Gerbang ini tidak memeriksa konsistensi gerak (lompatan skala atau posisi objek)
 3. Noise ternormalisasi tekstur, `scripts/doku_norm.py` (versi repo ini): N = residu median / tekstur Sobel, setiap frame ke-6. **Catatan skala:** pada versi ini 10 klip terukur menghasilkan N = 0,034-0,052 (tabel di `docs/KAPILAR.md`; seperempat terakhir F192/F209V2 mencapai 0,062) dan ambang gerbang tambahan adalah N <= 0,065. Implementasi lain mengukur 0,028-0,036 pada klip yang sama, sehingga ambang TIDAK dapat dipertukarkan antarversi. Pada tekstur yang sangat halus (barisan rumput) N bersih adalah 0,075, jadi ambang berlaku per keluarga adegan. Estimator frekuensi tinggi yang kokoh (sigma-HH <= 1,5; bersih 0,74-1,19, noise tambahan s=2 menghasilkan 2,2-3,0) adalah gerbang tambahan yang direkomendasikan.
 
 Cakupan: VideoTurko membahas SATU kali jalan saja (hingga 209 bingkai, sekitar 8,7 dtk). Uji perangkaian kami sendiri menunjukkan sambungan yang terlihat (adegan tidak berlanjut mulus), jadi film yang lebih panjang tidak termasuk yang kami verifikasi. Untuk merangkai ada panduan komunitas `docs/KLIP_ZINCIRI.md` dan alat bantu kami khusus CPU `scripts/zincir.py` (`plan`, `son-kare`, `bagla`; tidak pernah menjalankan mesin); kualitas film yang dirangkai tidak kami ukur [belum dicoba], jadi periksa setiap sambungan dengan mata dan dengan `scripts/dikis_denetim.py`.
-Pengaturan adalah milik Anda: 209 frame adalah bawaan yang kami uji pada kartu 4 GB, bukan batas yang harus Anda pakai. Pilih jumlah frame mana pun pada kisi 17k+5 (56, 73, ... 192, 209; lihat `docs/KURULUM.md`), ubah prompt, seed, resolusi, atau flag apa pun sesuka Anda. Klip yang lebih pendek butuh lebih sedikit memori dan waktu; GPU yang lebih besar mungkin muat lebih banyak.
+Pengaturan adalah milik Anda: 209 frame adalah bawaan yang kami uji pada kartu 4 GB, bukan batas yang harus Anda pakai. Pilih jumlah frame mana pun pada kisi 17k+5 (39, 56, 73, ... 192, 209; lihat `docs/KURULUM.md`), ubah prompt, seed, resolusi, atau flag apa pun sesuka Anda. Klip yang lebih pendek butuh lebih sedikit memori dan waktu; GPU yang lebih besar mungkin muat lebih banyak.
 
 ## Peringatan lisensi model
 **VideoTurko hanya berisi patch dan skrip (MIT); siapa pun yang memakai model dan keluarannya bertanggung jawab sendiri atas lisensi MiniMax.** Bukan nasihat hukum. Berikut klausul MiniMax H3 Community License (2 Agustus 2026) diringkas beserta nomornya; lisensi itu sendiri yang mengikat: https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Nama run yang dipakai dalam tanda kurung (nama run internal kami, bukan file di 
 - **Uji clean-root tertunda:** skrip instalasi dan penggunaan belum diverifikasi dari folder kosong hanya dengan petunjuk ini; bagian ini akan diperbarui saat uji itu (termasuk perbandingan byte 56 frame dengan referensi) dicatat.
 - Tidak ada video hasil generasi yang disertakan di sini.
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->

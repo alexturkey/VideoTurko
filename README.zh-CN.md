@@ -33,7 +33,7 @@ VideoTurko：一套 stable-diffusion.cpp 内存补丁与运行方案，让 4 GB 
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem istem.txt -Kare 209
    ```
-   `-Kare` 遵循 17k+5 网格（56、73、... 192、209）；默认 209（8.7 秒），也是我们覆盖的最长长度。VAE 在单独的进程中运行，从不分块 [使用 release 二进制，经 `uret.ps1` 真实运行引擎，VAE 在单独进程中，运行 U209 通过]。
+   `-Kare` 遵循 17k+5 网格（39、56、73、... 192、209）；默认 209（8.7 秒），也是我们覆盖的最长长度。VAE 在单独的进程中运行，从不分块 [使用 release 二进制，经 `uret.ps1` 真实运行引擎，VAE 在单独进程中，运行 U209 通过]。
 
    提示词写法指南：[`docs/ISTEM_YAZIMI.md`](docs/ISTEM_YAZIMI.md)（一镜到底的写法、等长的时间段、两个完整示例）。
 
@@ -194,7 +194,7 @@ Needs: an NVIDIA driver (`nvidia-smi` works; 4 GB of VRAM or more), the CUDA Too
 3. 纹理归一化噪声，`scripts/doku_norm.py`（本仓库的版本）：N = 残差中值 / Sobel 纹理，每 6 帧取一次。**尺度说明：** 在这个版本中，10 个已测量的片段得到 N = 0.034-0.052（表见 `docs/KAPILAR.md`；F192/F209V2 的最后四分之一达到 0.062），额外门禁的阈值是 N <= 0.065。另一种实现在同样的片段上测得 0.028-0.036，所以不同版本之间的阈值“不能”互换。在非常细的纹理（成行的草地纹理）上，干净画面的 N 为 0.075，所以阈值要按场景类别来定。推荐使用稳健的高频估计量作为额外门禁（sigma-HH <= 1.5；干净画面为 0.74-1.19，加入 s=2 的噪声后为 2.2-3.0）。
 
 范围：VideoTurko 针对的是单次生成（最多 209 帧，约 8.7 秒）。我们自己的拼接测试出现了可见接缝（场景无法干净地延续），因此更长的影片不属于我们验证的内容。拼接可参考社区指南 `docs/KLIP_ZINCIRI.md` 和我们仅用 CPU 的辅助脚本 `scripts/zincir.py`（`plan`、`son-kare`、`bagla`；它从不启动引擎）；拼接影片的质量我们没有测量 [未尝试]，请用眼睛并配合 `scripts/dikis_denetim.py` 检查每一处接缝。
-设置由你自己决定：209 帧是我们在 4 GB 显卡上测试过的默认值，不是你必须遵守的上限。可以在 17k+5 网格（56、73、... 192、209；见 `docs/KURULUM.md`）上任选帧数，也可以随意更改提示词、种子、分辨率或任何参数。更短的片段需要更少的内存和时间；更大的 GPU 也许能容纳更多。
+设置由你自己决定：209 帧是我们在 4 GB 显卡上测试过的默认值，不是你必须遵守的上限。可以在 17k+5 网格（39、56、73、... 192、209；见 `docs/KURULUM.md`）上任选帧数，也可以随意更改提示词、种子、分辨率或任何参数。更短的片段需要更少的内存和时间；更大的 GPU 也许能容纳更多。
 
 ## 模型许可证警告
 **VideoTurko 只包含补丁和脚本（MIT）；使用模型及其输出的人，须自行对 MiniMax 许可证负责。** 这不构成法律意见。下面按编号概述 MiniMax H3 Community License（2026 年 8 月 2 日）的各项条款，具有约束力的是许可证本身：https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
@@ -268,4 +268,4 @@ Needs: an NVIDIA driver (`nvidia-smi` works; 4 GB of VRAM or more), the CUDA Too
 - **clean-root 测试待完成：** 安装和运行脚本尚未仅按这些说明从空文件夹验证过；当该测试（包括与基准的 56 帧字节比较）记录完成后，本节会随之更新。
 - 这里不附带任何生成的视频。
 
-<!-- i18n-source: README.md sha256:19eaf465ff57 -->
+<!-- i18n-source: README.md sha256:cdeddf10eb78 -->
