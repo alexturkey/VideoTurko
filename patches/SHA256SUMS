@@ -24,3 +24,6 @@ a3ead542fd9b1eb3941c39dbe0cec3d0c3c4750a4b37319f81071d068ca4cf1e  patches/sdcpp/
 ce6766468d2526f22830fbb4c490814006841e334b0ad63dd266a117e6196b0c  patches/sdcpp/19-p0018-vae-embed-cut.patch
 798caf966c3c05e1484a9aa7c0873308f67fe96efe09de307d4ddb52fdd09aa0  patches/sdcpp/20-p0019-block-tail-fuse.patch
 009d6d6fcbae533204c5f3d81ca6a9f12dae09b9b9c467d70002c170f9845f0d  patches/sdcpp/21-p0020-lazy-destination.patch
+233c73aa215a4b2ec6a9ae3aad2d16fbf9027da3c2e07e55cd9325e079b2aad7  patches/sdcpp/22-p0021-attn-head-qkv.patch
+4d7d5256192519468f5faa9cf44240f7a36f9bb5021aa55b12e24df26c7d02b8  patches/sdcpp/24-p0023-vram-short-ok.patch
+33495a25e88884acda0d4a7dc58e330cf7ef2a53f5e9ec6ba19cdd418e1976d0  patches/sdcpp/25-p0024-vae-block-split.patch

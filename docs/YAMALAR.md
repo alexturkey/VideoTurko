@@ -27,6 +27,9 @@ Base: upstream stable-diffusion.cpp 32d516c (master-1088) + `01-taban-hiz-yamala
 | 0018 | Own graph segment for the VAE embedding + register concat | SD_VAE_EMBED_CUT=1 | F209V2K: 209 frames, tiling 0, byte gates passed | byte-identical gate passed |
 | 0019 | Per-chunk block tail (out_proj + residual + norm2 + MLP + gated residual) into one destination | SD_BLOCK_TAIL_FUSE=1 | B56H11: 56 frames sha256 0979f156... = R0 (with MLP_SET_OUT). No byte reference at 141+ frames; effect not visible in the log | byte-identical gate passed (56 frames) |
 | 0020 | 0015/0019 destination created by ggml_pad of the first chunk (op, not a graph-start leaf) | (with SD_MLP_SET_OUT / SD_BLOCK_TAIL_FUSE) | B56H10b, B56H11: 0979f156... = R0; not used by the 209 run | byte-identical gate passed (56 frames) |
+| 0021 | Attention q/k/v projected per head group instead of all heads at once (smaller working buffers); needed for 640x384 x 260, 832x480 x 141 and 896x512 x 124 (stage 1) | SD_ATTN_HEAD_QKV=1 | 56 and 209 frames byte-identical to the flag-off run, 832x480 x 124 same latent; 260, 141-frame and 896x512 sampling do not fit without it, so no flag-off reference there; at 209 frames it is slower (+2.8 %) and not used. Details: `patches/sdcpp/22-p0021-attn-head-qkv.md` | byte-identical gate passed up to 209 frames; experimental, off by default |
+| 0023 | Accept a small CUDA shortfall (last resort) instead of falling back | SD_VRAM_SHORT_OK_MB=32 (stage 2) | 56 / 209 / 243 frames byte-identical; 640x384 x 260 untiled VAE, video 6a8ba11a... in two runs, shortfall 8.33 MB. Scope: 640x384 x 260 only | conditional, experimental, off by default; not used by the 832x480 / 896x512 cells |
+| 0024 | Extra graph cuts inside each sol VAE decoder block (smaller VAE working buffer); enables the untiled decode of 832x480 x 141 and 896x512 x 124 | SD_VAE_BLOCK_SPLIT=2 (stage 2) | 11 of 11 decodes byte-identical to the flag-off video (640x384 at 56 / 209 / 260, 768x448 x 56, 832x480 x 124); the two high-resolution cells decode untiled only with it | byte-identical gate passed; opt-in profile, off by default |
 | 0005 (ggml) | CUDA op timing table file | GGML_CUDA_OPTIME_FILE | measurement tool | tool/measurement |
 
 ## Notes
@@ -58,6 +61,9 @@ Base: upstream stable-diffusion.cpp 32d516c (master-1088) + `01-taban-hiz-yamala
 | 19-p0018-vae-embed-cut | 0018 | ours |
 | 20-p0019-block-tail-fuse | 0019 | ours |
 | 21-p0020-lazy-destination | 0020 | ours |
+| 22-p0021-attn-head-qkv | 0021 | ours |
+| 24-p0023-vram-short-ok | 0023 | ours (file number 23 is not used: patch 0022 was tried and dropped) |
+| 25-p0024-vae-block-split | 0024 | ours |
 | ggml/01-ggml-taban, 02-p0005-optime-file, 03-p0005-optime-fix | 0005 (ggml) | ours; ggml d803c238 |
 Number 0008 is not in the table (never written).
 

@@ -1,0 +1,308 @@
+From c4ffa758ed7246334622566e783ac0254246d0fa Mon Sep 17 00:00:00 2001
+From: VideoTurko <noreply@example.invalid>
+Date: Thu, 26 Nov 2026 01:38:14 +0000
+Subject: [PATCH] 0021: SD_ATTN_HEAD_QKV: attention q/k/v projected per head
+ group (row views of the weight), not for all heads at once
+
+Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>
+---
+ src/model/common/ggml_block.hpp    |  35 +++++
+ src/model/diffusion/minimax_h3.hpp | 228 ++++++++++++++++++++++++++++-
+ 2 files changed, 260 insertions(+), 3 deletions(-)
+
+diff --git a/src/model/common/ggml_block.hpp b/src/model/common/ggml_block.hpp
+index 0b5a63c..20d9daa 100644
+--- a/src/model/common/ggml_block.hpp
++++ b/src/model/common/ggml_block.hpp
+@@ -230,6 +230,41 @@ public:
+         return it != params.end() && it->second != nullptr && ggml_is_quantized(it->second->type);
+     }
+ 
++    // Patch 0021 (SD_ATTN_HEAD_QKV): true when forward_rows() computes exactly what forward() computes for a row range,
++    // i.e. the plain path only (no bias, no weight_scale, no I8/convrot, no FP8 cast, no weight adapter).
++    bool rows_supported(GGMLRunnerContext* ctx) {
++        auto it = params.find("weight");
++        if (it == params.end() || it->second == nullptr) {
++            return false;
++        }
++        const ggml_type t = it->second->type;
++        if (bias || has_weight_scale || w4_convrot_kind || ctx->weight_adapter || t == GGML_TYPE_I8) {
++            return false;
++        }
++#ifndef SD_USE_UPSTREAM_GGML
++        if (t == GGML_TYPE_F8_E4M3 || t == GGML_TYPE_F8_E5M2) {
++            return false;
++        }
++#endif
++        return true;
++    }
++
++    int64_t get_in_features() const {
++        return in_features;
++    }
++
++    // Rows [row_start, row_start + rows) of forward(): the weight is a row view (rows are whole quantization blocks because
++    // in_features is a multiple of the block size, see init_params), everything else is the plain forward() path.
++    ggml_tensor* forward_rows(GGMLRunnerContext* ctx, ggml_tensor* x, int64_t row_start, int64_t rows) {
++        GGML_ASSERT(rows_supported(ctx));
++        const bool force_prec_f32 = ggml_ext_force_prec_f32(ctx, this->force_prec_f32, precision_flags);
++        ggml_tensor* w            = params["weight"];
++        const float scale         = ctx->linear_scale > 0.f ? ctx->linear_scale : this->scale;
++        GGML_ASSERT(row_start >= 0 && rows > 0 && row_start + rows <= w->ne[1]);
++        ggml_tensor* wv = ggml_view_2d(ctx->ggml_ctx, w, w->ne[0], rows, w->nb[1], static_cast<size_t>(row_start) * w->nb[1]);
++        return ggml_ext_linear(ctx, x, wv, nullptr, force_prec_f32, scale);
++    }
++
+     ggml_tensor* forward(GGMLRunnerContext* ctx, ggml_tensor* x) override {
+         const bool force_prec_f32 = ggml_ext_force_prec_f32(ctx, this->force_prec_f32, precision_flags);
+         ggml_tensor* w            = params["weight"];
+diff --git a/src/model/diffusion/minimax_h3.hpp b/src/model/diffusion/minimax_h3.hpp
+index 2c64028..903631b 100644
+--- a/src/model/diffusion/minimax_h3.hpp
++++ b/src/model/diffusion/minimax_h3.hpp
+@@ -587,6 +587,223 @@ namespace MiniMaxH3 {
+             return attend_heads(ctx, qkv, pe);
+         }
+ 
++        // Patch 0021, SD_ATTN_HEAD_QKV=1 (default off): project q/k/v per attention-head group (weight row views) right before
++        // that group's attention, so the three full-length [head_dim, heads, sequence] q/k/v tensors (3 x 28.7 KB per token)
++        // never exist. Alive in the attention phase: the block input, the packed attention output, one group's q/k/v and,
++        // for low-rank projections, the "down" outputs (rank x 4 B per token each). Per element the same ops as the default
++        // path: same weights rows, same activation columns, norm/modulation per token, RMS norm/RoPE per head.
++        // Returns nullptr (and builds nothing) when not enabled or not applicable; the caller then uses the default path.
++        ggml_tensor* attend_head_qkv(GGMLRunnerContext* ctx,
++                                     const std::vector<ggml_tensor*>& inputs,
++                                     const std::function<ggml_tensor*(ggml_tensor*, size_t)>& prepare_input,
++                                     ggml_tensor* pe) {
++            static const bool head_qkv = [] {
++                const char* e = std::getenv("SD_ATTN_HEAD_QKV");
++                return e != nullptr && e[0] == '1';
++            }();
++            static const bool set_out = [] {
++                const char* e = std::getenv("SD_ATTN_SET_OUT");
++                return e != nullptr && e[0] != '\0' && e[0] != '0';
++            }();
++            static const size_t chunk_cap = [] {
++                const char* e = std::getenv("SD_QKV_CHUNK_MB");
++                return (e != nullptr && e[0] != '\0') ? static_cast<size_t>(std::atoll(e)) * 1024ULL * 1024ULL : static_cast<size_t>(0);
++            }();
++            if (!head_qkv || !set_out || chunk_cap == 0 || ctx->backend == nullptr || inputs.empty()) {
++                return nullptr;
++            }
++            int64_t sequence = 0;
++            for (auto input : inputs) {
++                if (input->type != GGML_TYPE_F32 || input->ne[2] != 1 || input->ne[3] != 1) {
++                    return nullptr;
++                }
++                sequence += input->ne[1];
++            }
++            const double head_bytes  = double(ggml_row_size(GGML_TYPE_F32, head_dim)) * sequence;
++            const int64_t head_chunk = head_chunk_budget_gib > 0
++                                           ? static_cast<int64_t>(std::clamp(double(head_chunk_budget_gib) * (1024ULL * 1024 * 1024) / head_bytes,
++                                                                             1.0, double(heads)))
++                                           : heads;
++            if (head_chunk >= heads) {
++                return nullptr;
++            }
++
++            // Per projection: the Linear whose rows are sliced, its first row for head 0, and (low-rank only) the "down" Linear.
++            struct Source {
++                std::shared_ptr<Linear> rows;
++                std::shared_ptr<Linear> down;
++                int64_t row0        = 0;
++                ggml_tensor* cached = nullptr;  // [rank, sequence] down output
++            };
++            std::array<Source, 3> src;
++            const int64_t inner = heads * head_dim;
++            if (!split_projections) {
++                auto qkv_proj = std::dynamic_pointer_cast<Linear>(blocks["qkv_proj"]);
++                for (int j = 0; j < 3; ++j) {
++                    src[j].rows = qkv_proj;
++                    src[j].row0 = j * inner;
++                }
++            } else {
++                const char* names[3] = {"q_proj", "k_proj", "v_proj"};
++                for (int j = 0; j < 3; ++j) {
++                    if (auto low_rank = std::dynamic_pointer_cast<LowRankLinear>(blocks[names[j]])) {
++                        src[j].rows = low_rank->part("up");
++                        src[j].down = low_rank->part("down");
++                    } else {
++                        src[j].rows = std::dynamic_pointer_cast<Linear>(blocks[names[j]]);
++                    }
++                }
++            }
++            for (int j = 0; j < 3; ++j) {
++                if (src[j].rows == nullptr || !src[j].rows->rows_supported(ctx)) {
++                    return nullptr;
++                }
++            }
++
++            auto buft        = ggml_backend_get_default_buffer_type(ctx->backend);
++            size_t alignment = ggml_backend_buft_get_alignment(buft);
++            size_t budget    = ggml_backend_buft_get_max_size(buft);
++            budget -= budget % alignment;
++            budget = std::min(budget, std::max<size_t>(alignment, chunk_cap));
++            // Equal-sized token chunks (no tiny tail chunk), same rule as SD_QKV_CHUNK_MB in project_qkv.
++            auto token_chunk = [&](size_t token_bytes) {
++                int64_t chunk = static_cast<int64_t>(std::min<size_t>(static_cast<size_t>(sequence), std::max<size_t>(1, budget / token_bytes)));
++                if (chunk < sequence) {
++                    const int64_t parts = (sequence + chunk - 1) / chunk;
++                    chunk               = (sequence + parts - 1) / parts;
++                }
++                return chunk;
++            };
++            // Write `piece` (tokens on dimension `dim`) at token `offset` of a [.., sequence] destination that is created by
++            // padding the first piece (an op, not a graph-start leaf: leaves stay alive from the start of the graph).
++            auto put = [&](ggml_tensor* dst, ggml_tensor* piece, int dim, int64_t offset) {
++                if (!ggml_is_contiguous(piece)) {
++                    piece = ggml_cont(ctx->ggml_ctx, piece);
++                }
++                if (dst == nullptr) {
++                    GGML_ASSERT(offset == 0);
++                    const int extra = static_cast<int>(sequence - piece->ne[dim]);
++                    if (extra == 0) {
++                        return piece;
++                    }
++                    return dim == 1 ? ggml_pad(ctx->ggml_ctx, piece, 0, extra, 0, 0) : ggml_pad(ctx->ggml_ctx, piece, 0, 0, extra, 0);
++                }
++                return ggml_set_inplace(ctx->ggml_ctx, dst, piece, dst->nb[1], dst->nb[2], dst->nb[3],
++                                        static_cast<size_t>(offset) * dst->nb[dim]);
++            };
++            auto slice_tokens = [&](ggml_tensor* t, int64_t start, int64_t stop) {
++                auto part = ggml_ext_slice(ctx, t, 1, start, stop, false);
++                if (!ggml_is_contiguous(part)) {
++                    part = ggml_cont(ctx->ggml_ctx, part);
++                }
++                return part;
++            };
++
++            // Low-rank projections: "down" once per token chunk, kept for the whole attention phase.
++            size_t down_bytes = 0;
++            for (int j = 0; j < 3; ++j) {
++                if (src[j].down != nullptr) {
++                    down_bytes += ggml_row_size(GGML_TYPE_F32, src[j].rows->get_in_features());
++                }
++            }
++            if (down_bytes > 0) {
++                const int64_t chunk  = token_chunk(std::max<size_t>(down_bytes, ggml_row_size(GGML_TYPE_F32, inputs[0]->ne[0])));
++                int64_t token_offset = 0;
++                for (size_t i = 0; i < inputs.size(); ++i) {
++                    for (int64_t start = 0; start < inputs[i]->ne[1]; start += chunk) {
++                        const int64_t stop = std::min(start + chunk, inputs[i]->ne[1]);
++                        auto part          = slice_tokens(inputs[i], start, stop);
++                        if (prepare_input) {
++                            part = prepare_input(part, i);
++                        }
++                        for (int j = 0; j < 3; ++j) {
++                            if (src[j].down != nullptr) {
++                                src[j].cached = put(src[j].cached, src[j].down->forward(ctx, part), 1, token_offset);
++                                ctx->expand_graph(src[j].cached);
++                            }
++                        }
++                        token_offset += stop - start;
++                    }
++                }
++                GGML_ASSERT(token_offset == sequence);
++            }
++
++            {
++                // Static size estimate of what stays alive in the attention phase (first few graphs only; measurement aid).
++                static int logged = 0;
++                if (logged < 4) {
++                    ++logged;
++                    const double mb          = 1.0 / (1024.0 * 1024.0);
++                    const int64_t group_rows = head_chunk * head_dim;
++                    LOG_INFO("SD_ATTN_HEAD_QKV: tokens=%" PRId64 " heads/group=%" PRId64 " groups=%" PRId64 " split=%d down_in=[%" PRId64 ",%" PRId64 ",%" PRId64 "] "
++                             "est MB: input=%.1f attn_out=%.1f group_qkv=%.1f down_cache=%.1f (default path q/k/v=%.1f)",
++                             sequence, head_chunk, (heads + head_chunk - 1) / head_chunk, split_projections ? 1 : 0,
++                             src[0].down ? src[0].rows->get_in_features() : 0, src[1].down ? src[1].rows->get_in_features() : 0,
++                             src[2].down ? src[2].rows->get_in_features() : 0,
++                             double(ggml_row_size(GGML_TYPE_F32, inputs[0]->ne[0])) * sequence * mb,
++                             double(ggml_row_size(GGML_TYPE_F32, inner)) * sequence * mb,
++                             3.0 * double(ggml_row_size(GGML_TYPE_F32, group_rows)) * sequence * mb,
++                             double(down_bytes) * sequence * mb,
++                             3.0 * double(ggml_row_size(GGML_TYPE_F32, inner)) * sequence * mb);
++                }
++            }
++
++            ggml_tensor* packed_out = nullptr;
++            for (int64_t h0 = 0; h0 < heads; h0 += head_chunk) {
++                const int64_t h1    = std::min(h0 + head_chunk, heads);
++                const int64_t rows  = (h1 - h0) * head_dim;
++                const int64_t chunk = token_chunk(3 * ggml_row_size(GGML_TYPE_F32, rows));
++                std::array<ggml_tensor*, 3> group{nullptr, nullptr, nullptr};
++                int64_t token_offset = 0;
++                for (size_t i = 0; i < inputs.size(); ++i) {
++                    for (int64_t start = 0; start < inputs[i]->ne[1]; start += chunk) {
++                        const int64_t stop   = std::min(start + chunk, inputs[i]->ne[1]);
++                        const int64_t tokens = stop - start;
++                        ggml_tensor* prepared = nullptr;  // built once per chunk, only if a full-rank projection needs it
++                        for (int j = 0; j < 3; ++j) {
++                            ggml_tensor* x_in = nullptr;
++                            if (src[j].cached != nullptr) {
++                                x_in = slice_tokens(src[j].cached, token_offset, token_offset + tokens);
++                            } else {
++                                if (prepared == nullptr) {
++                                    prepared = slice_tokens(inputs[i], start, stop);
++                                    if (prepare_input) {
++                                        prepared = prepare_input(prepared, i);
++                                    }
++                                }
++                                x_in = prepared;
++                            }
++                            auto y = src[j].rows->forward_rows(ctx, x_in, src[j].row0 + h0 * head_dim, rows);
++                            GGML_ASSERT(y->type == GGML_TYPE_F32 && y->ne[0] == rows && y->ne[1] == tokens);
++                            if (!ggml_is_contiguous(y)) {
++                                y = ggml_cont(ctx->ggml_ctx, y);
++                            }
++                            auto piece = ggml_reshape_4d(ctx->ggml_ctx, y, head_dim, h1 - h0, tokens, 1);
++                            group[j]   = put(group[j], piece, 2, token_offset);
++                        }
++                        // Finish this chunk (all three writes) before the next chunk's projection allocates.
++                        for (int j = 0; j < 3; ++j) {
++                            ctx->expand_graph(group[j]);
++                        }
++                        token_offset += tokens;
++                    }
++                }
++                GGML_ASSERT(token_offset == sequence);
++                auto out = attend_heads(ctx, {group[0], group[1], group[2]}, pe);
++                GGML_ASSERT(out->type == GGML_TYPE_F32 && out->ne[0] == rows && "SD_ATTN_HEAD_QKV: unexpected group output layout");
++                if (!ggml_is_contiguous(out)) {
++                    out = ggml_cont(ctx->ggml_ctx, out);
++                }
++                if (packed_out == nullptr) {
++                    packed_out = ggml_new_tensor_4d(ctx->ggml_ctx, GGML_TYPE_F32, inner, out->ne[1], out->ne[2], out->ne[3]);
++                }
++                packed_out = ggml_set_inplace(ctx->ggml_ctx, packed_out, out, packed_out->nb[1], packed_out->nb[2], packed_out->nb[3],
++                                              static_cast<size_t>(h0 * head_dim) * sizeof(float));
++                ctx->expand_graph(packed_out);
++            }
++            return packed_out;
++        }
++
+         ggml_tensor* attend_heads(GGMLRunnerContext* ctx,
+                                   const std::vector<ggml_tensor*>& qkv,
+                                   ggml_tensor* pe) {
+@@ -780,10 +997,15 @@ namespace MiniMaxH3 {
+             auto modulate = [&](ggml_tensor* value, const std::vector<ggml_tensor*>& row, int shift, int scale) {
+                 return ggml_ext_modulate(ctx, value, row[shift], row[scale]);
+             };
+-            auto qkv      = attn->project_qkv(ctx, inputs, [&](ggml_tensor* input, size_t i) {
++            const std::function<ggml_tensor*(ggml_tensor*, size_t)> prepare_qkv_input = [&](ggml_tensor* input, size_t i) {
+                 return modulate(norm1->forward(ctx, input), rows[i], 0, 1);
+-            });
+-            auto attended = attn->attend(ctx, qkv, pe);
++            };
++            // SD_ATTN_HEAD_QKV=1 (patch 0021, default off): q/k/v per head group; nullptr = not enabled / not applicable.
++            auto attended = attn->attend_head_qkv(ctx, inputs, prepare_qkv_input, pe);
++            if (attended == nullptr) {
++                auto qkv = attn->project_qkv(ctx, inputs, prepare_qkv_input);
++                attended = attn->attend(ctx, qkv, pe);
++            }
+             // SD_BLOCK_TAIL_FUSE=1 (default off): out_proj + residual + norm2/modulate + MLP + gated residual run per token chunk and are
+             // written into one preallocated output (set_inplace), so no full-length intermediates stay alive. Every op is per row with
+             // the same shapes/chunking as the unfused path (MLP chunk rule reused; tail chunks of <=8 rows disable the fusion).
+-- 
+2.51.0.windows.2
+

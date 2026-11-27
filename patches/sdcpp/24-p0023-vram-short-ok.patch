@@ -1,0 +1,48 @@
+From 01aeed33122c6dbb6af1f113c1031efe0bb3f88e Mon Sep 17 00:00:00 2001
+From: VideoTurko <noreply@example.invalid>
+Date: Thu, 26 Nov 2026 11:42:36 +0000
+Subject: [PATCH] 0023: SD_VRAM_SHORT_OK_MB: accept a small device shortfall as
+ a last resort (default off)
+
+After every unload has been tried, a CUDA shortfall of at most SD_VRAM_SHORT_OK_MB megabytes is
+accepted and logged instead of falling back. Unset = stock behaviour.
+
+Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>
+---
+ src/core/execution_engine.cpp | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/src/core/execution_engine.cpp b/src/core/execution_engine.cpp
+index cc8960e..9375bfb 100644
+--- a/src/core/execution_engine.cpp
++++ b/src/core/execution_engine.cpp
+@@ -1020,6 +1020,26 @@ namespace sd {
+             } while (std::chrono::steady_clock::now() < deadline);
+         }
+         available               = manager.inspect_compute_backend_capacity(request, required_params, true);
++        // SD_VRAM_SHORT_OK_MB=<MB> (default unset = unchanged): CUDA only, last resort. The driver's free report is lower than
++        // what the card can really hold, so after every eviction has been tried a device shortfall of at most this many MB is
++        // accepted instead of failing. Runs that already fit never reach this point.
++        {
++            static const long long short_ok_mb = [] {
++                const char* e = std::getenv("SD_VRAM_SHORT_OK_MB");
++                return (e != nullptr && e[0] != 0) ? std::atoll(e) : 0LL;
++            }();
++            if (short_ok_mb > 0 && sd_backend_is(request.compute_backend, "CUDA") &&
++                available.available_device_bytes != SIZE_MAX &&
++                available.required_budget_bytes <= available.available_budget_bytes &&
++                available.required_device_bytes > available.available_device_bytes &&
++                available.required_device_bytes - available.available_device_bytes <= static_cast<size_t>(short_ok_mb) * 1024ULL * 1024ULL) {
++                LOG_INFO("SD_VRAM_SHORT_OK_MB: accepting device shortfall %.2f MB (need %.2f MB, driver reports %.2f MB free) after all evictions",
++                         (available.required_device_bytes - available.available_device_bytes) / (1024.0 * 1024.0),
++                         available.required_device_bytes / (1024.0 * 1024.0),
++                         available.available_device_bytes / (1024.0 * 1024.0));
++                return true;
++            }
++        }
+         const auto device_bytes = available.available_device_bytes == SIZE_MAX
+                                       ? std::string("unknown")
+                                       : sd_format("%.2f MB", available.available_device_bytes / (1024.0 * 1024.0));
+-- 
+2.51.0.windows.2
+

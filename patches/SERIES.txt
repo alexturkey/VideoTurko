@@ -25,3 +25,6 @@ sdcpp/18-p0017-cutcache-host-estimate.patch
 sdcpp/19-p0018-vae-embed-cut.patch
 sdcpp/20-p0019-block-tail-fuse.patch
 sdcpp/21-p0020-lazy-destination.patch
+sdcpp/22-p0021-attn-head-qkv.patch
+sdcpp/24-p0023-vram-short-ok.patch
+sdcpp/25-p0024-vae-block-split.patch

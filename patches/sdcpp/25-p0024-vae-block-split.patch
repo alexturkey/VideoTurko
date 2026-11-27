@@ -1,0 +1,95 @@
+From 3ea8d242c2d5c1773f5cfe84d2e9a185c1f62c52 Mon Sep 17 00:00:00 2001
+From: VideoTurko <noreply@example.invalid>
+Date: Fri, 27 Nov 2026 07:53:05 +0000
+Subject: [PATCH] 0024: SD_VAE_BLOCK_SPLIT: extra graph cuts inside each sol
+ VAE decoder block (default off)
+
+Each sol VAE decoder block is cut into two or three graph segments
+(windowed attention | to_out + residual | feed-forward) so the decode
+working buffer shrinks. Only segment boundaries move: every op keeps its
+inputs, shapes and order. SD_VAE_BLOCK_SPLIT=0|1|2 (stage 2 only); unset
+or 0 = stock graph.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ src/model/vae/minimax_h3_vae.hpp | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/src/model/vae/minimax_h3_vae.hpp b/src/model/vae/minimax_h3_vae.hpp
+index 86ae1f8..c4589a9 100644
+--- a/src/model/vae/minimax_h3_vae.hpp
++++ b/src/model/vae/minimax_h3_vae.hpp
+@@ -371,7 +371,8 @@ namespace MiniMaxH3VAE {
+                              ggml_tensor* x,
+                              ggml_tensor* pe,
+                              RMSNorm& norm,
+-                             const SolAttentionPlan::Inputs* sol) {
++                             const SolAttentionPlan::Inputs* sol,
++                             const std::string* split_group = nullptr) {
+             auto to_out = std::dynamic_pointer_cast<Linear>(blocks["to_out"]);
+             if (sol != nullptr) {
+                 auto project_rows = [&](ggml_tensor* rows, ggml_tensor* local_pe) {
+@@ -384,7 +385,13 @@ namespace MiniMaxH3VAE {
+                         as_rows(ggml_permute(ctx->ggml_ctx, k, 0, 2, 1, 3)),
+                         as_rows(v)};
+                 };
+-                return to_out->forward(ctx, sol->forward(ctx, x, pe, num_head, project_rows));
++                auto attended = sol->forward(ctx, x, pe, num_head, project_rows);
++                if (split_group != nullptr) {
++                    // SD_VAE_BLOCK_SPLIT=2: the windowed attention gets its own graph segment, so its temporaries are not
++                    // allocated together with the full-length to_out projection and residual. Same ops, same inputs.
++                    sd::ggml_graph_cut::mark_graph_cut(attended, *split_group + ".attn", "attended");
++                }
++                return to_out->forward(ctx, attended);
+             }
+             auto [q, k, v] = project(ctx, norm.forward(ctx, x), pe);
+             auto out       = ggml_ext_attention_ext(ctx,
+@@ -437,7 +444,9 @@ namespace MiniMaxH3VAE {
+                              ggml_tensor* x,
+                              ggml_tensor* pe,
+                              const SolAttentionPlan::Inputs* sol,
+-                             int64_t rows_per_chunk) {
++                             int64_t rows_per_chunk,
++                             int split                      = 0,
++                             const std::string& split_group = std::string()) {
+             auto norm1  = std::dynamic_pointer_cast<RMSNorm>(blocks["norm1"]);
+             auto attn   = std::dynamic_pointer_cast<DecoderAttention>(blocks["attn"]);
+             auto norm2  = std::dynamic_pointer_cast<RMSNorm>(blocks["norm2"]);
+@@ -445,8 +454,13 @@ namespace MiniMaxH3VAE {
+             x           = ggml_add(ctx->ggml_ctx,
+                                    x,
+                                    ggml_mul(ctx->ggml_ctx,
+-                                            attn->forward(ctx, x, pe, *norm1, sol),
++                                            attn->forward(ctx, x, pe, *norm1, sol, split >= 2 && sol != nullptr ? &split_group : nullptr),
+                                             params["scale1"]));
++            if (split >= 1 && sol != nullptr) {
++                // SD_VAE_BLOCK_SPLIT>=1: the feed-forward half gets its own graph segment, so its full-length destination
++                // is not allocated while the attention half runs. Same ops, same inputs.
++                sd::ggml_graph_cut::mark_graph_cut(x, split_group + ".res", "hidden_states");
++            }
+             auto finish = [&](ggml_tensor* rows) {
+                 auto update = ff->forward(ctx, norm2->forward(ctx, rows));
+                 return ggml_add(ctx->ggml_ctx, rows, ggml_mul(ctx->ggml_ctx, update, params["scale2"]));
+@@ -547,10 +561,18 @@ namespace MiniMaxH3VAE {
+             }
+ 
+             const int64_t rows_per_chunk = sol ? width * height + sol_global_rows : 0;
++            // SD_VAE_BLOCK_SPLIT=<0|1|2> (default 0 = unchanged graph): extra graph cuts inside each sol decoder block.
++            // 1: cut after the attention residual (before the feed-forward). 2: also cut between the windowed attention and to_out.
++            // Only segment boundaries move; every op keeps its inputs, shapes and order.
++            static const int block_split = [] {
++                const char* e = std::getenv("SD_VAE_BLOCK_SPLIT");
++                return e != nullptr ? std::atoi(e) : 0;
++            }();
+             for (int i = 0; i < num_layers; ++i) {
+                 auto block = std::dynamic_pointer_cast<DecoderBlock>(
+                     blocks[(sol ? "blocks." : "transformer_blocks.") + std::to_string(i)]);
+-                h = block->forward(ctx, h, sol && i % 2 != 0 ? shifted_pe : pe, sol ? &sol_inputs[i % 2] : nullptr, rows_per_chunk);
++                h = block->forward(ctx, h, sol && i % 2 != 0 ? shifted_pe : pe, sol ? &sol_inputs[i % 2] : nullptr, rows_per_chunk,
++                                   sol ? block_split : 0, "minimax_h3_vae.decoder.blocks." + std::to_string(i));
+                 sd::ggml_graph_cut::mark_graph_cut(h,
+                                                    "minimax_h3_vae.decoder.blocks." + std::to_string(i),
+                                                    "hidden_states");
+-- 
+2.51.0.windows.2
+

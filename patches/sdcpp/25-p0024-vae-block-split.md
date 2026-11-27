@@ -1,0 +1,11 @@
+# 0024
+
+Extra graph cuts inside each sol VAE decoder block (windowed attention | to_out + residual | feed-forward), so one block runs as two or three segments instead of one and the decode working buffer shrinks; only segment boundaries move, every op keeps its inputs, shapes and order
+
+- Env flag: SD_VAE_BLOCK_SPLIT=0|1|2 (stage 2 only). 0 or unset = stock graph. 1 = cut after the attention residual, before the feed-forward. 2 = also cut between the windowed attention and to_out. Prefer 2.
+- Log line when it acts: no dedicated line; the VAE summary reads `sol_h3_vae compute buffer size: ... (peak across 50 segments)` with 1 and `(peak across 74 segments)` with 2, instead of 26.
+- Evidence [measured, authors, GTX 1050 Ti 4 GB]: 11 decodes byte equal to the flag-off video (640x384 at 56 / 209 / 260 frames: video 0979f156..., d512de13..., 6a8ba11a...; 768x448 at 56; 832x480 at 124; values 1, 2 and unset). Working buffer, unset -> 2: 1257.97 -> 1130.25 MB (640x384, 56 frames), 2626.22 -> 1862.03 MB (209), 3082.30 -> 2312.50 MB (260), 2779.42 -> 2327.94 MB (832x480, 124). It enables two cells: 896x512 x 124 frames (the unflagged decode needs 3060.1 MB vs 2630.0 MB available) and 832x480 x 141 frames (unflagged: 2645.5 vs 2629.9 MB), both decoded untiled with 2 (decode buffer 2815.55 and 2048.91 MB), two prompts each. Decode time: 2 costs about 6-9 % (832x480, 124 frames).
+- Read this before trusting the buffer line: with the flag on, the working-buffer line understates what the card really holds (the output of the residual cut lives on the device outside the working buffer). Judge a new cell by the decode finishing untiled and by shared-memory growth, not by the buffer line alone.
+- Not measured: 960x544 at any length; high resolutions longer than 141 frames; the flag-off decode of the 209-frame clip with its original prompt on the patched binary.
+- Default: OFF (no env set = stock behaviour)
+- Base: upstream stable-diffusion.cpp 32d516c + 01-taban-hiz-yamalari, applied in series order (after 0023; the VAE file is not touched by 0021 or 0023). One file, +27 / -5 lines: src/model/vae/minimax_h3_vae.hpp.
