@@ -5,6 +5,8 @@
 #   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -InitImg onceki_son_kare.png   (parca zinciri)
 #   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -InitImg ilk.png -EndImg son.png -Kare 107   (ilk + son kare / first + last frame)
 #   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -W 384 -H 640 -Kare 56   (dikey / vertical; 32'nin kati, alan >= 640x384)
+#   powershell -NoProfile -File scripts\uret.ps1 -Istem istem.txt -Profil yuksek832    (ISTEGE BAGLI: 832x480, 141 kare = 5,9 sn, ~55 dk; yamali hiz motoru gerekir)
+#   -Profil: yuksek832 (832x480 x 141 ya da 124 kare) | yuksek896 (896x512 x 124 kare) | uzun260 (640x384 x 260 kare = 10,8 sn, KOSULLU/DENEYSEL). Varsayilan (profilsiz) 640x384 x 209 DEGISMEZ.
 #   -Kuru : komutlari ve ortam degiskenlerini yazar, calistirmaz / print only, do not run
 #   -TekAsama : iki asamayi elle kapatir (buyuk VRAM'li kartlar icin; 4 GB'da 108+ karede VAE bellege sigmaz) / force single process
 # Sabitler (kalite): 6 adim, cfg 1, tohum 42, KAROSUZ VAE (--vae-tiling/--temporal-tiling HICBIR ZAMAN eklenmez).
@@ -39,6 +41,7 @@ param(
     [string]$EndImg = "",
     [int]$W = 640,
     [int]$H = 384,
+    [string]$Profil = "",   # istege bagli hiz profili (yuksek832 | yuksek896 | uzun260); bos = varsayilan 640x384
     [switch]$TekAsama,
     [switch]$Kuru,
     [switch]$Kontrol
@@ -105,13 +108,39 @@ $EndKisit = $KucukKart   # -EndImg kisiti yalniz kucuk kartta (8 GB sinifi eski 
 $KareEndTavan = $(if ($EndKisit) { $KareEnd4GB } else { $KareInit })
 if ($EndImg -and $KareVarsayilan) { $Kare = $KareEndTavan }
 
+# --- Istege bagli hiz profilleri (kullanici karari 2026-11-27: kullanilabilir ama ISTEGE BAGLI; varsayilan 640x384 x 209 degismez) ---
+# Her profil GTX 1050 Ti 4 GB'ta OLCULMUS tek bir hucredir (docs/OLCUMLER.md "Hiz paketi", patches/sdcpp/22, 24, 25 notlari). Yalniz yamali hiz motoruyla kosar:
+#   engine\bin\HIZ_PAKETI.txt (motor zip'inde gelir; yama 0021 + 0023 + 0024). Eski motor bayraklari sessizce yok sayar ve ~1 saat sonra bellekte dusersiniz: bu yuzden once reddedilir.
+#   Kendi derlediginiz motor icin VT_HIZ_MOTOR=1 (UYARI; sonuc garanti degil).
+$ProfilAd = "$Profil".Trim().ToLowerInvariant()
+$ProfilKareler = @(); $ProfilVarsayilanKare = 0; $ProfilYama = @(); $ProfilDeneysel = $false; $ProfilSure = ''
+$ProfilEnv1 = [ordered]@{}; $ProfilEnv2 = [ordered]@{}
+if ($ProfilAd) {
+    if ($ProfilAd -eq 'yuksek832') {
+        $PW = 832; $PH = 480; $ProfilKareler = @(124, 141); $ProfilVarsayilanKare = 141; $ProfilYama = @('0021', '0024'); $ProfilSure = '141 kare ~55-56 dk, 124 kare ~45-46 dk [olctum]'
+        $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'; $ProfilEnv2['SD_VAE_BLOCK_SPLIT'] = '2'
+    } elseif ($ProfilAd -eq 'yuksek896') {
+        $PW = 896; $PH = 512; $ProfilKareler = @(124); $ProfilVarsayilanKare = 124; $ProfilYama = @('0021', '0024'); $ProfilSure = '~56-58 dk [olctum]'
+        $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'; $ProfilEnv2['SD_VAE_BLOCK_SPLIT'] = '2'
+    } elseif ($ProfilAd -eq 'uzun260') {
+        $PW = 640; $PH = 384; $ProfilKareler = @(260); $ProfilVarsayilanKare = 260; $ProfilYama = @('0021', '0023'); $ProfilDeneysel = $true; $ProfilSure = '~71-72 dk [tahmin: erken cikisli 260 kare uctan uca olculmedi]; erken cikissiz 78 dk olculdu'
+        $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'
+        $ProfilEnv2['SD_VRAM_MARGIN_MB'] = '1'; $ProfilEnv2['SD_VAE_VRAM_MARGIN_MB'] = '1'; $ProfilEnv2['SD_VRAM_SHORT_OK_MB'] = '32'
+    } else { throw "[VT-E-PROFIL] bilinmeyen -Profil '$Profil' (yuksek832 | yuksek896 | uzun260; bos birakirsaniz varsayilan 640x384)" }
+    if ($InitImg -or $EndImg -or $TekAsama) { throw "[VT-E-PROFIL] -Profil $ProfilAd ile -InitImg / -EndImg / -TekAsama birlikte kullanilmaz (profil yalniz olculen metinden-videoya iki asamali hucredir)" }
+    if (($PSBoundParameters.ContainsKey('W') -and $W -ne $PW) -or ($PSBoundParameters.ContainsKey('H') -and $H -ne $PH)) { throw "[VT-E-PROFIL] -Profil $ProfilAd boyutu ${PW}x${PH}'dir; verilen -W/-H farkli (profili birakin ya da -W/-H vermeyin)" }
+    $W = $PW; $H = $PH
+    if ($KareVarsayilan) { $Kare = $ProfilVarsayilanKare }
+    if ($ProfilKareler -notcontains $Kare) { throw ("[VT-E-PROFIL] -Profil {0} yalniz olculen kare sayilarinda calisir: {1} (verilen: {2}). Baska sayi icin profilsiz kosun ({3} kareye kadar 640x384)." -f $ProfilAd, ($ProfilKareler -join ' / '), $Kare, $KareSabit) }
+}
+
 # --- dogrulamalar ---
 if ($Kare -lt 5 -or (($Kare - 5) % 17) -ne 0) { throw "[VT-E-KARE] Kare sayisi 17k+5 olmali (5, 22, 39, ... 17k+5; en fazla $KareSabit). Verilen: $Kare" }
 if ($InitImg -and $Kare -gt $KareInit) { throw "[VT-E-KARE] -InitImg ile en fazla $KareInit kare (8,0 sn) desteklenir: bu GPU'da $KareSabit kare -InitImg ile bellege sigmadi; baska GPU'larda denenmedi. -Kare $KareInit ya da daha kucugunu verin. Verilen: $Kare" }
 if ($EndImg -and $EndKisit -and $Kare -gt $KareEnd4GB) { throw "[VT-E-KARE] -EndImg ile bu kartta (VRAM $(if ($GpuTop -lt 0) { 'okunamadi, 8 GB alti sayildi' } else { "$GpuTop MiB; 8 GB alti" })) en fazla $KareEnd4GB kare (7,3 sn): 192 bu kartta sigmadi, 175 olculdu (GTX 1050 Ti, iki asama). -Kare $KareEnd4GB ya da daha kucugunu verin. Verilen: $Kare" }
 if ($EndImg -and $Kare -gt $KareInit) { throw "[VT-E-KARE] -EndImg ile en fazla $KareInit kare (8,0 sn) desteklenir (-InitImg ile ayni tavan; 8 GB ve ustu kartta FLF bizce olculmedi). -Kare $KareInit ya da daha kucugunu verin. Verilen: $Kare" }
 # Kare tavani = $KareSabit (dogrulanan en uzun kare). VT_MAX_KARE ile gecici ezilir (sonuc garanti degil).
-$KareTavan = $(if ($env:VT_MAX_KARE) { [int]$env:VT_MAX_KARE } else { $KareSabit })
+$KareTavan = $(if ($ProfilAd) { ($ProfilKareler | Measure-Object -Maximum).Maximum } elseif ($env:VT_MAX_KARE) { [int]$env:VT_MAX_KARE } else { $KareSabit })
 if ($Kare -gt $KareTavan) { throw "[VT-E-KARE] Kare sayisi $KareTavan degerinden buyuk desteklenmiyor (denenmedi). Verilen: $Kare" }
 # Cozunurluk: motor W/H'yi 32'nin katina YUKARI yuvarlar (720 -> 736); sessiz degisiklik olmasin diye burada reddedilir.
 if ($PSBoundParameters.ContainsKey('W') -xor $PSBoundParameters.ContainsKey('H')) { throw "[VT-E-BOYUT] -W ve -H birlikte verilmeli (yalniz biri verilirse oteki 640/384 kalir ve beklenmedik boyut cikar). Dikey: -W 384 -H 640. Verilen: ${W}x${H}" }
@@ -123,8 +152,18 @@ $Jeton = [int](($W / 32) * ($H / 32) * $LatKare)
 # Kucuk kart (VRAM < $KucukKartMiB ya da okunamadi): standart disi boyutta jeton tavani = 640x384'te olculen en buyuk (209 kare 14880; -InitImg ile 192 kare 13680; -EndImg ile 175 kare 12480).
 $JetonTavan = $(if ($EndImg) { 12480 } elseif ($InitImg) { 13680 } elseif ($OrtaKart) { $Jeton8GB } else { 14880 })
 if ($env:VT_MAX_JETON) { $JetonTavan = [int]$env:VT_MAX_JETON }
-if (-not $Standart -and ($KucukKart -or $OrtaKart -or $env:VT_MAX_JETON) -and $Jeton -gt $JetonTavan) {
-    throw ("[VT-E-BOYUT] {0}x{1} ve {2} kare = {3} jeton; bu kartta tavan {4} jeton ({7}; VRAM {5}). Daha kisa -Kare ya da daha kucuk boyut verin; VT_MAX_JETON ile gecici ezilir (sonuc garanti degil){6}." -f $W, $H, $Kare, $Jeton, $JetonTavan, $(if ($GpuTop -lt 0) { 'okunamadi, 8 GB alti sayildi' } else { "$GpuTop MiB" }), $(if ($GpuTop -lt 0) { '; nvidia-smi VRAM okuyamadi: buyuk kartiniz varsa VT_GPU_VRAM=<MiB> ile toplam VRAM verilebilir (test amacli, sonuc garanti degil)' } else { '' }), $(if ($OrtaKart -and -not $EndImg -and -not $InitImg) { '8 GB sinifinda bildirilen en buyuk is 16320 jeton, bizce olculmedi' } else { '4 GB''da olculen en buyuk is' }))
+if (-not $Standart -and -not $ProfilAd -and ($KucukKart -or $OrtaKart -or $env:VT_MAX_JETON) -and $Jeton -gt $JetonTavan) {
+    throw ("[VT-E-BOYUT] {0}x{1} ve {2} kare = {3} jeton; bu kartta tavan {4} jeton ({7}; VRAM {5}). Daha kisa -Kare ya da daha kucuk boyut verin; VT_MAX_JETON ile gecici ezilir (sonuc garanti degil){6}.{8}" -f $W, $H, $Kare, $Jeton, $JetonTavan, $(if ($GpuTop -lt 0) { 'okunamadi, 8 GB alti sayildi' } else { "$GpuTop MiB" }), $(if ($GpuTop -lt 0) { '; nvidia-smi VRAM okuyamadi: buyuk kartiniz varsa VT_GPU_VRAM=<MiB> ile toplam VRAM verilebilir (test amacli, sonuc garanti degil)' } else { '' }), $(if ($OrtaKart -and -not $EndImg -and -not $InitImg) { '8 GB sinifinda bildirilen en buyuk is 16320 jeton, bizce olculmedi' } else { '4 GB''da olculen en buyuk is' }), $(if ($KucukKart -and -not $EndImg -and -not $InitImg) { ' Olculen yuksek cozunurluk hucreleri (istege bagli, yamali hiz motoru gerekir): -Profil yuksek832 (832x480 x 141 kare) ya da -Profil yuksek896 (896x512 x 124 kare).' } else { '' }))
+}
+if ($ProfilAd) {
+    if ($MotorStock) { throw "[VT-E-PROFIL] -Profil $ProfilAd yamali hiz motoru ister; secili motor stock (yama anahtarlari yok). Profilsiz kosun." }
+    if (-not $Kuru -and $env:VT_HIZ_MOTOR -ne '1') {
+        $hizDosya = Join-Path $Motor 'HIZ_PAKETI.txt'; $hizYama = ''
+        if (Test-Path -LiteralPath $hizDosya) { try { $hizYama = (Get-Content -LiteralPath $hizDosya -Raw -Encoding UTF8) } catch { $hizYama = '' } }
+        $hizEksik = @($ProfilYama | Where-Object { $hizYama -notmatch $_ })
+        if ($hizEksik.Count -gt 0) { throw ("[VT-E-MOTOR-ESKI] -Profil {0} icin motorda {1} yamasi gerekli ({2} bulunamadi: {3}). Eski motor bayraklari yok sayar ve ~1 saat sonra bellekte dusersiniz. Hiz paketi motor zip'ini kurun (scripts\kur.ps1) ya da kendi derlediginiz motor icin VT_HIZ_MOTOR=1 verin." -f $ProfilAd, ($ProfilYama -join ' + '), $hizDosya, ($hizEksik -join ' ')) }
+    }
+    if (-not $Kuru -and $env:VT_HIZ_MOTOR -eq '1') { Write-Output 'UYARI: VT_HIZ_MOTOR=1: motordaki hiz yamalari (0021/0023/0024) sizin sorumlulugunuzda; sonuc garanti degil.' }
 }
 if (-not (Test-Path -LiteralPath $Istem)) { throw "[VT-E-ISTEM] istem dosyasi yok: $Istem" }
 if ($InitImg -and -not (Test-Path -LiteralPath $InitImg -PathType Leaf)) { throw "[VT-E-ISTEM] -InitImg dosyasi bulunamadi: $InitImg (ilk kare gorseli, PNG/JPG; video boyutunda verin)" }
@@ -197,6 +236,12 @@ if ($IkiAsama) {
     $Env2['SD_VAE_NO_TILING_FALLBACK'] = '1'; $Env2['SD_VAE_EMBED_CUT'] = '1'; $Env2['SD_VIDEO_LATENT_LOAD'] = $Latent
 } else {
     $Env1['SD_VAE_NO_TILING_FALLBACK'] = '1'
+}
+if ($ProfilAd -and $IkiAsama) {
+    foreach ($k in $ProfilEnv1.Keys) { $Env1[$k] = $ProfilEnv1[$k] }
+    foreach ($k in $ProfilEnv2.Keys) { $Env2[$k] = $ProfilEnv2[$k] }
+    Write-Output ("bilgi: -Profil {0}: {1}x{2}, {3} kare ({4} sn), iki asama; asama 1 +{5}, asama 2 +{6}; sure {7}. GTX 1050 Ti 4 GB'ta olculen hucredir; bellek payi dar (tek haneli MB): kartta baska surec yer tutuyorsa sigmayabilir, o zaman profilsiz kosun. Varsayilan 640x384 x {8} degismedi." -f $ProfilAd, $W, $H, $Kare, ([Math]::Round($Kare / 24.0, 1).ToString($Inv)), (($ProfilEnv1.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ' '), (($ProfilEnv2.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ' '), $ProfilSure, $KareSabit)
+    if ($ProfilDeneysel) { Write-Output 'UYARI: [VT-W-DENEYSEL] uzun260 KOSULLU ve DENEYSEL: bellek siniri cok dar (VRAM tepe 3903 / 4096 MiB, paylasimli bellek artisi +61 / +68 MiB), bayraksiz referans yok (cikti tekrarlanabilir, surum-esit degil), repo uret.ps1 yolunda 260 kare uctan uca olculmedi. Yama 0023 yalniz bu hucre icin kabul edildi.' }
 }
 # cuBLAS f32: compute capability >= 7.0 ve kullanici ayarlamadiysa (sm89'da fp16 >=141 karede tasiyor: siyah video, issue #1). 6.1 (1050 Ti) ve okunamayan cc: dokunulmaz.
 $EkEnvU = Kart-Ek-Env $SinifU   # kart_tablosu.json: cc >= 7.0 siniflarinda GGML_CUDA_CUBLAS_COMPUTE_TYPE=f32; kullanici kendisi ayarladiysa dokunulmaz
@@ -337,7 +382,7 @@ try {
     if ($GpuCc -lt 0 -and $Kare -ge 141 -and -not $env:GGML_CUDA_CUBLAS_COMPUTE_TYPE) { Write-Output 'bilgi: GPU compute capability okunamadi (eski surucu ya da nvidia-smi yok): f32 ayari yapilmadi. RTX 20xx ve ustu kartta 141+ karede video siyah cikarsa GGML_CUDA_CUBLAS_COMPUTE_TYPE=f32 ayarlayip yeniden deneyin (docs\SIK_HATALAR.md).' }
     if ($TekAsama -and $EndImg -and $KucukKart) { Write-Output 'UYARI: -TekAsama + -EndImg 8 GB alti kartta: ilk+son kare tek asamada 56 karede bile VRAM''e sigmadi [olctum 1050 Ti]; -TekAsama olmadan calistirin (iki asama 56 ve 175 karede gecti).' }
     if ($TekAsama -and $Jeton -gt 7680) { Write-Output 'bilgi: -TekAsama: iki asama elle kapatildi; 4 GB kartta bu uzunlukta VAE bellege sigmayabilir (log karolu geri-dususu gosterirse cikti GECERSIZ sayilir).' }
-    if (-not $Standart) { Write-Output ("bilgi: {0}x{1} standart disi boyut (olculen ve bayt kanitli tek boyut 640x384; bu boyut 4 GB'da denenmedi)" -f $W, $H) }
+    if (-not $Standart -and -not $ProfilAd) { Write-Output ("bilgi: {0}x{1} standart disi boyut (olculen ve bayt kanitli tek boyut 640x384; bu boyut 4 GB'da denenmedi)" -f $W, $H) }
     if (Test-Path -LiteralPath $Cikti) { Remove-Item -LiteralPath $Cikti -Force }   # eski avi basari sayilmasin
     $script:ErkenCikti = $false
     $k1 = $(if ($IkiAsama -and $env:VT_ERKEN_CIKIS -ne '0') { Asama-Kos '_a1' $Env1 $Latent } else { Asama-Kos '_a1' $Env1 })

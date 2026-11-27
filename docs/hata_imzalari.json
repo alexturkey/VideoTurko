@@ -967,6 +967,47 @@
    "ilk_adim_en": "Install Python 3 (python.org, tick Add python.exe to PATH), open a NEW terminal, or set VT_PYTHON to its python.exe. This is published by scripts/on_kontrol.ps1 only, not by kur/uret.",
    "ilk_adim_tr": "Python 3 kurun (python.org, Add python.exe to PATH), YENI terminal acin ya da VT_PYTHON ile python.exe yolunu verin. Bu kodu yalniz scripts/on_kontrol.ps1 yazar, kur/uret degil.",
    "capa": "docs/SIK_HATALAR.md#vt-e-python"
+  },
+  {
+   "kod": "VT-E-PROFIL",
+   "tur": "hata",
+   "sik_hatalar": "35",
+   "yayinlayan": [
+    "uret.ps1"
+   ],
+   "baslik_en": "-Profil refused (unknown profile, unmeasured frame count, or a conflicting option)",
+   "baslik_tr": "-Profil reddedildi (bilinmeyen profil, olculmemis kare sayisi ya da cakisan secenek)",
+   "imza": [
+    "[VT-E-PROFIL]",
+    "yalniz olculen kare sayilarinda calisir"
+   ],
+   "ornek_log": [
+    "[VT-E-PROFIL] -Profil yuksek832 yalniz olculen kare sayilarinda calisir: 124 / 141 (verilen: 158). Baska sayi icin profilsiz kosun (209 kareye kadar 640x384)."
+   ],
+   "ilk_adim_en": "Use one of the measured cells: -Profil yuksek832 (141 or 124 frames), yuksek896 (124), uzun260 (260, experimental); without -W/-H/-InitImg/-EndImg/-TekAsama. Otherwise run without -Profil.",
+   "ilk_adim_tr": "Olculen hucrelerden birini kullanin: -Profil yuksek832 (141 ya da 124 kare), yuksek896 (124), uzun260 (260, deneysel); -W/-H/-InitImg/-EndImg/-TekAsama olmadan. Olmazsa -Profil vermeden kosun.",
+   "capa": "docs/SIK_HATALAR.md#vt-e-profil"
+  },
+  {
+   "kod": "VT-E-MOTOR-ESKI",
+   "tur": "hata",
+   "sik_hatalar": "35",
+   "yayinlayan": [
+    "uret.ps1"
+   ],
+   "baslik_en": "-Profil needs the patched speed-pack engine",
+   "baslik_tr": "-Profil yamali hiz paketi motorunu ister",
+   "imza": [
+    "[VT-E-MOTOR-ESKI]",
+    "motorda 0021 yamasi gerekli",
+    "HIZ_PAKETI.txt"
+   ],
+   "ornek_log": [
+    "[VT-E-MOTOR-ESKI] -Profil yuksek832 icin motorda 0021 + 0024 yamasi gerekli (HIZ_PAKETI.txt bulunamadi: 0021 0024). Eski motor bayraklari yok sayar ve ~1 saat sonra bellekte dusersiniz."
+   ],
+   "ilk_adim_en": "Install the speed-pack engine with scripts\\kur.ps1 (the engine folder then has HIZ_PAKETI.txt), or set VT_HIZ_MOTOR=1 for an engine you built from patches 0021, 0023 and 0024 yourself (no guarantee).",
+   "ilk_adim_tr": "Hiz paketi motorunu scripts\\kur.ps1 ile kurun (motor klasorunde HIZ_PAKETI.txt olur); 0021, 0023 ve 0024 yamalariyla kendi derlediginiz motor icin VT_HIZ_MOTOR=1 (sonuc garanti degil).",
+   "capa": "docs/SIK_HATALAR.md#vt-e-motor-eski"
   }
  ]
 }
