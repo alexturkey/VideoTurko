@@ -92,8 +92,8 @@ Nimic din cele de mai jos nu schimbă rularea implicită (640x384, 209 cadre, 34
 | `uzun260` | 640x384, 260 cadre (10,8 s) | 78 min măsurate fără ieșirea timpurie; cu ea aproximativ 71-72 min [presupunere: nemăsurat cap la cap prin `uret.ps1`] | condiționat și experimental |
 
 - **Marjă îngustă:** la 832x480 x 141 poarta de memorie lasă o marjă de o singură cifră în MB (5,7 și 6,8 MB în cele două rulări complete). Două prompturi lungi (1520 și 2041 de caractere) au fost verificate doar citind poarta pentru pasul 1 și o parte din pasul 2, fără rulare completă: marjă 10,9 și 4,0 MB. Orice alt proces care ocupă memoria plăcii (browser, al doilea monitor) poate face rularea să eșueze; atunci folosiți `-Kare 124` sau dimensiunea implicită [măsurat, GTX 1050 Ti 4 GB].
-- **`uzun260` este condiționat:** limita de memorie este foarte îngustă (vârf VRAM 3903 din 4096 MiB), utilizarea memoriei partajate a crescut cu 45 și 61 MiB (68), iar pentru egalitatea la nivel de octet nu există o referință fără indicatori, deci nu este oferit ca funcție obișnuită. Patch-ul 0023 este acceptat doar pentru această celulă.
-- **Neoferit:** 832x480 la 158 de cadre a trecut doar cu un prompt scurt (cu un prompt lung a fost depășită limita memoriei partajate); 175 de cadre au fost verificate doar prin citirea porții (în primul bloc lipseau circa 275 MB, fără rulare completă). Profilul oferă doar 141 de cadre. Alte dimensiuni și numere de cadre sunt refuzate de `-Profil` (folosiți calea implicită).
+- **`uzun260` este condiționat:** limita de memorie este foarte îngustă (vârf VRAM 3903 din 4096 MiB), utilizarea memoriei partajate a crescut cu 45 și 61 MiB (limită 68), iar pentru egalitatea la nivel de octet nu există o referință fără indicatori, deci nu este oferit ca funcție obișnuită. Patch-ul 0023 este acceptat doar pentru această celulă.
+- **Neoferit:** 832x480 la 158 de cadre nu încape cu patch-urile livrate (la poarta pasului 2 lipsesc circa 280 MB); 175 de cadre au fost verificate doar prin citirea porții (în primul bloc lipseau circa 275 MB, fără rulare completă). Profilul oferă doar 141 de cadre. Alte dimensiuni și numere de cadre sunt refuzate de `-Profil` (folosiți calea implicită).
 - Calitatea implicită rămâne neatinsă: 6 pași, cfg 1, VAE fără dale, 17k+5 cadre. Acolo unde indicatorii sunt activi, ieșirea a fost comparată octet cu octet cu videoclipul fără indicatori la dimensiunile la care rularea fără indicatori încape (`docs/YAMALAR.md`); la 832x480 x 141 și 896x512 x 124 rularea fără indicatori nu încape, așa că egalitatea se sprijină acolo pe cele mai apropiate celule, nu pe o comparație directă [măsurat, citit].
 - Etapa 1 a unei rulări în două etape se încheie acum imediat ce fișierul latent este complet (`VT_ERKEN_CIKIS=0` o dezactivează).
 
@@ -266,4 +266,4 @@ Numele de rulări folosite între paranteze (numele noastre proprii de rulări, 
 - **Testul în folder curat este în așteptare:** scripturile de instalare și rulare nu au fost încă verificate dintr-un folder gol, folosind numai aceste instrucțiuni; această secțiune se va actualiza când testul (inclusiv o comparare la nivel de octet pe 56 de cadre cu referința) va fi înregistrat.
 - Nu se livrează aici videoclipuri generate.
 
-<!-- i18n-source: README.md sha256:85813d39c127 -->
+<!-- i18n-source: README.md sha256:4d4973e30a37 -->

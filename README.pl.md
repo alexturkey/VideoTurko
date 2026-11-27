@@ -92,8 +92,8 @@ Nic poniżej nie zmienia domyślnego uruchomienia (640x384, 209 klatek, 3414 s n
 | `uzun260` | 640x384, 260 klatek (10,8 s) | 78 min zmierzone bez wczesnego wyjścia; z nim około 71-72 min [przypuszczenie: nie zmierzono od początku do końca przez `uret.ps1`] | warunkowe i eksperymentalne |
 
 - **Wąski margines:** przy 832x480 x 141 bramka pamięci zostawia jednocyfrowy zapas w MB (5,7 i 6,8 MB w dwóch pełnych uruchomieniach). Dwa długie prompty (1520 i 2041 znaków) sprawdzono tylko przez odczyt bramki dla kroku 1 i części kroku 2, bez pełnego uruchomienia: zapas 10,9 i 4,0 MB. Każdy inny proces zajmujący pamięć karty (przeglądarka, drugi monitor) może spowodować błąd; wtedy użyj `-Kare 124` lub rozmiaru domyślnego [zmierzone, GTX 1050 Ti 4 GB].
-- **`uzun260` jest warunkowy:** limit pamięci jest bardzo wąski (szczyt VRAM 3903 z 4096 MiB), zużycie pamięci współdzielonej wzrosło o 45 i 61 MiB (68), a nie ma odniesienia bez flag dla równości bajtowej, więc nie jest oferowany jako zwykła funkcja. Łatka 0023 jest przyjęta tylko dla tej jednej komórki.
-- **Nieoferowane:** 832x480 przy 158 klatkach przeszło tylko z krótkim promptem (przy długim przekroczono limit pamięci współdzielonej); 175 klatek sprawdzono jedynie odczytem bramki (w pierwszym bloku brakowało ok. 275 MB, bez pełnego przebiegu). Profil oferuje tylko 141 klatek. Inne rozmiary i liczby klatek są odrzucane przez `-Profil` (użyj ścieżki domyślnej).
+- **`uzun260` jest warunkowy:** limit pamięci jest bardzo wąski (szczyt VRAM 3903 z 4096 MiB), zużycie pamięci współdzielonej wzrosło o 45 i 61 MiB (limit 68), a nie ma odniesienia bez flag dla równości bajtowej, więc nie jest oferowany jako zwykła funkcja. Łatka 0023 jest przyjęta tylko dla tej jednej komórki.
+- **Nieoferowane:** 832x480 przy 158 klatkach nie mieści się z dołączonymi łatkami (przy bramce kroku 2 brakuje ok. 280 MB); 175 klatek sprawdzono jedynie odczytem bramki (w pierwszym bloku brakowało ok. 275 MB, bez pełnego przebiegu). Profil oferuje tylko 141 klatek. Inne rozmiary i liczby klatek są odrzucane przez `-Profil` (użyj ścieżki domyślnej).
 - Domyślna jakość pozostaje nietknięta: 6 kroków, cfg 1, VAE bez kafelków, 17k+5 klatek. Tam, gdzie flagi są włączone, wynik porównano bajt po bajcie z wideo bez flag w rozmiarach, w których uruchomienie bez flag się mieści (`docs/YAMALAR.md`); przy 832x480 x 141 i 896x512 x 124 uruchomienie bez flag się nie mieści, więc równość opiera się tam na najbliższych komórkach, nie na bezpośrednim porównaniu [zmierzone, przeczytane].
 - Etap 1 uruchomienia dwuetapowego kończy się teraz, gdy tylko plik latentny jest kompletny (`VT_ERKEN_CIKIS=0` to wyłącza).
 
@@ -266,4 +266,4 @@ Nazwy przebiegów używane w nawiasach (nasze własne nazwy, nie pliki tego repo
 - **Test w czystym folderze przed nami:** skrypty instalacji i uruchomienia nie zostały jeszcze sprawdzone z pustego folderu wyłącznie według tej instrukcji; sekcja zostanie zaktualizowana, gdy test (łącznie z bajtowym porównaniem 56 klatek z wzorcem) zostanie zapisany.
 - Wygenerowane wideo nie są tu dostarczane.
 
-<!-- i18n-source: README.md sha256:85813d39c127 -->
+<!-- i18n-source: README.md sha256:4d4973e30a37 -->

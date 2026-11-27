@@ -92,8 +92,8 @@ Inget nedan ändrar standardkörningen (640x384, 209 bildrutor, 3414 s på vårt
 | `uzun260` | 640x384, 260 bildrutor (10,8 s) | 78 min uppmätt utan den tidiga avslutningen; med den cirka 71-72 min [gissning: inte mätt från början till slut via `uret.ps1`] | villkorad och experimentell |
 
 - **Smal marginal:** vid 832x480 x 141 lämnar minnesgrinden bara en ensiffrig marginal i MB (5,7 och 6,8 MB i de två fullständiga körningarna). Två långa prompter (1520 och 2041 tecken) kontrollerades endast genom att läsa grinden för steg 1 och en del av steg 2, de kördes inte fullt ut: marginal 10,9 och 4,0 MB. Varje annan process som håller kortets minne (webbläsare, andra skärm) kan få den att misslyckas; använd då `-Kare 124` eller standardstorleken [uppmätt, GTX 1050 Ti 4 GB].
-- **`uzun260` är villkorad:** minnesgränsen är mycket snäv (VRAM-topp 3903 av 4096 MiB), användningen av delat minne ökade med 45 och 61 MiB (68), och det finns ingen referens utan flaggor för bytelikhet, så den erbjuds inte som en vanlig funktion. Patch 0023 godtas bara för denna enda cell.
-- **Erbjuds inte:** 832x480 med 158 bildrutor gick bara igenom med en kort prompt (med en lång prompt överskreds gränsen för delat minne); 175 bildrutor granskades bara genom avläsning av grinden (i första blocket saknades ca 275 MB, ingen full körning). Profilen erbjuder bara 141 bildrutor. Andra storlekar och antal bildrutor avvisas av `-Profil` (använd standardvägen).
+- **`uzun260` är villkorad:** minnesgränsen är mycket snäv (VRAM-topp 3903 av 4096 MiB), användningen av delat minne ökade med 45 och 61 MiB (gräns 68), och det finns ingen referens utan flaggor för bytelikhet, så den erbjuds inte som en vanlig funktion. Patch 0023 godtas bara för denna enda cell.
+- **Erbjuds inte:** 832x480 med 158 bildrutor ryms inte med de medföljande patcharna (vid grinden i steg 2 saknas ca 280 MB); 175 bildrutor granskades bara genom avläsning av grinden (i första blocket saknades ca 275 MB, ingen full körning). Profilen erbjuder bara 141 bildrutor. Andra storlekar och antal bildrutor avvisas av `-Profil` (använd standardvägen).
 - Standardkvaliteten är orörd: 6 steg, cfg 1, VAE utan rutor, 17k+5 bildrutor. Där flaggor är på har utdata jämförts byte för byte med videon utan flaggor vid de storlekar där körningen utan flaggor ryms (`docs/YAMALAR.md`); vid 832x480 x 141 och 896x512 x 124 ryms inte körningen utan flaggor, så likheten där vilar på de närmaste cellerna, inte på en direkt jämförelse [uppmätt, läst].
 - Steg 1 i en tvåstegskörning slutar nu så snart den latenta filen är komplett (`VT_ERKEN_CIKIS=0` stänger av det).
 
@@ -266,4 +266,4 @@ Körningsnamn som används inom hakparentes (våra egna körningsnamn, inte file
 - **Test i tom rotmapp återstår:** installations- och körskripten har ännu inte verifierats från en tom mapp med enbart de här instruktionerna; det här avsnittet uppdateras när det testet (inklusive en byte-jämförelse med 56 bildrutor mot referensen) är dokumenterat.
 - Inga genererade videor levereras här.
 
-<!-- i18n-source: README.md sha256:85813d39c127 -->
+<!-- i18n-source: README.md sha256:4d4973e30a37 -->

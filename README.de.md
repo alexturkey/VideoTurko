@@ -92,8 +92,8 @@ Nichts davon ändert den Standardlauf (640x384, 209 Frames, 3414 s auf unserer K
 | `uzun260` | 640x384, 260 Frames (10,8 s) | 78 Min. gemessen ohne den frühen Ausstieg; mit ihm etwa 71-72 Min. [Vermutung: nicht durchgängig über `uret.ps1` gemessen] | bedingt und experimentell |
 
 - **Knapper Spielraum:** Bei 832x480 x 141 lässt das Speicher-Gate nur einstellige MB Spielraum (5,7 und 6,8 MB in den beiden vollständigen Läufen). Zwei lange Prompts (1520 und 2041 Zeichen) wurden nur durch Lesen des Gates für Schritt 1 und einen Teil von Schritt 2 geprüft, nicht vollständig ausgeführt: Spielraum 10,9 und 4,0 MB. Jeder andere Prozess, der Kartenspeicher belegt (Browser, zweiter Monitor), kann den Lauf scheitern lassen; nehmen Sie dann `-Kare 124` oder die Standardgröße [gemessen, GTX 1050 Ti 4 GB].
-- **`uzun260` ist bedingt:** Die Speichergrenze ist sehr eng (VRAM-Spitze 3903 von 4096 MiB), die Nutzung des gemeinsamen Speichers wuchs um 45 und 61 MiB (68), und für Byte-Gleichheit gibt es keine Referenz ohne Flag; deshalb wird es nicht als gewöhnliche Funktion angeboten. Patch 0023 wird nur für diese eine Zelle akzeptiert.
-- **Nicht angeboten:** 832x480 mit 158 Frames lief nur mit einem kurzen Prompt durch (bei einem langen Prompt wurde die Grenze des gemeinsamen Speichers überschritten); 175 Frames wurden nur über die Torablesung geprüft (im ersten Block fehlten etwa 275 MB, kein vollständiger Lauf). Das Profil bietet nur 141 Frames an. Andere Größen und Frame-Anzahlen lehnt `-Profil` ab (nehmen Sie den Standardweg).
+- **`uzun260` ist bedingt:** Die Speichergrenze ist sehr eng (VRAM-Spitze 3903 von 4096 MiB), die Nutzung des gemeinsamen Speichers wuchs um 45 und 61 MiB (Grenze 68), und für Byte-Gleichheit gibt es keine Referenz ohne Flag; deshalb wird es nicht als gewöhnliche Funktion angeboten. Patch 0023 wird nur für diese eine Zelle akzeptiert.
+- **Nicht angeboten:** 832x480 mit 158 Frames passt mit den mitgelieferten Patches nicht (am Tor von Schritt 2 fehlen etwa 280 MB); 175 Frames wurden nur über die Torablesung geprüft (im ersten Block fehlten etwa 275 MB, kein vollständiger Lauf). Das Profil bietet nur 141 Frames an. Andere Größen und Frame-Anzahlen lehnt `-Profil` ab (nehmen Sie den Standardweg).
 - Die Standardqualität bleibt unberührt: 6 Schritte, cfg 1, VAE ohne Kacheln, 17k+5 Frames. Wo Flags an sind, wurde die Ausgabe in den Größen, in denen der Lauf ohne Flags passt, Byte für Byte mit dem Video ohne Flags verglichen (`docs/YAMALAR.md`); bei 832x480 x 141 und 896x512 x 124 passt der Lauf ohne Flags nicht, dort beruht die Gleichheit auf den nächstliegenden Zellen, nicht auf einem direkten Vergleich [gemessen, gelesen].
 - Stufe 1 eines zweistufigen Laufs endet jetzt, sobald die Latent-Datei vollständig ist (`VT_ERKEN_CIKIS=0` schaltet das ab).
 
@@ -266,4 +266,4 @@ In eckigen Klammern verwendete Lauf-Namen (unsere eigenen Lauf-Namen, keine Date
 - **Clean-Root-Test steht aus:** Die Installations- und Ausführungsskripte wurden noch nicht allein mit diesen Anleitungen aus einem leeren Ordner verifiziert; dieser Abschnitt wird aktualisiert, sobald dieser Test (einschließlich eines 56-Frame-Byte-Vergleichs mit der Referenz) dokumentiert ist.
 - Es werden hier keine erzeugten Videos mitgeliefert.
 
-<!-- i18n-source: README.md sha256:85813d39c127 -->
+<!-- i18n-source: README.md sha256:4d4973e30a37 -->

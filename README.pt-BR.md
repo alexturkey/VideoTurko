@@ -92,8 +92,8 @@ Nada abaixo muda a execução padrão (640x384, 209 quadros, 3414 s na nossa pla
 | `uzun260` | 640x384, 260 quadros (10,8 s) | 78 min medidos sem a saída antecipada; com ela, cerca de 71-72 min [estimativa: não medido de ponta a ponta pelo `uret.ps1`] | condicional e experimental |
 
 - **Margem estreita:** a 832x480 x 141 o portão de memória deixa uma margem de apenas um dígito em MB (5,7 e 6,8 MB nas duas execuções completas). Dois prompts longos (1520 e 2041 caracteres) foram verificados apenas lendo o portão do passo 1 e de parte do passo 2, sem execução completa: margem de 10,9 e 4,0 MB. Qualquer outro processo que ocupe a memória da placa (navegador, segundo monitor) pode fazê-lo falhar; nesse caso use `-Kare 124` ou o tamanho padrão [medido, GTX 1050 Ti 4 GB].
-- **`uzun260` é condicional:** o limite de memória é muito estreito (pico de VRAM 3903 de 4096 MiB), o uso de memória compartilhada cresceu 45 e 61 MiB (68) e não existe referência sem flags para a igualdade byte a byte, por isso não é oferecido como recurso comum. O patch 0023 é aceito apenas para esta célula.
-- **Não oferecido:** 832x480 com 158 quadros só passou com um prompt curto (com um prompt longo o limite da memória compartilhada foi excedido); 175 quadros só foi verificado lendo a comporta (faltavam cerca de 275 MB no primeiro bloco, sem execução completa). O perfil oferece apenas 141 quadros. Outros tamanhos e números de quadros são recusados por `-Profil` (use o caminho padrão).
+- **`uzun260` é condicional:** o limite de memória é muito estreito (pico de VRAM 3903 de 4096 MiB), o uso de memória compartilhada cresceu 45 e 61 MiB (limite 68) e não existe referência sem flags para a igualdade byte a byte, por isso não é oferecido como recurso comum. O patch 0023 é aceito apenas para esta célula.
+- **Não oferecido:** 832x480 com 158 quadros não cabe com os patches incluídos (na comporta do passo 2 faltam cerca de 280 MB); 175 quadros só foi verificado lendo a comporta (faltavam cerca de 275 MB no primeiro bloco, sem execução completa). O perfil oferece apenas 141 quadros. Outros tamanhos e números de quadros são recusados por `-Profil` (use o caminho padrão).
 - A qualidade padrão não é tocada: 6 passos, cfg 1, VAE sem tiles, 17k+5 quadros. Onde as flags estão ligadas, a saída foi comparada byte a byte com o vídeo sem flags nos tamanhos em que a execução sem flags cabe (`docs/YAMALAR.md`); em 832x480 x 141 e 896x512 x 124 a execução sem flags não cabe, então a igualdade ali se apoia nas células mais próximas, não em uma comparação direta [medido, lido].
 - A etapa 1 de uma execução em duas etapas agora termina assim que o arquivo latente está completo (`VT_ERKEN_CIKIS=0` desliga isso).
 
@@ -266,4 +266,4 @@ Nomes de execução usados entre colchetes (nossos próprios nomes de execução
 - **Teste em raiz limpa pendente:** os scripts de instalação e execução ainda não foram verificados a partir de uma pasta vazia usando só estas instruções; esta seção será atualizada quando esse teste (incluindo uma comparação byte a byte de 56 quadros com a referência) for registrado.
 - Nenhum vídeo gerado é distribuído aqui.
 
-<!-- i18n-source: README.md sha256:85813d39c127 -->
+<!-- i18n-source: README.md sha256:4d4973e30a37 -->

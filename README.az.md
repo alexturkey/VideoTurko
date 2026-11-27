@@ -92,8 +92,8 @@ Aşağıdakıların heç biri standart işə salmanı dəyişmir (640x384, 209 k
 | `uzun260` | 640x384, 260 kadr (10,8 s) | erkən çıxış olmadan 78 dəq ölçülüb; onunla təxminən 71-72 dəq [təxmin: `uret.ps1` vasitəsilə başdan sona ölçülməyib] | şərti və eksperimental |
 
 - **Dar ehtiyat:** 832x480 x 141-də yaddaş qapısı yalnız təkrəqəmli MB ehtiyat saxlayır (iki tam işə salmada 5,7 və 6,8 MB). İki uzun prompt (1520 və 2041 simvol) yalnız 1-ci addım və 2-ci addımın bir hissəsi üçün qapını oxumaqla yoxlanıb, tam işə salınmayıb: ehtiyat 10,9 və 4,0 MB. Kartın yaddaşını tutan hər hansı başqa proses (brauzer, ikinci ekran) onu uğursuz edə bilər; onda `-Kare 124` və ya standart ölçüdən istifadə edin [ölçülüb, GTX 1050 Ti 4 GB].
-- **`uzun260` şərtidir:** yaddaş həddi çox dardır (VRAM zirvəsi 4096 MiB-dən 3903), paylaşılan yaddaş istifadəsi 45 və 61 MiB (68) artıb və bayt bərabərliyi üçün bayraqsız istinad yoxdur, ona görə də adi funksiya kimi təklif olunmur. 0023 yaması yalnız bu bir xana üçün qəbul edilib.
-- **Təklif olunmur:** 832x480 158 kadrda yalnız qısa istiqamətlə keçdi (uzun istiqamətdə paylaşılan yaddaş həddi aşıldı); 175 kadra isə yalnız qapı oxunuşu ilə baxıldı (ilk blokda təxminən 275 MB çatışmadı, tam icra yoxdur). Profil yalnız 141 kadr təklif edir. Digər ölçüləri və kadr saylarını `-Profil` rədd edir (standart yoldan istifadə edin).
+- **`uzun260` şərtidir:** yaddaş həddi çox dardır (VRAM zirvəsi 4096 MiB-dən 3903), paylaşılan yaddaş istifadəsi 45 və 61 MiB (hədd 68) artıb və bayt bərabərliyi üçün bayraqsız istinad yoxdur, ona görə də adi funksiya kimi təklif olunmur. 0023 yaması yalnız bu bir xana üçün qəbul edilib.
+- **Təklif olunmur:** 832x480 158 kadrda göndərilən yamalarla yerləşmir (2-ci addımın qapısında təxminən 280 MB çatışmır); 175 kadra isə yalnız qapı oxunuşu ilə baxıldı (ilk blokda təxminən 275 MB çatışmadı, tam icra yoxdur). Profil yalnız 141 kadr təklif edir. Digər ölçüləri və kadr saylarını `-Profil` rədd edir (standart yoldan istifadə edin).
 - Standart keyfiyyət toxunulmazdır: 6 addım, cfg 1, kafelsiz VAE, 17k+5 kadr. Bayraqların açıq olduğu yerlərdə çıxış, bayraqsız işə salmanın yerləşdiyi ölçülərdə bayraqsız videoyla bayt-bayt müqayisə edilib (`docs/YAMALAR.md`); 832x480 x 141 və 896x512 x 124-də bayraqsız işə salma yerləşmir, ona görə orada bərabərlik birbaşa müqayisəyə yox, ən yaxın xanalara əsaslanır [ölçülüb, oxunub].
 - İki mərhələli işə salmanın 1-ci mərhələsi indi latent fayl tamamlanan kimi bitir (`VT_ERKEN_CIKIS=0` bunu söndürür).
 
@@ -266,4 +266,4 @@ Mötərizələrdə istifadə olunan işə salınma adları (öz adlarımızdır,
 - **Təmiz-kök testi gözlənilir:** quraşdırma və işə salma skriptləri yalnız bu təlimatlarla boş qovluqdan hələ yoxlanılmayıb; bu test (istinada qarşı 56 kadrlıq bayt müqayisəsi daxil) qeyd olunduqda bu bölmə yenilənəcək.
 - Burada heç bir yaradılmış video verilmir.
 
-<!-- i18n-source: README.md sha256:85813d39c127 -->
+<!-- i18n-source: README.md sha256:4d4973e30a37 -->
