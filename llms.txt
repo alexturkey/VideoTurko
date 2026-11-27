@@ -22,6 +22,7 @@ Rules that never change: quality is fixed (6 steps, cfg 1, 24 fps, no tiled VAE,
 
 ## Optional
 - [mcp/README.md](https://github.com/alexturkey/VideoTurko/blob/main/mcp/README.md): local stdio MCP server (`generate_video`, `job_status`, `cancel_job`); `VT_MCP_INIT_DIR` limits `init_image` to a folder
+- [AGENTS_EK.md](https://github.com/alexturkey/VideoTurko/blob/main/docs/AGENTS_EK.md): details moved out of AGENTS.md (RTX 50 path, MCP server notes)
 - [KAPILAR.md](https://github.com/alexturkey/VideoTurko/blob/main/docs/KAPILAR.md): quality gates and what they do not check
 - [OLCUMLER.md](https://github.com/alexturkey/VideoTurko/blob/main/docs/OLCUMLER.md): measurements
 - [CONTRIBUTING.md](https://github.com/alexturkey/VideoTurko/blob/main/CONTRIBUTING.md): how to contribute

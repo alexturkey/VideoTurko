@@ -97,6 +97,16 @@ class Isaretciler(unittest.TestCase):
         self.assertIn("`init_image` is only a file path the user gave you", a)
         self.assertIn("VT_MCP_INIT_DIR", a)
 
+    def test_agents_md_32_kib_alti_ve_lisans_kurali_acik(self):
+        ham = (KOK / "AGENTS.md").read_bytes()
+        self.assertLess(len(ham), 32768, "AGENTS.md 32 KiB'i gecerse bazi ajanlar sessizce keser; ayrinti docs/AGENTS_EK.md'ye")
+        a = ham.decode("utf-8")
+        self.assertIn("-LisansKabul", a)
+        self.assertIn("ONLY after the user", a)
+        self.assertTrue((KOK / "docs" / "AGENTS_EK.md").exists())
+        for parca in ("RTX 50 series", "MCP server"):
+            self.assertIn(parca, (KOK / "docs" / "AGENTS_EK.md").read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()
