@@ -105,9 +105,9 @@ Patches 0021, 0023 and 0024 (`docs/YAMALAR.md`), all off by default. Same qualit
 | 832x480 x 124 | 5.2 s | none | none | 45-46 min | plain engine |
 | 832x480 x 141 | 5.9 s | `SD_ATTN_HEAD_QKV=1` | `SD_VAE_BLOCK_SPLIT=2` | 55-56 min | headroom at the sampling memory gate 5.7 and 6.8 MB (two full runs) |
 | 896x512 x 124 | 5.2 s | `SD_ATTN_HEAD_QKV=1` | `SD_VAE_BLOCK_SPLIT=2` | 56-57.5 min | |
-| 640x384 x 260 | 10.8 s | `SD_ATTN_HEAD_QKV=1` | `SD_VRAM_SHORT_OK_MB=32` (+ margins 1) | 78.4 min without the early exit | VRAM peak 3903 / 4096 MiB, shared memory +61 / +68 MiB; conditional |
+| 640x384 x 260 | 10.8 s | `SD_ATTN_HEAD_QKV=1` | `SD_VRAM_SHORT_OK_MB=32` (+ margins 1) | 78.4 min without the early exit | VRAM peak 3903 / 4096 MiB, shared memory +45 and +61 MiB in the two full runs (limit +68); conditional |
 
 - Long prompts at 832x480 x 141: 1520 and 2041 characters were checked by reading the memory gate only (all of step 1 and the first two blocks of step 2, no full run): no failed gate, headroom 10.9 and 4.0 MB. Not a full-run result.
-- 832x480 at 158 and 175 frames does not fit with these patches; not offered.
+- 832x480 at 158 frames passed only with a short prompt; with a long prompt the shared-memory limit was exceeded. 175 frames was only gate-read (about 275 MB short at the first block, no full run). Not offered; the profile is 141 frames only.
 - Byte checks: with the flags on, 56 / 209 / 243 frames at 640x384 and 832x480 x 124 are byte-identical to the flag-off result; the 260-frame decode is repeatable (two runs, same video) but has no flag-off reference. At 832x480 x 141 and 896x512 x 124 the flag-off run does not fit, so a direct comparison is impossible.
 - The `uret.ps1 -Profil` wiring and the engine zip were checked by dry run and an install test; no new GPU run was made for them.

@@ -81,7 +81,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 ```
 
 ## Perfiles de velocidad opcionales (paquete de velocidad; desactivados por defecto)
-Nada de lo siguiente cambia la ejecución por defecto (640x384, 209 fotogramas, 3414 s en nuestra tarjeta). Son tres celdas medidas más allá de ella, cada una un perfil con nombre de `uret.ps1`; necesitan el motor del paquete de velocidad (el motor de la release más los parches 0021, 0023 y 0024, todos desactivados por defecto: `docs/YAMALAR.md`). Instálelo con `scripts\kur.ps1 -HizPaketi` (un zip local funciona con `-MotorZip`) y luego añada `-Profil <name>`; `-Kuru` muestra lo que se ejecutaría.
+Nada de lo siguiente cambia la ejecución por defecto (640x384, 209 fotogramas, 3414 s en nuestra tarjeta). Son tres celdas medidas más allá de ella, cada una un perfil con nombre de `uret.ps1`; necesitan el motor del paquete de velocidad (el motor de la release más los parches 0021, 0023 y 0024, todos desactivados por defecto: `docs/YAMALAR.md`). Instálelo con `scripts\kur.ps1 -HizPaketi` (un zip local funciona con `-MotorZip`) y luego añada `-Profil <name>`; `-Kuru` muestra lo que se ejecutaría. El paquete de velocidad se publica con la versión v0.1.4.
 
 | Perfil | Tamaño, duración | Tiempo total en una GTX 1050 Ti 4 GB | Estado |
 |---|---|---|---|
@@ -92,8 +92,8 @@ Nada de lo siguiente cambia la ejecución por defecto (640x384, 209 fotogramas, 
 | `uzun260` | 640x384, 260 fotogramas (10,8 s) | 78 min medidos sin la salida anticipada; con ella, unos 71-72 min [estimación: no medido de extremo a extremo con `uret.ps1`] | condicional y experimental |
 
 - **Margen estrecho:** a 832x480 x 141 la compuerta de memoria deja un margen de un solo dígito en MB (5,7 y 6,8 MB en las dos ejecuciones completas). Dos prompts largos (1520 y 2041 caracteres) solo se comprobaron leyendo la compuerta del paso 1 y parte del paso 2, sin ejecución completa: margen de 10,9 y 4,0 MB. Cualquier otro proceso que ocupe la memoria de la tarjeta (navegador, segunda pantalla) puede hacerlo fallar; entonces use `-Kare 124` o el tamaño por defecto [medido, GTX 1050 Ti 4 GB].
-- **`uzun260` es condicional:** el límite de memoria es muy estrecho (pico de VRAM 3903 de 4096 MiB), el uso de memoria compartida aumentó 61 y 68 MiB, y no existe una referencia sin indicadores para la igualdad byte a byte, así que no se ofrece como una función normal. El parche 0023 se acepta solo para esta celda.
-- **No se ofrece:** 832x480 con 158 o 175 fotogramas no cabe; la búsqueda de longitud terminó allí en 141 fotogramas. `-Profil` rechaza otros tamaños y números de fotogramas (use la ruta por defecto).
+- **`uzun260` es condicional:** el límite de memoria es muy estrecho (pico de VRAM 3903 de 4096 MiB), el uso de memoria compartida aumentó 45 y 61 MiB (68), y no existe una referencia sin indicadores para la igualdad byte a byte, así que no se ofrece como una función normal. El parche 0023 se acepta solo para esta celda.
+- **No se ofrece:** 832x480 con 158 fotogramas solo pasó con un prompt corto (con un prompt largo se superó el límite de memoria compartida); 175 fotogramas solo se revisó leyendo la compuerta (faltaban unos 275 MB en el primer bloque, sin ejecución completa). El perfil ofrece únicamente 141 fotogramas. `-Profil` rechaza otros tamaños y números de fotogramas (use la ruta por defecto).
 - La calidad por defecto no se toca: 6 pasos, cfg 1, VAE sin mosaicos, 17k+5 fotogramas. Donde los indicadores están activos, la salida se comparó byte a byte con el vídeo sin indicadores en los tamaños en que la ejecución sin indicadores cabe (`docs/YAMALAR.md`); a 832x480 x 141 y 896x512 x 124 la ejecución sin indicadores no cabe, así que la igualdad se apoya en las celdas más cercanas, no en una comparación directa [medido, leído].
 - La etapa 1 de una ejecución en dos etapas termina ahora en cuanto el archivo latente está completo (`VT_ERKEN_CIKIS=0` lo desactiva).
 
@@ -266,4 +266,4 @@ Nombres de ejecución usados entre corchetes (nuestros propios nombres de ejecuc
 - **Prueba en raíz limpia pendiente:** los scripts de instalación y ejecución aún no se han verificado desde una carpeta vacía usando solo estas instrucciones; esta sección se actualizará cuando se registre esa prueba (incluida una comparación byte a byte de 56 fotogramas con la referencia).
 - Aquí no se incluye ningún video generado.
 
-<!-- i18n-source: README.md sha256:67497404d89b -->
+<!-- i18n-source: README.md sha256:85813d39c127 -->

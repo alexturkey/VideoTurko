@@ -81,7 +81,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 ```
 
 ## Opcionális sebességprofilok (sebességcsomag; alapból kikapcsolva)
-Az alábbiak közül semmi nem változtatja meg az alapértelmezett futtatást (640x384, 209 képkocka, 3414 s a mi kártyánkon). Ez három mért cella azon túl, mindegyik az `uret.ps1` egy elnevezett profilja; a sebességcsomag motorját igénylik (a kiadási motor plusz a 0021, 0023, 0024 javítások, mind alapból kikapcsolva: `docs/YAMALAR.md`). Telepítse a `scripts\kur.ps1 -HizPaketi` paranccsal (helyi zip a `-MotorZip` kapcsolóval működik), majd adja hozzá a `-Profil <name>` kapcsolót; a `-Kuru` kiírja, mi futna le.
+Az alábbiak közül semmi nem változtatja meg az alapértelmezett futtatást (640x384, 209 képkocka, 3414 s a mi kártyánkon). Ez három mért cella azon túl, mindegyik az `uret.ps1` egy elnevezett profilja; a sebességcsomag motorját igénylik (a kiadási motor plusz a 0021, 0023, 0024 javítások, mind alapból kikapcsolva: `docs/YAMALAR.md`). Telepítse a `scripts\kur.ps1 -HizPaketi` paranccsal (helyi zip a `-MotorZip` kapcsolóval működik), majd adja hozzá a `-Profil <name>` kapcsolót; a `-Kuru` kiírja, mi futna le. A sebességcsomag a v0.1.4 kiadással jelenik meg.
 
 | Profil | Méret, hossz | Teljes idő GTX 1050 Ti 4 GB-on | Állapot |
 |---|---|---|---|
@@ -92,8 +92,8 @@ Az alábbiak közül semmi nem változtatja meg az alapértelmezett futtatást (
 | `uzun260` | 640x384, 260 képkocka (10,8 s) | 78 perc mérve a korai kilépés nélkül; vele kb. 71-72 perc [feltételezés: nem mértük végig az `uret.ps1`-en keresztül] | feltételes és kísérleti |
 
 - **Szűk tartalék:** 832x480 x 141 esetén a memóriakapu csak egyjegyű MB tartalékot hagy (5,7 és 6,8 MB a két teljes futásban). Két hosszú promptot (1520 és 2041 karakter) csak úgy ellenőriztünk, hogy az 1. lépés és a 2. lépés egy részének kapuját olvastuk, teljes futtatás nélkül: tartalék 10,9 és 4,0 MB. Bármely más, a kártya memóriáját foglaló folyamat (böngésző, második kijelző) hibát okozhat; ilyenkor használja a `-Kare 124` kapcsolót vagy az alapméretet [mért, GTX 1050 Ti 4 GB].
-- **Az `uzun260` feltételes:** a memóriahatár nagyon szűk (VRAM-csúcs 3903 a 4096 MiB-ból), a megosztott memória használata 61 és 68 MiB-tal nőtt, és bájtegyezéshez nincs kapcsoló nélküli referencia, ezért nem sima funkcióként kínáljuk. A 0023 javítást csak erre az egy cellára fogadtuk el.
-- **Nem kínált:** a 832x480 158 vagy 175 képkockával nem fér el; a hosszkeresés ott 141 képkockánál ért véget. Más méreteket és képkockaszámokat a `-Profil` elutasít (használja az alapértelmezett utat).
+- **Az `uzun260` feltételes:** a memóriahatár nagyon szűk (VRAM-csúcs 3903 a 4096 MiB-ból), a megosztott memória használata 45 és 61 MiB (68)-tal nőtt, és bájtegyezéshez nincs kapcsoló nélküli referencia, ezért nem sima funkcióként kínáljuk. A 0023 javítást csak erre az egy cellára fogadtuk el.
+- **Nem kínált:** a a 832x480 158 képkockával csak rövid prompttal ment át (hosszú promptnál túllépte a megosztott memória határát); a 175 képkockát csak a kapu leolvasásával vizsgáltuk (az első blokknál kb. 275 MB hiányzott, teljes futás nem volt). A profil csak 141 képkockát kínál. Más méreteket és képkockaszámokat a `-Profil` elutasít (használja az alapértelmezett utat).
 - Az alapértelmezett minőség érintetlen: 6 lépés, cfg 1, csempe nélküli VAE, 17k+5 képkocka. Ahol a kapcsolók be vannak kapcsolva, a kimenetet bájtról bájtra összevetettük a kapcsolók nélküli videóval azokon a méreteken, ahol a kapcsolók nélküli futás elfér (`docs/YAMALAR.md`); 832x480 x 141 és 896x512 x 124 esetén a kapcsolók nélküli futás nem fér el, ezért ott az egyezés a legközelebbi cellákon alapul, nem közvetlen összehasonlításon [mért, elolvasva].
 - A kétlépéses futás 1. lépése most azonnal véget ér, amint a látens fájl teljes (`VT_ERKEN_CIKIS=0` kikapcsolja).
 
@@ -266,4 +266,4 @@ A szögletes zárójelben használt futásnevek (saját elnevezéseink, nem a t�
 - **A tiszta mappás teszt hátravan:** a telepítő és futtató szkripteket még nem ellenőriztük üres mappából kizárólag ezen útmutató alapján; ezt a szakaszt frissítjük, amikor a teszt (köztük az 56 képkockás bájtösszehasonlítás a referenciával) rögzítésre kerül.
 - Generált videókat itt nem mellékelünk.
 
-<!-- i18n-source: README.md sha256:67497404d89b -->
+<!-- i18n-source: README.md sha256:85813d39c127 -->

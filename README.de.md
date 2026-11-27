@@ -81,7 +81,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uret.ps1 -Istem iste
 ```
 
 ## Optionale Geschwindigkeitsprofile (Speed-Pack; standardmäßig aus)
-Nichts davon ändert den Standardlauf (640x384, 209 Frames, 3414 s auf unserer Karte). Es sind drei gemessene Zellen darüber hinaus, jede ein benanntes Profil von `uret.ps1`; sie brauchen die Speed-Pack-Engine (die Release-Engine plus die Patches 0021, 0023, 0024, alle standardmäßig aus: `docs/YAMALAR.md`). Installieren Sie sie mit `scripts\kur.ps1 -HizPaketi` (ein lokales ZIP funktioniert mit `-MotorZip`) und hängen Sie dann `-Profil <name>` an; `-Kuru` zeigt, was laufen würde.
+Nichts davon ändert den Standardlauf (640x384, 209 Frames, 3414 s auf unserer Karte). Es sind drei gemessene Zellen darüber hinaus, jede ein benanntes Profil von `uret.ps1`; sie brauchen die Speed-Pack-Engine (die Release-Engine plus die Patches 0021, 0023, 0024, alle standardmäßig aus: `docs/YAMALAR.md`). Installieren Sie sie mit `scripts\kur.ps1 -HizPaketi` (ein lokales ZIP funktioniert mit `-MotorZip`) und hängen Sie dann `-Profil <name>` an; `-Kuru` zeigt, was laufen würde. Das Speed-Paket erscheint mit dem Release v0.1.4.
 
 | Profil | Größe, Länge | Gesamtzeit auf einer GTX 1050 Ti 4 GB | Status |
 |---|---|---|---|
@@ -92,8 +92,8 @@ Nichts davon ändert den Standardlauf (640x384, 209 Frames, 3414 s auf unserer K
 | `uzun260` | 640x384, 260 Frames (10,8 s) | 78 Min. gemessen ohne den frühen Ausstieg; mit ihm etwa 71-72 Min. [Vermutung: nicht durchgängig über `uret.ps1` gemessen] | bedingt und experimentell |
 
 - **Knapper Spielraum:** Bei 832x480 x 141 lässt das Speicher-Gate nur einstellige MB Spielraum (5,7 und 6,8 MB in den beiden vollständigen Läufen). Zwei lange Prompts (1520 und 2041 Zeichen) wurden nur durch Lesen des Gates für Schritt 1 und einen Teil von Schritt 2 geprüft, nicht vollständig ausgeführt: Spielraum 10,9 und 4,0 MB. Jeder andere Prozess, der Kartenspeicher belegt (Browser, zweiter Monitor), kann den Lauf scheitern lassen; nehmen Sie dann `-Kare 124` oder die Standardgröße [gemessen, GTX 1050 Ti 4 GB].
-- **`uzun260` ist bedingt:** Die Speichergrenze ist sehr eng (VRAM-Spitze 3903 von 4096 MiB), die Nutzung des gemeinsamen Speichers wuchs um 61 und 68 MiB, und für Byte-Gleichheit gibt es keine Referenz ohne Flag; deshalb wird es nicht als gewöhnliche Funktion angeboten. Patch 0023 wird nur für diese eine Zelle akzeptiert.
-- **Nicht angeboten:** 832x480 mit 158 oder 175 Frames passt nicht; die Längensuche endete dort bei 141 Frames. Andere Größen und Frame-Anzahlen lehnt `-Profil` ab (nehmen Sie den Standardweg).
+- **`uzun260` ist bedingt:** Die Speichergrenze ist sehr eng (VRAM-Spitze 3903 von 4096 MiB), die Nutzung des gemeinsamen Speichers wuchs um 45 und 61 MiB (68), und für Byte-Gleichheit gibt es keine Referenz ohne Flag; deshalb wird es nicht als gewöhnliche Funktion angeboten. Patch 0023 wird nur für diese eine Zelle akzeptiert.
+- **Nicht angeboten:** 832x480 mit 158 Frames lief nur mit einem kurzen Prompt durch (bei einem langen Prompt wurde die Grenze des gemeinsamen Speichers überschritten); 175 Frames wurden nur über die Torablesung geprüft (im ersten Block fehlten etwa 275 MB, kein vollständiger Lauf). Das Profil bietet nur 141 Frames an. Andere Größen und Frame-Anzahlen lehnt `-Profil` ab (nehmen Sie den Standardweg).
 - Die Standardqualität bleibt unberührt: 6 Schritte, cfg 1, VAE ohne Kacheln, 17k+5 Frames. Wo Flags an sind, wurde die Ausgabe in den Größen, in denen der Lauf ohne Flags passt, Byte für Byte mit dem Video ohne Flags verglichen (`docs/YAMALAR.md`); bei 832x480 x 141 und 896x512 x 124 passt der Lauf ohne Flags nicht, dort beruht die Gleichheit auf den nächstliegenden Zellen, nicht auf einem direkten Vergleich [gemessen, gelesen].
 - Stufe 1 eines zweistufigen Laufs endet jetzt, sobald die Latent-Datei vollständig ist (`VT_ERKEN_CIKIS=0` schaltet das ab).
 
@@ -266,4 +266,4 @@ In eckigen Klammern verwendete Lauf-Namen (unsere eigenen Lauf-Namen, keine Date
 - **Clean-Root-Test steht aus:** Die Installations- und Ausführungsskripte wurden noch nicht allein mit diesen Anleitungen aus einem leeren Ordner verifiziert; dieser Abschnitt wird aktualisiert, sobald dieser Test (einschließlich eines 56-Frame-Byte-Vergleichs mit der Referenz) dokumentiert ist.
 - Es werden hier keine erzeugten Videos mitgeliefert.
 
-<!-- i18n-source: README.md sha256:67497404d89b -->
+<!-- i18n-source: README.md sha256:85813d39c127 -->
