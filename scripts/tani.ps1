@@ -19,7 +19,10 @@
 #     8.3 kisa adlar gosterilmeden once <...> isaretiyle degistirilir. Suzgec kaba bir desendir: yapistirmadan once raporu OKUYUN;
 #     gizlilik garantisi degildir.
 # Exit codes / cikis kodlari: 0 report made / rapor uretildi (even if errors were found / hata bulunsa da), 6 could not run / calismadi.
-# Safe: it only reads files and runs read-only commands (nvidia-smi, scripts\kur.ps1 -Kuru). No windows, no git, no changes.
+#     DEVIATIONS / SAPMA section (read only): Python versions (py -0p) and which one is first on PATH, locally changed tracked files
+#     (git status, names only), VT_* environment overrides, model files present / missing / wrong size, and known copies of those model
+#     files in the Hugging Face cache (name and size only, nothing is hashed or moved). An agent reads it to answer "what differs from the defaults".
+# Safe: it only reads files and runs read-only commands (nvidia-smi, py -0p, git --no-optional-locks status, scripts\kur.ps1 -Kuru). No windows, no changes.
 [CmdletBinding()]
 param(
     [switch]$Json,
@@ -169,6 +172,56 @@ if (-not $KuruAtla) {
     }
 }
 
+# deviations from the defaults (read only; sapma): Python, local changes, VT_* overrides, model files, known copies
+$sapma = [ordered]@{ python = @(); python_ilk = ''; git = 'not a git checkout or git missing'; degisen = @(); vt_env = @(); modeller = @(); kopyalar = @() }
+try {
+    $py = Get-Command py -ErrorAction SilentlyContinue
+    if ($py) {
+        $o = @(& $py.Source -0p 2>$null)
+        $sapma.python = @($o | ForEach-Object { "$_".Trim() } | Where-Object { $_ -and $_ -notmatch '^(Installed Python|No Installed)' } | Select-Object -First 12)
+    }
+    $pc = @(Get-Command python -All -ErrorAction SilentlyContinue | Select-Object -First 3)
+    if ($pc.Count -gt 0) {
+        $ilk = $pc[0].Source
+        if ($ilk -match 'WindowsApps') { $sapma.python_ilk = 'first on PATH is the Microsoft Store shortcut (exit 9009: it is not a real Python)' }
+        else { $v = "$(& $ilk --version 2>&1)".Trim(); $sapma.python_ilk = "first on PATH: $v ($ilk)" }
+    } else { $sapma.python_ilk = 'no python on PATH' }
+} catch { $sapma.python_ilk = 'could not read Python versions' }
+try {
+    $gitK = Get-Command git -ErrorAction SilentlyContinue
+    if ($gitK -and (Test-Path -LiteralPath (Join-Path $kok '.git'))) {
+        $gs = @(& $gitK.Source --no-optional-locks -C $kok status --short -uno 2>$null)
+        $sapma.degisen = @($gs | ForEach-Object { "$_".Trim() } | Where-Object { $_ } | Select-Object -First 40)
+        $sapma.git = $(if ($sapma.degisen.Count -eq 0) { 'tracked files unchanged' } else { "$($sapma.degisen.Count) tracked file(s) changed" })
+    }
+} catch { $sapma.git = 'could not read git status' }
+try {
+    $sapma.vt_env = @(Get-ChildItem Env: | Where-Object { $_.Name -like 'VT_*' -and $_.Name -ne 'VT_TANI_GIZLE' } | Sort-Object Name | ForEach-Object { "$($_.Name)=$($_.Value)" })
+} catch { }
+$modelKok = $(if ($env:VT_ROOT) { $env:VT_ROOT } else { $kok })
+$modelDir = $(if ($env:VT_MODEL_DIR) { $env:VT_MODEL_DIR } else { Join-Path $modelKok 'model' })
+$hfDirs = @()
+foreach ($h in @($(if ($env:HF_HUB_CACHE) { $env:HF_HUB_CACHE }), $(if ($env:HF_HOME) { Join-Path $env:HF_HOME 'hub' }), $(if ($env:USERPROFILE) { Join-Path $env:USERPROFILE '.cache\huggingface\hub' }))) {
+    if ($h -and (Test-Path -LiteralPath $h -PathType Container) -and ($hfDirs -notcontains $h)) { $hfDirs += $h }
+}
+try {
+    $mj = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'modeller.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($d in $mj.dosyalar) {
+        $yol = Join-Path $modelDir $d.hedef
+        if (Test-Path -LiteralPath $yol -PathType Leaf) {
+            $bt = (Get-Item -LiteralPath $yol).Length
+            $dur = $(if ($bt -eq [int64]$d.boyut) { 'present, size matches (sha256 not read: scripts\modelleri_indir.ps1 -Dogrula checks it)' } else { "present but size $bt differs from expected $($d.boyut)" })
+        } else { $dur = 'missing' }
+        $sapma.modeller += , ("$($d.hedef): $dur")
+        if ($dur -eq 'missing') {
+            foreach ($hd in $hfDirs) {
+                $f = Get-ChildItem -LiteralPath $hd -Recurse -File -Filter $d.hedef -ErrorAction SilentlyContinue | Select-Object -First 1
+                if ($f) { $sapma.kopyalar += , ("$($d.hedef): a copy exists in the Hugging Face cache, $([math]::Round($f.Length / 1GB, 2)) GiB ($(if ($f.Length -eq [int64]$d.boyut) { 'size matches: kur.ps1 -ModelKlasoru can reuse it after the user agrees' } else { 'size differs: do not reuse' }))"); break }
+            }
+        }
+    }
+} catch { $sapma.modeller = @('could not read scripts\modeller.json') }
+
 # log files the user named (last 400 lines, at most 2 MB each)
 $loglar = @()
 foreach ($lf in $Log) {
@@ -207,6 +260,8 @@ $sistemM = [ordered]@{}
 foreach ($k in $sistem.Keys) { $sistemM[$k] = Gizle-Metin ([string]$sistem[$k]) }
 $kuruM = [ordered]@{ calisti = $kuru.calisti; hata = $kuru.hata; uyari = $kuru.uyari; satirlar = @(@($kuru.satirlar) | ForEach-Object { Gizle-Metin $_ }) }
 $kodlar = @($bulunan | ForEach-Object { $_.kod })
+$sapmaM = [ordered]@{}
+foreach ($k in $sapma.Keys) { if ($sapma[$k] -is [string]) { $sapmaM[$k] = Gizle-Metin $sapma[$k] } else { $sapmaM[$k] = @(@($sapma[$k]) | ForEach-Object { Gizle-Metin ([string]$_) }) } }
 
 # ------------------------------------------------------------------ cikti / output
 if ($KartSatiri) {
@@ -215,7 +270,7 @@ if ($KartSatiri) {
 } elseif ($Json) {
     $nesne = [ordered]@{
         arac = 'VideoTurko tani.ps1'; format = 1
-        sistem = $sistemM; kuru = $kuruM
+        sistem = $sistemM; kuru = $kuruM; sapma = $sapmaM
         bulunan_kodlar = @($bulunan); imza_dosyasi = $imzaDurum
         loglar = @($loglar); uyari = $uyari
     }
@@ -235,6 +290,15 @@ if ($KartSatiri) {
         [void]$t.Add("kur.ps1 -Kuru   : $($kuruM.hata) HATA, $($kuruM.uyari) UYARI")
         foreach ($l in $kuruM.satirlar) { [void]$t.Add("  $l") }
     } else { [void]$t.Add('kur.ps1 -Kuru   : not run / calistirilmadi') }
+    [void]$t.Add('DEVIATIONS / SAPMA (read only):')
+    [void]$t.Add("  Python          : $($sapmaM.python_ilk)")
+    foreach ($l in $sapmaM.python) { [void]$t.Add("    py -0p: $l") }
+    if (-not $sapmaM.python.Count) { [void]$t.Add('    py -0p: the py launcher lists no Python') }
+    [void]$t.Add("  git             : $($sapmaM.git)")
+    foreach ($l in $sapmaM.degisen) { [void]$t.Add("    $l") }
+    [void]$t.Add("  VT_* overrides  : $(if ($sapmaM.vt_env.Count) { $sapmaM.vt_env -join ' ' } else { 'none' })")
+    foreach ($l in $sapmaM.modeller) { [void]$t.Add("  model           : $l") }
+    foreach ($l in $sapmaM.kopyalar) { [void]$t.Add("  known copy      : $l") }
     foreach ($lg in $loglar) {
         [void]$t.Add("log $($lg.ad) (last lines / son satirlar):")
         foreach ($l in $lg.satirlar) { [void]$t.Add("  $l") }

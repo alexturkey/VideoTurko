@@ -245,6 +245,49 @@ class TaniCmd(unittest.TestCase):
 
 
 @unittest.skipUnless(PS, "Windows PowerShell gerekir")
+class Sapma(unittest.TestCase):
+    """DEVIATIONS / SAPMA section: read only, shows VT_* overrides, keeps the privacy filter, writes nothing."""
+
+    @staticmethod
+    def _git_durum():
+        if not shutil.which("git"):
+            return None
+        return subprocess.run(["git", "--no-optional-locks", "-C", str(KOK), "status", "--porcelain", "-uno"], capture_output=True,
+                              creationflags=CF, timeout=60).stdout
+
+    def test_bolum_var_ve_vt_ezmesi_gorunur(self):
+        kod, out, err = kos(["-KuruAtla"], {"VT_MAX_KARE": "99"})
+        self.assertEqual(kod, 0, err)
+        metin = out.decode("utf-8", "replace")
+        self.assertIn("DEVIATIONS / SAPMA", metin)
+        self.assertIn("VT_MAX_KARE=99", metin)
+        self.assertIn("model           : ", metin)
+
+    def test_json_sapma_anahtarlari(self):
+        kod, out, err = kos(["-Json", "-KuruAtla"], {"VT_NO_FA": "1"})
+        self.assertEqual(kod, 0, err)
+        s = json.loads(out.decode("ascii"))["sapma"]
+        for k in ("python", "python_ilk", "git", "degisen", "vt_env", "modeller", "kopyalar"):
+            self.assertIn(k, s)
+        self.assertIn("VT_NO_FA=1", s["vt_env"])
+        self.assertTrue(s["modeller"], "scripts/modeller.json listesi bos olmamali")
+
+    def test_hicbir_sey_yazmaz(self):
+        once = self._git_durum()
+        kod, _, err = kos(["-KuruAtla"], None)
+        self.assertEqual(kod, 0, err)
+        self.assertEqual(self._git_durum(), once, "tani.ps1 izlenen bir dosyayi degistirdi")
+
+    def test_ezme_degerindeki_kisisel_yol_gizlenir(self):
+        yol = "C:" + BS + "Users" + BS + AD + BS + "x" + BS + "py.exe"
+        kod, out, err = kos(["-KuruAtla"], {"VT_PYTHON": yol, "USERNAME": AD, "USERPROFILE": "C:" + BS + "Users" + BS + AD})
+        self.assertEqual(kod, 0, err)
+        for kodlama in ("utf-8", "utf-16-le"):
+            self.assertNotIn(AD.encode(kodlama), out)
+        self.assertIn(b"VT_PYTHON=", out)
+
+
+@unittest.skipUnless(PS, "Windows PowerShell gerekir")
 class NvidiaYok(unittest.TestCase):
     """No nvidia-smi (AMD or other non-NVIDIA card): the report keeps 'none (...)' and adds the display adapter NAME only."""
 
