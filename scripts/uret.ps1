@@ -117,10 +117,10 @@ $ProfilKareler = @(); $ProfilVarsayilanKare = 0; $ProfilYama = @(); $ProfilDeney
 $ProfilEnv1 = [ordered]@{}; $ProfilEnv2 = [ordered]@{}
 if ($ProfilAd) {
     if ($ProfilAd -eq 'yuksek832') {
-        $PW = 832; $PH = 480; $ProfilKareler = @(124, 141); $ProfilVarsayilanKare = 141; $ProfilYama = @('0021', '0024'); $ProfilSure = '141 kare ~55-56 dk, 124 kare ~45-46 dk [olctum]'
+        $PW = 832; $PH = 480; $ProfilKareler = @(124, 141); $ProfilVarsayilanKare = 141; $ProfilYama = @('0021', '0024'); $ProfilSure = '141 kare ~55-56 dk [olctum]'
         $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'; $ProfilEnv2['SD_VAE_BLOCK_SPLIT'] = '2'
     } elseif ($ProfilAd -eq 'yuksek896') {
-        $PW = 896; $PH = 512; $ProfilKareler = @(124); $ProfilVarsayilanKare = 124; $ProfilYama = @('0021', '0024'); $ProfilSure = '~56-58 dk [olctum]'
+        $PW = 896; $PH = 512; $ProfilKareler = @(124); $ProfilVarsayilanKare = 124; $ProfilYama = @('0021', '0024'); $ProfilSure = '~56-57,5 dk [olctum]'
         $ProfilEnv1['SD_ATTN_HEAD_QKV'] = '1'; $ProfilEnv2['SD_VAE_BLOCK_SPLIT'] = '2'
     } elseif ($ProfilAd -eq 'uzun260') {
         $PW = 640; $PH = 384; $ProfilKareler = @(260); $ProfilVarsayilanKare = 260; $ProfilYama = @('0021', '0023'); $ProfilDeneysel = $true; $ProfilSure = '~71-72 dk [tahmin: erken cikisli 260 kare uctan uca olculmedi]; erken cikissiz 78 dk olculdu'
@@ -131,6 +131,8 @@ if ($ProfilAd) {
     if (($PSBoundParameters.ContainsKey('W') -and $W -ne $PW) -or ($PSBoundParameters.ContainsKey('H') -and $H -ne $PH)) { throw "[VT-E-PROFIL] -Profil $ProfilAd boyutu ${PW}x${PH}'dir; verilen -W/-H farkli (profili birakin ya da -W/-H vermeyin)" }
     $W = $PW; $H = $PH
     if ($KareVarsayilan) { $Kare = $ProfilVarsayilanKare }
+    # 832x480 x 124 was measured with NO speed flags at all (plain engine, 45-46 min): keep it exactly that way
+    if ($ProfilAd -eq 'yuksek832' -and $Kare -eq 124) { $ProfilEnv1 = [ordered]@{}; $ProfilEnv2 = [ordered]@{}; $ProfilYama = @(); $ProfilSure = '~45-46 dk [olctum, bayraksiz]' }
     if ($ProfilKareler -notcontains $Kare) { throw ("[VT-E-PROFIL] -Profil {0} yalniz olculen kare sayilarinda calisir: {1} (verilen: {2}). Baska sayi icin profilsiz kosun ({3} kareye kadar 640x384)." -f $ProfilAd, ($ProfilKareler -join ' / '), $Kare, $KareSabit) }
 }
 

@@ -51,12 +51,13 @@ class Profiller(unittest.TestCase):
             self.assertIn(sabit, c)
         self.assertNotIn("tiling", c.replace("karosuz", ""))   # the tile-less VAE rule: no tiling flag is ever added
 
-    def test_yuksek832_124_ayni_bayraklar(self):
+    def test_yuksek832_124_bayraksiz_olculdugu_gibi(self):
         with tempfile.TemporaryDirectory() as t:
             kod, c = uret(t, "-Profil", "yuksek832", "-Kare", "124")
         self.assertEqual(kod, 0, c)
         self.assertIn("kare=124", c)
-        self.assertIn("SD_VAE_BLOCK_SPLIT=2", asama(c, 2))
+        for ad in ("SD_ATTN_HEAD_QKV", "SD_VAE_BLOCK_SPLIT", "SD_VRAM_SHORT_OK_MB"):
+            self.assertNotIn(ad, asama(c, 1) + asama(c, 2))   # the 124-frame cell was measured with no speed flags
 
     def test_yuksek896_124(self):
         with tempfile.TemporaryDirectory() as t:
@@ -149,6 +150,12 @@ class MotorKontrolu(unittest.TestCase):
         self.assertNotEqual(kod, 0)
         self.assertIn("VT-E-MOTOR-ESKI", c)
         self.assertIn("0024", c)
+
+    def test_832_124_yamasiz_motorla_calisir(self):
+        with tempfile.TemporaryDirectory() as t:
+            kod, c = uret(t, "-Profil", "yuksek832", "-Kare", "124", kuru=False)
+        self.assertNotIn("VT-E-MOTOR-ESKI", c)   # no patch is needed for that cell
+        self.assertIn("VT-E-DOSYA", c)
 
     def test_tam_marker_kabul_edilir_ve_sonraki_kapiya_gecer(self):
         with tempfile.TemporaryDirectory() as t:
