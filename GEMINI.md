@@ -2,4 +2,6 @@
 
 Read AGENTS.md first; it is the single source of truth for setup, rules and verification. The short version is AGENTS_HIZLI.md (12-step decision tree and an exit code table).
 
+First run `scripts\tani.ps1` (read-only report) and keep a `DURUM.md` notebook in the root; never lower a quality setting, never accept the model license for the user, ask before you delete or move anything.
+
 @AGENTS.md

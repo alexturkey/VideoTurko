@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Agent onboarding (documentation, `scripts/tani.ps1`, tests; no change to `uret.ps1`, `kur.ps1`, the engine or any quality setting): `AGENTS_HIZLI.md` and `AGENTS.md` start with a short do-this-first block (run `scripts\tani.ps1`, keep a git-ignored `DURUM.md` notebook, never lower quality or accept the license for the user, ask before delete/move/system Python, same error twice stop); `tani.ps1` gains a read-only DEVIATIONS section (Python versions and PATH order, locally changed tracked files, `VT_*` overrides, model files present or missing, copies in the Hugging Face cache; text and `-Json`); every README (30 languages) shows a one-sentence "give this to your agent" block; the long lines of `AGENTS.md` and `AGENTS_HIZLI.md` are split into sub-items; `llms.txt`, `CLAUDE.md`, `GEMINI.md`, `CONTRIBUTING.md` and `docs/SIK_HATALAR.md` point to it. Tests: `tests/test_tani.py` (class `Sapma`).
+
 ## v0.1.4 (2026-11-27)
 
 Scope: an optional speed-pack engine (new zip), scripts, documentation and tests. The default run (640x384, up to 209 frames) and the quality settings (6 steps, cfg 1, tile-less VAE, 17k+5 frames) are unchanged; defaults unchanged (stage 1 margin 1, stage 2 margin 256).

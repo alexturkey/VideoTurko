@@ -48,7 +48,7 @@ Commits keep their e-mail in history for good. To keep your address private use 
 
 ### Also
 - Security problems: do not open a public issue; see `SECURITY.md`.
-- Working with an AI coding agent: read `AGENTS.md`; the agent must never accept the model license for you.
+- Working with an AI coding agent: read `AGENTS.md`; the agent must never accept the model license for you. Ask it to run `scripts\tani.ps1` first and to keep its progress in `DURUM.md`.
 - Contributions are accepted under the repository's MIT license (the same license as the code). The model and its outputs stay under the MiniMax license (`docs/LISANS_UYARISI.md`).
 - Be kind: `CODE_OF_CONDUCT.md`.
 - No package dependencies exist, so no dependency bot is configured.
@@ -94,4 +94,4 @@ PR'ınızı İngilizce ya da Türkçe yazın (elinizdeki dil neyse o da olur). �
 Commit'teki e-posta geçmişte kalıcıdır. Gizli kalması için GitHub no-reply adresini kullanın: **GitHub > Settings > Emails > "Keep my email addresses private"**, sonra `git config user.email "<ID>+<kullanici>@users.noreply.github.com"` (ID aynı sayfada yazar). Başka adresli commit de kabul edilir; kontrollerimiz yalnız uyarır.
 
 ### Ayrıca
-Güvenlik sorunu: herkese açık issue açmayın, `SECURITY.md`. Yapay zeka ajanıyla çalışıyorsanız `AGENTS.md`: ajan sizin yerinize model lisansını asla kabul etmez. Katkılar deponun MIT lisansı (kodla aynı) altında kabul edilir; model ve çıktıları MiniMax lisansında kalır (`docs/LISANS_UYARISI.md`). Nazik olun: `CODE_OF_CONDUCT.md`.
+Güvenlik sorunu: herkese açık issue açmayın, `SECURITY.md`. Yapay zeka ajanıyla çalışıyorsanız `AGENTS.md`: ajan sizin yerinize model lisansını asla kabul etmez. Ajanınıza önce `scripts\tani.ps1` çalıştırmasını ve ilerlemesini `DURUM.md` dosyasında tutmasını söyleyin. Katkılar deponun MIT lisansı (kodla aynı) altında kabul edilir; model ve çıktıları MiniMax lisansında kalır (`docs/LISANS_UYARISI.md`). Nazik olun: `CODE_OF_CONDUCT.md`.

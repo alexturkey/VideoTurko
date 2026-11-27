@@ -5,6 +5,7 @@
 Rules that never change: quality is fixed (6 steps, cfg 1, 24 fps, no tiled VAE, frame counts 17k+5); the model license is accepted by the human, never by an agent; exit codes 5 and 6 of `uret.ps1` mean the clip is not accepted; `init_image` is only a file path the user gave you; no personal paths, e-mail addresses or tokens in anything you write (use `<ROOT>`).
 
 ## Start here
+- [tani.ps1](https://github.com/alexturkey/VideoTurko/blob/main/scripts/tani.ps1): run this first; read-only report (system, card, `kur.ps1 -Kuru`, deviations from the defaults); keep your progress in `DURUM.md` (git-ignored notebook in the root)
 - [AGENTS_HIZLI.md](https://github.com/alexturkey/VideoTurko/blob/main/AGENTS_HIZLI.md): 12-step decision tree and exit code to action table (English and Turkish)
 - [AGENTS.md](https://github.com/alexturkey/VideoTurko/blob/main/AGENTS.md): full setup, hard rules, options, measurements and evidence labels
 - [README.md](https://github.com/alexturkey/VideoTurko/blob/main/README.md): overview, license warning, quick start (29 translations; English is authoritative)

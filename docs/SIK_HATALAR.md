@@ -5,6 +5,7 @@ Her madde: **belirti**, **neden**, **kalici cozum**. Etiketler: [olctum] = bu pr
 This list comes from real runs. Each item: symptom, cause, lasting fix.
 
 > **Otomatik motor / Automatic engine:** `kur.ps1` artik kart sinifini taniyip motoru kendisi secer ve kurar (stock stable-diffusion.cpp dahil); `-Kuru` secimi `Motor secimi:` satiriyla gosterir. Asagidaki maddelerdeki elle adimlar olculdugu gibi kalir. / `kur.ps1` now recognises the card class and picks and installs the engine itself (stock stable-diffusion.cpp included); `-Kuru` shows the choice on the `Motor secimi:` line. The manual steps in the items below stay as measured. Tablo / table: README "Which engine does my card get?".
+> **Ajan ile kurulum / Agent-assisted install:** once `scripts\tani.ps1` calistirin (salt okur: sistem, kart, `kur.ps1 -Kuru`, varsayilandan SAPMA bolumu: Python surumleri, yerelde degismis dosyalar, `VT_*` ezmeleri, model dosyalari); sonucu bu listedeki kodlarla eslestirir. Ajaniniz ilerlemesini kokte `DURUM.md` dosyasinda tutsun, kalite ayarini dusurmesin, lisansi sizin yerinize kabul etmesin. / Run `scripts\tani.ps1` first (read-only; includes a DEVIATIONS section); it matches its output to the codes in this list. Your agent keeps its progress in `DURUM.md` in the root, must not lower a quality setting and must not accept the license for you.
 
 ## A. Bellek ve kapi (VRAM)
 
