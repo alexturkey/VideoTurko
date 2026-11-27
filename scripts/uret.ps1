@@ -240,7 +240,25 @@ if (Test-Path -LiteralPath $Kilit) {
 }
 Set-Content -LiteralPath $Kilit -Value $PID -Encoding ASCII
 
-function Asama-Kos([string]$Etiket, $EnvHash) {
+# C1 (hiz, 2026-11-25): iki asamada asama 1 latent'i yazdiktan sonra ses VAE + bellege sigmayan (karoya dusen) VAE'yi kosar; o cikti ATILIR
+# (gecerli video asama 2'den). Latent dosyasi TAM yazilip kapandiysa asama 1 sureci sonlandirilir. Latent baytlari degismez. Kapatmak: VT_ERKEN_CIKIS=0.
+# Tamlik olcutu: dosya bu asamada yazildi + baslik 'SDLAT001' + boyut = 12 + 8*ndim + 4*carpim(sekil) + tek basina (paylasimsiz) acilabiliyor (yazan kapatmis).
+function Latent-Tam([string]$Yol, [datetime]$Sonra) {
+    try {
+        if (-not (Test-Path -LiteralPath $Yol)) { return $false }
+        $fi = Get-Item -LiteralPath $Yol
+        if ($fi.LastWriteTime -lt $Sonra -or $fi.Length -lt 1MB) { return $false }
+        $fs = [IO.File]::Open($Yol, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::None)
+        try {
+            $br = New-Object IO.BinaryReader($fs)
+            if ([Text.Encoding]::ASCII.GetString($br.ReadBytes(8)) -ne 'SDLAT001') { return $false }
+            $nd = $br.ReadInt32(); if ($nd -lt 1 -or $nd -gt 8) { return $false }
+            [long]$carpim = 1; for ($i = 0; $i -lt $nd; $i++) { $d = $br.ReadInt64(); if ($d -lt 1) { return $false }; $carpim *= $d }
+            return ($fs.Length -eq (12 + 8 * $nd + 4 * $carpim))
+        } finally { $fs.Dispose() }
+    } catch { return $false }
+}
+function Asama-Kos([string]$Etiket, $EnvHash, [string]$ErkenLatent = '') {
     $out = Join-Path $Dizin ("ham_out_{0}{1}.txt" -f $Ad, $Etiket); $err = Join-Path $Dizin ("ham_err_{0}{1}.txt" -f $Ad, $Etiket)
     $eski = @{}
     foreach ($k in $EnvHash.Keys) { $eski[$k] = [Environment]::GetEnvironmentVariable($k); [Environment]::SetEnvironmentVariable($k, $EnvHash[$k]) }
@@ -256,6 +274,11 @@ function Asama-Kos([string]$Etiket, $EnvHash) {
             $smi = Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
             if ($smi) { $m = 0; if ([int]::TryParse((& nvidia-smi.exe --query-gpu=memory.used --format=csv,noheader,nounits 2>$null | Select-Object -First 1), [ref]$m) -and $m -gt $script:VramTepe) { $script:VramTepe = $m } }
             if (Test-Path -LiteralPath $DurDosya) { & taskkill.exe /T /F /PID $sp.Id | Out-Null; Write-Output "DURDU (DUR dosyasi) asama$Etiket"; exit 2 }
+            if ($ErkenLatent -and -not $sp.HasExited -and (Latent-Tam $ErkenLatent $t0)) {
+                & taskkill.exe /T /F /PID $sp.Id | Out-Null; $sp.WaitForExit(); $script:ErkenCikti = $true
+                Write-Host ("bilgi: asama$Etiket latent tam yazildi ({0:N0} sn); atilacak VAE kosulmadan surec sonlandirildi (VT_ERKEN_CIKIS=0 ile kapanir)" -f ((Get-Date) - $t0).TotalSeconds)
+                return 0
+            }
             if (((Get-Date) - $t0).TotalMinutes -gt $TavanDk) { & taskkill.exe /T /F /PID $sp.Id | Out-Null; throw "[VT-E-TAVAN] TAVAN: asama$Etiket $TavanDk dk'yi asti, kesildi (uzun kosu icin -TavanDk arttirin)" }
         }
         $sp.WaitForExit(); $kod = $sp.ExitCode
@@ -316,7 +339,8 @@ try {
     if ($TekAsama -and $Jeton -gt 7680) { Write-Output 'bilgi: -TekAsama: iki asama elle kapatildi; 4 GB kartta bu uzunlukta VAE bellege sigmayabilir (log karolu geri-dususu gosterirse cikti GECERSIZ sayilir).' }
     if (-not $Standart) { Write-Output ("bilgi: {0}x{1} standart disi boyut (olculen ve bayt kanitli tek boyut 640x384; bu boyut 4 GB'da denenmedi)" -f $W, $H) }
     if (Test-Path -LiteralPath $Cikti) { Remove-Item -LiteralPath $Cikti -Force }   # eski avi basari sayilmasin
-    $k1 = Asama-Kos '_a1' $Env1
+    $script:ErkenCikti = $false
+    $k1 = $(if ($IkiAsama -and $env:VT_ERKEN_CIKIS -ne '0') { Asama-Kos '_a1' $Env1 $Latent } else { Asama-Kos '_a1' $Env1 })
     if ($IkiAsama) {
         if (-not (Test-Path -LiteralPath $Latent) -or (Get-Item -LiteralPath $Latent).Length -lt 1MB) { throw "[VT-E-LATENT] asama 1 latent yazmadi (cikis $k1; cikis -1073740791 / GGML_ASSERT offset 1<<30 ise is motorun yama sinirini astiysa: daha kucuk boyut ya da kare deneyin); ham_err_${Ad}_a1.txt'e bakin" }
         Write-Output ("asama 1 tamam (latent {0:N1} MB), asama 2 (ayri surec VAE) basliyor" -f ((Get-Item -LiteralPath $Latent).Length / 1MB))
