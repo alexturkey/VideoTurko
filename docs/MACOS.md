@@ -140,3 +140,22 @@ Ağırlıkları bellek eşlemeli (`--mmap`) olarak RAM'de tutar, metin kodlayıc
 1. **Mac uykuya geçince koşu sessizce durdu `[kullanıcı bildirdi, PR #28]`:** İlk 124 kare denemesi 6 adımın 5.'sinde, günlüğe hata yazmadan kesildi (yaklaşık 10 dk sonra; neden olarak sistem uykusu tahmin ediliyor `[tahmin]`). Aynı komut `caffeinate -i` ile yeniden çalıştırıldığında sorunsuz bitti. Uzun koşularda: `caffeinate -i scripts/mac_uret.sh docs/ornek_istem_R0.txt 209`.
 2. **`engine_mac/` repo klasöründeyken `scripts/denetim.py --hizli` KIRMIZI `[kullanıcı bildirdi, PR #28]`:** `engine_mac/` o sırada `.gitignore`'da yoktu (bu düzeltmeden sonra `/engine_mac/` satırı var); denetim takip edilmeyen dosyaları da taradığı için `libstable-diffusion.dylib` içindeki baytları gizli Unicode sayıyor, `start-server.bat` için de CRLF kuralı istiyor. Yerel çözüm: `engine_mac/` satırını `.git/info/exclude` dosyasına eklemek; sonra denetim GECTI. Aynı yüzden `engine_mac/` dosyaları kolayca commit'e girebilir.
 3. **Kalite kapısı için OpenCV `[kullanıcı bildirdi, PR #28]`:** Sistem Python'una dokunmadan repo kökünde `.venv` kuruldu (`python3 -m venv .venv && .venv/bin/python -m pip install opencv-python-headless numpy`; OpenCV 5.1.0, numpy 2.0.2). `scripts/mac_uret.sh` bu `.venv`'i kendiliğinden buldu ve kapıyı çalıştırdı.
+
+---
+
+## 7. Üçüncü Mac: iMac, Apple M4, 16 GB, motor `master-1106-532d2c1` `[ölçtüm]`
+
+> **EN summary.** The smallest Mac so far: an iMac with Apple M4 and **16 GB** unified memory (`recommendedMaxWorkingSetSize = 12713.12 MB`), macOS 27.2.1. Official stable-diffusion.cpp macOS ARM64 (Metal) release `master-1106-532d2c1` (zip sha256 `8146d6ffc75f8ff8f64b62a80fffee8fb714ab65e368e202084135fa07cc6f36`, checked at install), no patches, **Mode A** (`TAM_METAL=0`, `minimax_h3_attn_chunk_budget=0.03`) through `scripts/mac_uret.sh` unchanged, quality settings unchanged. The 5-frame install check with the sample prompt passed the quality gate (127.68 s). A 124-frame **vertical 384x640** clip with the contributor's own prompt ran in one process: `generate_video` 1683.25 s, 10.24 GiB max RSS, 9.03 GiB peak footprint, no tiled-VAE fallback, gate passed (thresholds are calibrated for 640x384). Swap was not recorded. No run at the default 640x384 longer than 5 frames yet. Mode B (`TAM_METAL=1`) was not tried: 30 GB of weights cannot fit a 12.7 GB Metal working set [computed]. Runs made by Claude on the contributor's Mac; the maintainers have not repeated them.
+
+**Donanım:** iMac, Apple M4, **16 GB birleşik bellek** (`MTL0`, `MTLGPUFamilyApple9`, Metal 4, `recommendedMaxWorkingSetSize = 12713.12 MB`), **macOS 27.2.1** `[ölçtüm]`.
+**Tarih:** 2026-11-27
+**Motor:** `sd-master-532d2c1-bin-Darwin-macOS-26.7.2-arm64.zip` (`https://github.com/leejet/stable-diffusion.cpp/releases/tag/master-1106-532d2c1`, MIT), yama yok; 4 model dosyası `scripts/modeller.json` sha256 değerleriyle indirildi ve doğrulandı (MiniMax H3 Community License, lisansı kullanıcı kabul etti). Kalite kapısı için `.venv`: opencv-python-headless 5.1.0, numpy 2.5.5 (PyPI).
+
+| Koşu | İstem | Boyut | Kare | Metin kodlama | 6 adım örnekleme | Video + ses VAE | Toplam (`generate_video`) | Max RSS / peak footprint | Kalite kapısı |
+|---|---|---|---:|---:|---:|---:|---:|---|---|
+| Kurulum kontrolü | `ornek_istem_R0` | 640×384 | 5 | 36,69 sn | 75,22 sn | 14,03 sn | **127,68 sn** | 9,36 GiB / 8,73 GiB | `KAPI GECTI` gürültü 0,89, orta akış 2,09 |
+| Kendi istemi (Topluluk deneyi) | kendi | 384×640 dikey | 124 | 116,48 sn | 1462,31 sn | 95,07 sn | **1683,25 sn** (28 dk 3 sn) | 10,24 GiB / 9,03 GiB | `KAPI GECTI` gürültü 0,64, orta akış 1,81 (eşikler 640x384 için) |
+
+- Swap kullanımı ölçülmedi `[ölçülmedi]`; koşular `caffeinate -i` ile yapıldı, uyku kesintisi olmadı `[ölçtüm]`.
+- 124 karelik koşuda adım başına yaklaşık 244 sn `[hesap]`; aynı motor ve Mod A ile M4 Pro 24 GB'taki 640×384 124 karelik koşu (731,43 sn, `docs/MACOS.md` bölüm 6) ile kıyas yapılamaz, çünkü boyut ve istem farklı `[hesap]`.
+- Bu koşular VideoTurko'nun desteklenen 640×384 varsayılanı dışında (dikey 384×640) olduğu için `docs/KART_PROFILLERI.md`'de Topluluk deneyleri bölümündedir.
